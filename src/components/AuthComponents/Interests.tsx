@@ -7,6 +7,7 @@ const Interests = () => {
             {/* <Image source={"asdasd"} alt="interest" height={24} width={24} /> */}
             <Text>
                 Gaming</Text>
+                
         </View>
     )
 }

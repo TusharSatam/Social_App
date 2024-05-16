@@ -7,6 +7,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Signin from './src/screens/AuthScreens/Signin';
 import ForgotPassword from './src/screens/AuthScreens/ForgotPassword';
 import ConfirmPassword from './src/screens/AuthScreens/ConfirmPassword';
+import SelectInterests from './src/screens/OnBoardingScreens/SelectInterests';
+import CompleteProfile from './src/screens/OnBoardingScreens/CompleteProfile';
 
 // Define a type for the navigation stack parameters
 type RootStackParamList = {
@@ -14,7 +16,8 @@ type RootStackParamList = {
   Signin: undefined;
   ForgotPassword: undefined;
   ConfirmPassword: undefined;
-
+  SelectInterests: undefined;
+  CompleteProfile: undefined;
 };
 
 
@@ -44,7 +47,7 @@ function App() {
               title: '', // Set a title for the screen
               headerBackTitle: 'Back', // Set a custom back button label
               headerShown: true, // Show the header
-              headerShadowVisible: false, 
+              headerShadowVisible: false,
             }}
           />
           <Stack.Screen
@@ -54,7 +57,27 @@ function App() {
               title: '', // Set a title for the screen
               headerBackTitle: 'Back', // Set a custom back button label
               headerShown: true, // Show the header
-              headerShadowVisible: false, 
+              headerShadowVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="SelectInterests"
+            component={SelectInterests}
+            options={{
+              title: '', // Set a title for the screen
+              headerBackTitle: 'Back', // Set a custom back button label
+              headerShown: true, // Show the header
+              headerShadowVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="CompleteProfile"
+            component={CompleteProfile}
+            options={{
+              title: '', // Set a title for the screen
+              headerBackTitle: 'Back', // Set a custom back button label
+              headerShown: true, // Show the header
+              headerShadowVisible: false,
             }}
           />
 
