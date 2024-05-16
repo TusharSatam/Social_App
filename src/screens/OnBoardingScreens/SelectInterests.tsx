@@ -46,10 +46,10 @@ const SelectInterests = () => {
         { image: Cars, name: "Cars" },
     ];
 
-    const toggleInterest = (interestName) => {
-        setSelectedInterests(prevState => {
+    const toggleInterest = (interestName: any) => {
+        setSelectedInterests((prevState: any) => {
             if (prevState.includes(interestName)) {
-                return prevState.filter(name => name !== interestName);
+                return prevState.filter((name: any) => name !== interestName);
             } else if (prevState.length < 5) {
                 return [...prevState, interestName];
             } else {
@@ -80,15 +80,15 @@ const SelectInterests = () => {
                     {Interests.map((Interest, index) => (
                         <TouchableOpacity
                             key={index}
-                            className={`rounded-full p-[5px] h-[42px] px-[12px] flex flex-row items-center justify-center ${selectedInterests.includes(Interest.name) ? 'bg-primaryColor' : 'bg-lightGray'}`}
+                            className={`rounded-full p-[5px] h-[42px] px-[12px] flex flex-row items-center justify-center ${(selectedInterests as any).includes(Interest.name) ? 'bg-primaryColor' : 'bg-lightGray'}`}
                             onPress={() => toggleInterest(Interest.name)}
                         >
-                            {Interest?.image && <Interest.image isSelected={selectedInterests.includes(Interest.name)} />}
-                            <CustomText className={`!font-medium text-Gray text-[14px] ml-[7px]  ${selectedInterests.includes(Interest.name) ? 'text-white' : 'text-Gray'}`}>{Interest.name}</CustomText>
+                            {Interest?.image && <Interest.image isSelected={(selectedInterests as any).includes(Interest.name)} />}
+                            <CustomText className={`!font-medium text-Gray text-[14px] ml-[7px]  ${(selectedInterests as any).includes(Interest.name) ? 'text-white' : 'text-Gray'}`}>{Interest.name}</CustomText>
                         </TouchableOpacity>
                     ))}
                 </View>
-                <PrimaryBtn onPress={handleDone} btnText="Done" btnClass="my-6" />
+                <PrimaryBtn onPress={handleDone} btnText="Done" btnClass="my-3" />
             </View>
         </View>
     );

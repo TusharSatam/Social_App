@@ -19,7 +19,7 @@ const Signup = () => {
   const handleSignup = () => {
     if (isAgreed) {
       // Add signup logic here
-      (navigation as any).navigate('SelectInterests');
+      (navigation as any).navigate('CompleteProfile');
     } else {
       // Alert("You need to agree with the terms and conditions.");
     }
