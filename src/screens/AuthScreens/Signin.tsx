@@ -18,7 +18,7 @@ const Signin = () => {
   };
 
   const handleSignin = () => {
-
+    (navigation as any).navigate("HomeScreen");
   };
   return (
     <View className=" flex-1 flex justify-start items-center bg-white !p-4 ">
