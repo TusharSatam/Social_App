@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, SafeAreaView } from 'react-native';
+import { View, Text, SafeAreaView, ScrollView } from 'react-native';
 import Signup from './src/screens/AuthScreens/Signup';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -33,78 +33,79 @@ function App() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Signup" screenOptions={{ presentation: "card", animation: "flip" }}>
-          <Stack.Screen
-            name="Signup"
-            component={Signup}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Signin"
-            component={Signin}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="ForgotPassword"
-            component={ForgotPassword}
-            options={{
-              title: '', // Set a title for the screen
-              headerBackTitle: 'Back', // Set a custom back button label
-              headerShown: true, // Show the header
-              headerShadowVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="ConfirmPassword"
-            component={ConfirmPassword}
-            options={{
-              title: '', // Set a title for the screen
-              headerBackTitle: 'Back', // Set a custom back button label
-              headerShown: true, // Show the header
-              headerShadowVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="SelectInterests"
-            component={SelectInterests}
-            options={{
-              title: '', // Set a title for the screen
-              headerBackTitle: 'Back', // Set a custom back button label
-              headerShown: true, // Show the header
-              headerShadowVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="CompleteProfile"
-            component={CompleteProfile}
-            options={{
-              title: '', // Set a title for the screen
-              headerBackTitle: 'Back', // Set a custom back button label
-              headerShown: true, // Show the header
-              headerShadowVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="VerifyCode"
-            component={VerifyCode}
-            options={{
-              title: '', // Set a title for the screen
-              headerBackTitle: 'Back', // Set a custom back button label
-              headerShown: true, // Show the header
-              headerShadowVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="HomeScreen"
-            component={HomeScreen}
-            options={{
-              title: '', // Set a title for the screen
-              headerBackTitle: 'Back', // Set a custom back button label
-              headerShown: false, // Show the header
-              headerShadowVisible: false,
-            }}
-          />
-        </Stack.Navigator>
+
+          <Stack.Navigator initialRouteName="Signup" screenOptions={{ presentation: "card", animation: "flip" }}>
+            <Stack.Screen
+              name="Signup"
+              component={Signup}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Signin"
+              component={Signin}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ForgotPassword"
+              component={ForgotPassword}
+              options={{
+                title: '', // Set a title for the screen
+                headerBackTitle: 'Back', // Set a custom back button label
+                headerShown: true, // Show the header
+                headerShadowVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="ConfirmPassword"
+              component={ConfirmPassword}
+              options={{
+                title: '', // Set a title for the screen
+                headerBackTitle: 'Back', // Set a custom back button label
+                headerShown: true, // Show the header
+                headerShadowVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="SelectInterests"
+              component={SelectInterests}
+              options={{
+                title: '', // Set a title for the screen
+                headerBackTitle: 'Back', // Set a custom back button label
+                headerShown: true, // Show the header
+                headerShadowVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="CompleteProfile"
+              component={CompleteProfile}
+              options={{
+                title: '', // Set a title for the screen
+                headerBackTitle: 'Back', // Set a custom back button label
+                headerShown: true, // Show the header
+                headerShadowVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="VerifyCode"
+              component={VerifyCode}
+              options={{
+                title: '', // Set a title for the screen
+                headerBackTitle: 'Back', // Set a custom back button label
+                headerShown: true, // Show the header
+                headerShadowVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="HomeScreen"
+              component={HomeScreen}
+              options={{
+                title: '', // Set a title for the screen
+                headerBackTitle: 'Back', // Set a custom back button label
+                headerShown: false, // Show the header
+                headerShadowVisible: false,
+              }}
+            />
+          </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>
   );

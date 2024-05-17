@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, View, Alert } from 'react-native';
+import { TouchableOpacity, View, Alert, ScrollView } from 'react-native';
 import AuthHeader from '../../components/AuthComponents/AuthHeader';
 import { useNavigation } from '@react-navigation/native';
 import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
@@ -73,24 +73,26 @@ const SelectInterests = () => {
     };
 
     return (
-        <View className="flex-1 justify-start items-center bg-white p-4 px-2">
-            <AuthHeader containerClass='!mt-2 !mb-10' title="Select up to 5 interests" description="Discover Meaningful Connections by Selecting Your Interests" />
-            <View className="flex justify-between items-center w-full flex-1">
-                <View className='flex flex-wrap w-full flex-row items-center justify-center gap-[13px]'>
-                    {Interests.map((Interest, index) => (
-                        <TouchableOpacity
-                            key={index}
-                            className={`rounded-full p-[5px] h-[42px] px-[12px] flex flex-row items-center justify-center ${(selectedInterests as any).includes(Interest.name) ? 'bg-primaryColor' : 'bg-lightGray'}`}
-                            onPress={() => toggleInterest(Interest.name)}
-                        >
-                            {Interest?.image && <Interest.image isSelected={(selectedInterests as any).includes(Interest.name)} />}
-                            <CustomText className={`!font-medium text-Gray text-[14px] ml-[7px]  ${(selectedInterests as any).includes(Interest.name) ? 'text-white' : 'text-Gray'}`}>{Interest.name}</CustomText>
-                        </TouchableOpacity>
-                    ))}
+        <ScrollView>
+            <View className="flex-1 justify-start items-center bg-white p-4 px-2">
+                <AuthHeader containerClass='!mt-2 !mb-10' title="Select up to 5 interests" description="Discover Meaningful Connections by Selecting Your Interests" />
+                <View className="flex justify-between items-center w-full flex-1">
+                    <View className='flex flex-wrap w-full flex-row items-center justify-center gap-[13px]'>
+                        {Interests.map((Interest, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                className={`rounded-full p-[5px] h-[42px] px-[12px] flex flex-row items-center justify-center ${(selectedInterests as any).includes(Interest.name) ? 'bg-primaryColor' : 'bg-lightGray'}`}
+                                onPress={() => toggleInterest(Interest.name)}
+                            >
+                                {Interest?.image && <Interest.image isSelected={(selectedInterests as any).includes(Interest.name)} />}
+                                <CustomText className={`!font-medium text-Gray text-[14px] ml-[7px]  ${(selectedInterests as any).includes(Interest.name) ? 'text-white' : 'text-Gray'}`}>{Interest.name}</CustomText>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                    <PrimaryBtn onPress={handleDone} btnText="Done" btnClass="my-3" />
                 </View>
-                <PrimaryBtn onPress={handleDone} btnText="Done" btnClass="my-3" />
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
