@@ -18,7 +18,7 @@ const Signin = () => {
   };
 
   const handleSignin = () => {
-
+    (navigation as any).navigate("HomeScreen");
   };
   return (
     <ScrollView>
