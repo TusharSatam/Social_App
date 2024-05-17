@@ -9,6 +9,8 @@ import ForgotPassword from './src/screens/AuthScreens/ForgotPassword';
 import ConfirmPassword from './src/screens/AuthScreens/ConfirmPassword';
 import SelectInterests from './src/screens/OnBoardingScreens/SelectInterests';
 import CompleteProfile from './src/screens/OnBoardingScreens/CompleteProfile';
+import VerifyCode from './src/screens/AuthScreens/VerifyCode';
+import HomeScreen from './src/screens/HomeScreen/HomeScreen';
 
 // Define a type for the navigation stack parameters
 type RootStackParamList = {
@@ -18,6 +20,8 @@ type RootStackParamList = {
   ConfirmPassword: undefined;
   SelectInterests: undefined;
   CompleteProfile: undefined;
+  VerifyCode: undefined;
+  HomeScreen: undefined
 };
 
 
@@ -80,7 +84,26 @@ function App() {
               headerShadowVisible: false,
             }}
           />
-
+          <Stack.Screen
+            name="VerifyCode"
+            component={VerifyCode}
+            options={{
+              title: '', // Set a title for the screen
+              headerBackTitle: 'Back', // Set a custom back button label
+              headerShown: true, // Show the header
+              headerShadowVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="HomeScreen"
+            component={HomeScreen}
+            options={{
+              title: '', // Set a title for the screen
+              headerBackTitle: 'Back', // Set a custom back button label
+              headerShown: false, // Show the header
+              headerShadowVisible: false,
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>

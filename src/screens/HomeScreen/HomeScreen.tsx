@@ -4,8 +4,8 @@ import CustomText from '../../components/Text/CustomText'
 
 const HomeScreen = () => {
   return (
-    <View>
-      <CustomText>HomeSreen</CustomText>
+    <View className='flex flex-1 justify-center items-center'>
+      <CustomText className='text-[24px]'>HomeSreen</CustomText>
     </View>
   )
 }

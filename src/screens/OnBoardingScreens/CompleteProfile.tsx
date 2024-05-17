@@ -67,7 +67,7 @@ const CompleteProfile = () => {
 
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} className=''>
       <AuthHeader
         containerClass="!w-full mt-0"
         descriptionClass="!text-[16px] !w-full"

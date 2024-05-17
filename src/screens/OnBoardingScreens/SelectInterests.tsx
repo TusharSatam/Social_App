@@ -64,7 +64,7 @@ const SelectInterests = () => {
             // if (response.status === 200) {
             // Alert.alert('Success', 'Your interests have been saved');
             // }
-            (navigation as any).navigate('CompleteProfile');
+            (navigation as any).navigate('HomeScreen');
 
         } catch (error) {
             console.error('Error saving interests:', error);
