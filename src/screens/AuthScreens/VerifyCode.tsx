@@ -63,10 +63,10 @@ const VerifyCode: React.FC = () => {
 
     return (
         <AlertNotificationRoot>
-            <ScrollView>
-                <View className="flex-1 flex justify-start items-center bg-white !p-4">
+            <View className=" flex-1 flex justify-start items-center bg-white !p-4">
+                <ScrollView className='w-full'>
                     <AuthHeader title="Verify Code" description="Please enter the code we just sent to email" displayEmail descriptionClass="!w-full" />
-                    <View className="flex-row space-x-2 mt-4">
+                    <View className="flex-row space-x-2 mt-4 mx-auto">
                         {code.map((digit, index) => (
                             <TextInput
                                 key={index}
@@ -95,8 +95,8 @@ const VerifyCode: React.FC = () => {
                         </TouchableOpacity>
                     </View>
                     <PrimaryBtn btnText="Sign In" onPress={handleVerifyCodeSignIn} />
-                </View>
-            </ScrollView>
+                </ScrollView>
+            </View>
         </AlertNotificationRoot>
     )
 }

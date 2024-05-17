@@ -73,10 +73,10 @@ const SelectInterests = () => {
     };
 
     return (
-        <ScrollView>
-            <View className="flex-1 justify-start items-center bg-white p-4 px-2">
-                <AuthHeader containerClass='!mt-2 !mb-10' title="Select up to 5 interests" description="Discover Meaningful Connections by Selecting Your Interests" />
-                <View className="flex justify-between items-center w-full flex-1">
+        <View className="flex-1 justify-start items-center bg-white p-4 px-2">
+            <AuthHeader containerClass='!mt-2 !mb-10' title="Select up to 5 interests" description="Discover Meaningful Connections by Selecting Your Interests" />
+            <View className="flex justify-between items-center w-full flex-1">
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="w-full">
                     <View className='flex flex-wrap w-full flex-row items-center justify-center gap-[13px]'>
                         {Interests.map((Interest, index) => (
                             <TouchableOpacity
@@ -85,14 +85,14 @@ const SelectInterests = () => {
                                 onPress={() => toggleInterest(Interest.name)}
                             >
                                 {Interest?.image && <Interest.image isSelected={(selectedInterests as any).includes(Interest.name)} />}
-                                <CustomText className={`!font-medium text-Gray text-[14px] ml-[7px]  ${(selectedInterests as any).includes(Interest.name) ? 'text-white' : 'text-Gray'}`}>{Interest.name}</CustomText>
+                                <CustomText className={`!font-medium text-Gray text-[14px] ml-[7px] ${(selectedInterests as any).includes(Interest.name) ? 'text-white' : 'text-Gray'}`}>{Interest.name}</CustomText>
                             </TouchableOpacity>
                         ))}
                     </View>
-                    <PrimaryBtn onPress={handleDone} btnText="Done" btnClass="my-3" />
-                </View>
+                </ScrollView>
+                <PrimaryBtn onPress={handleDone} btnText="Done" btnClass="my-3" />
             </View>
-        </ScrollView>
+        </View>
     );
 };
 

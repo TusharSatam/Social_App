@@ -13,8 +13,8 @@ const ForgotPassword = () => {
         (navigation as any).navigate("ConfirmPassword");
     };
     return (
-        <ScrollView>
-            <View className=" flex-1 flex justify-start items-center bg-white !p-4 w-full">
+        <View className=" flex-1 flex justify-start items-center bg-white !p-4 w-full">
+            <ScrollView className='w-full'>
                 <AuthHeader title='Forgot Password' description='Can’t Remember Password. Enter your email below for OTP confiramtion' descriptionClass="!w-[300px]" />
                 <View className='flex w-full'>
                     <AuthInput
@@ -26,8 +26,8 @@ const ForgotPassword = () => {
                     />
                     <PrimaryBtn onPress={handleSendOTP} btnText="Send OTP" btnClass={"my-6"} />
                 </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     )
 }
 

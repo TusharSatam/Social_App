@@ -14,10 +14,10 @@ const ConfirmPassword = () => {
         (navigation as any).navigate('Signin');
     };
     return (
-        <ScrollView>
-            <View className='flex-1 flex justify-start items-center bg-white !p-4'>
+        <View className=' flex-1 flex justify-start items-center bg-white !p-4'>
+            <ScrollView className='w-full'>
                 <AuthHeader title='New Password' description='Your new Password must be different from previously used passwords.' />
-                <View className='w-full '>
+                <View className='w-full'>
                     <AuthInput
                         placeholder="Password"
                         value={password}
@@ -36,8 +36,8 @@ const ConfirmPassword = () => {
 
                 </View>
 
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     )
 }
 

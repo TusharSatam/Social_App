@@ -21,8 +21,8 @@ const Signin = () => {
     (navigation as any).navigate("HomeScreen");
   };
   return (
-    <ScrollView>
-      <View className=" flex-1 flex justify-start items-center bg-white !p-4 ">
+    <View className="flex-1 flex justify-start items-center bg-white !p-4 ">
+     <ScrollView className='w-full'>
         <AuthHeader title='Sign In' description='Hi! Welcome back, you’ve been missed' descriptionClass="!w-[300px]" />
         <View className='w-full'>
           <AuthInput
@@ -46,8 +46,8 @@ const Signin = () => {
         <View className=' text-base gap-1 flex flex-row justify-center items-center'><CustomText className='text-Gray font-medium text-[16px]'>Don't have an account?</CustomText>
           <TouchableOpacity onPress={handleNavigationToSignup} ><CustomText className='text-primaryColor underline font-semibold text-[16px]'>Sign up</CustomText></TouchableOpacity>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   )
 }
 

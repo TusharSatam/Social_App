@@ -8,9 +8,6 @@ import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
 import UserIcon from '../../../assets/icons/largeUserIcon.svg';
 import CameraIcon from '../../../assets/icons/camera.svg';
 import ImagePicker from 'react-native-image-crop-picker';
-import { launchImageLibrary } from 'react-native-image-picker';
-import { Image } from 'react-native-svg';
-import CustomText from '../../components/Text/CustomText';
 import { Avatar } from 'react-native-paper';
 import { ScrollView } from 'react-native';
 const CompleteProfile = () => {
@@ -68,11 +65,11 @@ const CompleteProfile = () => {
 
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <View style={styles.container} className='w-screen' >
+      <ScrollView className='w-full'>
         <AuthHeader
-          containerClass="!w-full mt-0"
-          descriptionClass="!text-[16px] !w-full"
+          containerClass=" mt-0"
+          descriptionClass="!text-[16px] w-full"
           title="Complete Your Profile"
           description="Don’t worry, only you can see your personal data. No one else will be able to see it."
         />
@@ -117,8 +114,8 @@ const CompleteProfile = () => {
           />
           <PrimaryBtn onPress={handleNext} btnText="Next" btnClass={'my-6'} />
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
 
   );
 };
