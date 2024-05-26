@@ -77,7 +77,7 @@ const SelectInterests = () => {
             <AuthHeader containerClass='!mt-2 !mb-10' title="Select up to 5 interests" description="Discover Meaningful Connections by Selecting Your Interests" />
             <View className="flex justify-between items-center w-full flex-1">
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="w-full">
-                    <View className='flex flex-wrap w-full flex-row items-center justify-center gap-[13px]'>
+                    <View className='flex flex-wrap w-full flex-row items-center justify-center gap-[13px] py-4 mx-auto'>
                         {Interests.map((Interest, index) => (
                             <TouchableOpacity
                                 key={index}

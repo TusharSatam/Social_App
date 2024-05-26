@@ -68,7 +68,7 @@ const CompleteProfile = () => {
     <View style={styles.container} className='w-screen' >
       <ScrollView className='w-full'>
         <AuthHeader
-          containerClass=" mt-0"
+          containerClass="!my-[40px]"
           descriptionClass="!text-[16px] w-full"
           title="Complete Your Profile"
           description="Don’t worry, only you can see your personal data. No one else will be able to see it."

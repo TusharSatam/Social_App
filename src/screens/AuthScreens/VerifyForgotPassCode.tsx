@@ -5,41 +5,39 @@ import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import CustomText from '../../components/Text/CustomText';
 import { ALERT_TYPE, AlertNotificationRoot, Dialog } from 'react-native-alert-notification';
-import { useVerifyRegisterOTPMutation } from '../../redux/services/auth/authApi';
+import { useVerifyForgotPassOTPMutation } from '../../redux/services/auth/authApi';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setAuthData } from '../../redux/Slice/AuthSlice';
 
 type CodeArray = [string, string, string, string];
 
-interface RegisterCredentials {
+interface ForgotCredentials {
     otp: string;
     email: string;
-    password: string;
 }
 
-const VerifyCode: React.FC = () => {
+const VerifyForgotPassCode: React.FC = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp<any>>();
-    const [verifyRegisterOTP, { isLoading }] = useVerifyRegisterOTPMutation();
+    const [verifyForgotPassOTP, { isLoading }] = useVerifyForgotPassOTPMutation();
     const [code, setCode] = useState<CodeArray>(['', '', '', '']);
     const [userEmail, setUserEmail] = useState<string | null>(null);
-    const [userPassword, setUserPassword] = useState<string | null>(null);
 
     const inputRefs = useRef<Array<TextInput | null>>([]);
 
     const handleVerifyCodeSignIn = async () => {
         if (code.join('').length === 4) {
-            const registerCredentials: RegisterCredentials = { otp: code.join(''), email: userEmail ?? '', password: userPassword ?? '' };
+            const forgotCredentials: ForgotCredentials = { otp: code.join(''), email: userEmail ?? ''};
             try {
-                const verifyOTPResponse = await verifyRegisterOTP(registerCredentials).unwrap();
-                if (verifyOTPResponse?.message === "OTP verified successfully") {
+                const verifyForgotOTPResponse = await verifyForgotPassOTP(forgotCredentials).unwrap();
+                console.log("verifyForgotOTPResponse",verifyForgotOTPResponse);
+                
+                if (verifyForgotOTPResponse?.message === "OTP verified successfully") {
                     // TODO: Verify OTP API integration pending because of invalid OTP length from API response
-                    await AsyncStorage.setItem('token', verifyOTPResponse.token);
-                    await dispatch(setAuthData(verifyOTPResponse));
-                    await AsyncStorage.removeItem("registerEmail");
-                    await AsyncStorage.removeItem("registerPasword");
-                    navigation.navigate('CompleteProfile');
+                    // await AsyncStorage.setItem('token', verifyOTPResponse.token);
+                    // dispatch(setAuthData(verifyOTPResponse));
+                    await AsyncStorage.removeItem("forgotEmail");
+                    navigation.navigate('ConfirmPassword');
                 }
             } catch (error) {
                 Dialog.show({
@@ -82,10 +80,8 @@ const VerifyCode: React.FC = () => {
 
     useEffect(() => {
         const fetchCredentials = async () => {
-            const storedEmail = await AsyncStorage.getItem('registerEmail');
-            const storedPassword = await AsyncStorage.getItem('registerPassword');
+            const storedEmail = await AsyncStorage.getItem('forgotEmail');
             setUserEmail(storedEmail);
-            setUserPassword(storedPassword);
         };
         fetchCredentials();
     }, []);
@@ -130,4 +126,4 @@ const VerifyCode: React.FC = () => {
     );
 };
 
-export default VerifyCode;
+export default VerifyForgotPassCode;
