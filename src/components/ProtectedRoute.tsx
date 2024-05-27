@@ -5,8 +5,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Signup from '../screens/AuthScreens/Signup';
 import Signin from '../screens/AuthScreens/Signin';
+import ChangePassword from '../screens/AuthScreens/ChangePassword';
 import ForgotPassword from '../screens/AuthScreens/ForgotPassword';
-import ConfirmPassword from '../screens/AuthScreens/ConfirmPassword';
 import SelectInterests from '../screens/OnBoardingScreens/SelectInterests';
 import CompleteProfile from '../screens/OnBoardingScreens/CompleteProfile';
 import VerifyCode from '../screens/AuthScreens/VerifyCode';
@@ -20,7 +20,7 @@ type RootStackParamList = {
     Signup: undefined;
     Signin: undefined;
     ForgotPassword: undefined;
-    ConfirmPassword: undefined;
+    ChangePassword: undefined;
     SelectInterests: undefined;
     CompleteProfile: undefined;
     VerifyCode: undefined;
@@ -43,7 +43,7 @@ const AuthStack = () => (
                 headerShadowVisible: false,
             }}
         />
-        <Stack.Screen name="ConfirmPassword" component={ConfirmPassword}
+        <Stack.Screen name="ChangePassword" component={ChangePassword}
             options={{
                 title: '', // Set a title for the screen
                 headerBackTitle: 'Back', // Set a custom back button label

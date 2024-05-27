@@ -37,7 +37,7 @@ const VerifyForgotPassCode: React.FC = () => {
                     // await AsyncStorage.setItem('token', verifyOTPResponse.token);
                     // dispatch(setAuthData(verifyOTPResponse));
                     await AsyncStorage.removeItem("forgotEmail");
-                    navigation.navigate('ConfirmPassword');
+                    navigation.navigate('ChangePassword');
                 }
             } catch (error) {
                 Dialog.show({

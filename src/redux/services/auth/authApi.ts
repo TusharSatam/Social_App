@@ -7,7 +7,7 @@ const API_URL = 'https://social-media-11p4.onrender.com/auth'; // Replace with y
 
 interface Credentials {
   email: string;
-  password: string;
+  password?: string;
 }
 
 interface VerifyRegisterCredentials {
@@ -35,6 +35,9 @@ interface SendForgotPassOTPRequest {
 interface VerifyForgotPassOTPRequest {
   email: string;
 }
+interface ChangePassword {
+  email: string;
+}
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
@@ -46,18 +49,18 @@ export const authApi = createApi({
         body: credentials,
       }),
     }),
-    verifyRegisterOTP: builder.mutation<any, VerifyRegisterCredentials>({
-      query: (registerOTP) => ({
-        url: '/verify-otp',
-        method: 'POST',
-        body: registerOTP,
-      }),
-    }),
     register: builder.mutation<any, Credentials>({
       query: (userData) => ({
         url: '/signup',
         method: 'POST',
         body: userData,
+      }),
+    }),
+    verifyRegisterOTP: builder.mutation<any, VerifyRegisterCredentials>({
+      query: (registerOTP) => ({
+        url: '/verify-otp',
+        method: 'POST',
+        body: registerOTP,
       }),
     }),
     sendForgotPassOTP: builder.mutation<any, SendForgotPassOTPRequest>({
@@ -74,7 +77,14 @@ export const authApi = createApi({
         body: request,
       }),
     }),
+    changePassword: builder.mutation<any, ChangePassword>({
+      query: (request) => ({
+        url: '/update-password',
+        method: 'PUT',
+        body: request,
+      }),
+    }),
   }),
 });
 // 
-export const { useLoginMutation,useVerifyRegisterOTPMutation, useRegisterMutation,useSendForgotPassOTPMutation,useVerifyForgotPassOTPMutation  } = authApi;
+export const { useLoginMutation,useVerifyRegisterOTPMutation, useRegisterMutation,useSendForgotPassOTPMutation,useVerifyForgotPassOTPMutation,useChangePasswordMutation  } = authApi;

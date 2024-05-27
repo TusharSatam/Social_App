@@ -76,7 +76,7 @@ const Signup = () => {
 
     if (valid) {
       try {
-        const registerResponse = await registerMutation({ email, password }).unwrap();
+        const registerResponse = await registerMutation({ email }).unwrap();
         console.log("data", registerResponse);
         //TODO: uncomment after signup api updated
         

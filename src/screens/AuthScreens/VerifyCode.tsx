@@ -9,6 +9,7 @@ import { useVerifyRegisterOTPMutation } from '../../redux/services/auth/authApi'
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setAuthData } from '../../redux/Slice/AuthSlice';
+import { CommonActions } from '@react-navigation/native';
 
 type CodeArray = [string, string, string, string];
 
@@ -33,13 +34,23 @@ const VerifyCode: React.FC = () => {
             const registerCredentials: RegisterCredentials = { otp: code.join(''), email: userEmail ?? '', password: userPassword ?? '' };
             try {
                 const verifyOTPResponse = await verifyRegisterOTP(registerCredentials).unwrap();
+                console.log("verifyOTPResponse",verifyOTPResponse);
+                
                 if (verifyOTPResponse?.message === "OTP verified successfully") {
                     // TODO: Verify OTP API integration pending because of invalid OTP length from API response
                     await AsyncStorage.setItem('token', verifyOTPResponse.token);
-                    await dispatch(setAuthData(verifyOTPResponse));
                     await AsyncStorage.removeItem("registerEmail");
                     await AsyncStorage.removeItem("registerPasword");
+                    await dispatch(setAuthData(verifyOTPResponse));
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: 'MainStack' }],
+                        })
+                    );
+
                     navigation.navigate('CompleteProfile');
+                    
                 }
             } catch (error) {
                 Dialog.show({
