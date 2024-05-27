@@ -6,6 +6,7 @@ const initialState = {
     isAuthenticated: false, // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
   };
+  
 export const AuthSlice = createSlice({
   name: 'counter',
   initialState,

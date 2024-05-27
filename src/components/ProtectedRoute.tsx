@@ -12,7 +12,9 @@ import CompleteProfile from '../screens/OnBoardingScreens/CompleteProfile';
 import VerifyCode from '../screens/AuthScreens/VerifyCode';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import VerifyForgotPassCode from '../screens/AuthScreens/VerifyForgotPassCode';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useGetLoggedInUserDataMutation } from '../redux/services/auth/authApi';
+import { setAuthData } from '../redux/Slice/AuthSlice';
 
 type RootStackParamList = {
     AuthStack: undefined;
@@ -28,6 +30,9 @@ type RootStackParamList = {
 
     HomeScreen: undefined;
 };
+interface GetUserDataType {
+    token: string | null; // Adjust based on your actual response structure
+}
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -86,7 +91,9 @@ const MainStack = () => (
 );
 
 const ProtectedRoute: React.FC = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [getLoggedInUserData, { isLoading }] = useGetLoggedInUserDataMutation();
+    const dispatch = useDispatch();
+    const [isContentLoading, setIsContentLoading] = useState<boolean>(true);
     const [token, setToken] = useState<string | null>(null);
     const userData = useSelector((state: any) => state.auth)
     console.log("userData=>", userData);
@@ -95,18 +102,28 @@ const ProtectedRoute: React.FC = () => {
         const fetchToken = async () => {
             try {
                 const storedToken = await AsyncStorage.getItem('token');
+                if (storedToken) {
+                    const tokenObj = { token: storedToken };
+                    const getUserDataResponse = await getLoggedInUserData(tokenObj).unwrap();
+                    console.log("getUserDataResponse", getUserDataResponse);
+                    let userData = {
+                        token: storedToken,
+                        data: getUserDataResponse,
+                    }
+                    dispatch(setAuthData(userData));
+                }
                 setToken(storedToken);
             } catch (error) {
                 console.error('Failed to fetch the token from AsyncStorage:', error);
             } finally {
-                setIsLoading(false);
+                setIsContentLoading(false);
             }
         };
 
         fetchToken();
     }, [AsyncStorage]);
 
-    if (isLoading) {
+    if (isContentLoading) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <ActivityIndicator size="large" color="#FF4D67" />

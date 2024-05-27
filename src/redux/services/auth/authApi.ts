@@ -16,9 +16,8 @@ interface VerifyRegisterCredentials {
   password:string;
 }
 // Define response types for each mutation endpoint
-interface LoginResponse {
+ interface GetUserDataType {
   token: string; // Adjust based on your actual response structure
-  user: any; // Adjust based on your actual response structure
 }
 
 interface LogoutResponse {
@@ -84,7 +83,14 @@ export const authApi = createApi({
         body: request,
       }),
     }),
+    getLoggedInUserData: builder.mutation<any, GetUserDataType>({
+      query: (request) => ({
+        url: '/token',
+        method: 'POST',
+        body: request,
+      }),
+    }),
   }),
 });
 // 
-export const { useLoginMutation,useVerifyRegisterOTPMutation, useRegisterMutation,useSendForgotPassOTPMutation,useVerifyForgotPassOTPMutation,useChangePasswordMutation  } = authApi;
+export const { useLoginMutation,useVerifyRegisterOTPMutation, useRegisterMutation,useSendForgotPassOTPMutation,useVerifyForgotPassOTPMutation,useChangePasswordMutation,useGetLoggedInUserDataMutation  } = authApi;
