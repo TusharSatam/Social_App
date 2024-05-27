@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
 import { useSendForgotPassOTPMutation } from '../../redux/services/auth/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityIndicator } from 'react-native';
 
 const ForgotPassword = () => {
     const navigation = useNavigation();
@@ -36,25 +37,29 @@ const ForgotPassword = () => {
     };
 
     return (
-        <View className="flex-1 flex justify-start items-center bg-white !p-4 w-full">
-            <ScrollView className="w-full">
-                <AuthHeader title="Forgot Password" description="Can’t remember your password? Enter your email below for OTP confirmation." descriptionClass="!w-[300px]" />
-                <View className="flex w-full">
-                    {formError ? (
-                        <View className="flex justify-center items-center mb-4">
-                            <CustomText className="text-[#F04438]">{formError}</CustomText>
-                        </View>
-                    ) : null}
-                    <AuthInput
-                        placeholder="example@gmail.com"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                        label="Email"
-                    />
-                    <PrimaryBtn onPress={handleSendOTP} btnText="Send OTP" btnClass="my-6" disabled={isLoading as boolean} />
+        <View className="flex-1 flex justify-start items-center bg-white !p-4 w-full relative">
+            {isLoading ?
+                <View className="absolute h-full w-full inset-0 flex justify-center items-center bg-white bg-opacity-50">
+                    <ActivityIndicator size="large" color="#FF4D67" />
                 </View>
-            </ScrollView>
+                : <ScrollView className="w-full">
+                    <AuthHeader title="Forgot Password" description="Can’t remember your password? Enter your email below for OTP confirmation." descriptionClass="!w-[300px]" />
+                    <View className="flex w-full">
+                        {formError ? (
+                            <View className="flex justify-center items-center mb-4">
+                                <CustomText className="text-[#F04438]">{formError}</CustomText>
+                            </View>
+                        ) : null}
+                        <AuthInput
+                            placeholder="example@gmail.com"
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address"
+                            label="Email"
+                        />
+                        <PrimaryBtn onPress={handleSendOTP} btnText="Send OTP" btnClass="my-6" disabled={isLoading as boolean} />
+                    </View>
+                </ScrollView>}
         </View>
     );
 };

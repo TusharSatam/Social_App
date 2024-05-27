@@ -33,10 +33,6 @@ const VerifyForgotPassCode: React.FC = () => {
                 console.log("verifyForgotOTPResponse",verifyForgotOTPResponse);
                 
                 if (verifyForgotOTPResponse?.message === "OTP verified successfully") {
-                    // TODO: Verify OTP API integration pending because of invalid OTP length from API response
-                    // await AsyncStorage.setItem('token', verifyOTPResponse.token);
-                    // dispatch(setAuthData(verifyOTPResponse));
-                    await AsyncStorage.removeItem("forgotEmail");
                     navigation.navigate('ChangePassword');
                 }
             } catch (error) {

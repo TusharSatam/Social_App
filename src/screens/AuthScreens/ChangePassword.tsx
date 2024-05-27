@@ -5,19 +5,25 @@ import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
 import { useNavigation } from '@react-navigation/native';
 import AuthHeader from '../../components/AuthComponents/AuthHeader';
 import CustomText from '../../components/Text/CustomText';
-
+import { useChangePasswordMutation } from '../../redux/services/auth/authApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+interface ChangePassword {
+    email: string;
+    newPassword: string;
+}
 const ChangePassword = () => {
     const navigation = useNavigation();
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
+    const [changePassword, { isLoading }] = useChangePasswordMutation();
 
     const validatePassword = (password: string) => {
         const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
         return regex.test(password);
     };
 
-    const handleCreateNewPassword = () => {
+    const handleCreateNewPassword = async () => {
         if (password !== confirmPassword) {
             setErrorMessage('Passwords do not match.');
             return;
@@ -27,7 +33,20 @@ const ChangePassword = () => {
             return;
         }
         setErrorMessage('');
-        (navigation as any).navigate('Signin');
+        const userEmail = await AsyncStorage.getItem("forgotEmail");
+        console.log("success newpass", password);
+
+        if (userEmail) {
+            const credentials: ChangePassword = { email: userEmail, newPassword: password }
+            const updatePasswordResponse = await changePassword(credentials)
+            console.log("updatePasswordResponse", updatePasswordResponse);
+
+            if (updatePasswordResponse?.data?.message === "Password updated successfully") {
+                await AsyncStorage.removeItem("forgotEmail");
+                (navigation as any).navigate('Signin');
+            }
+        }
+
     };
 
     return (
