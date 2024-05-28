@@ -79,7 +79,7 @@ const Signup = () => {
         const registerResponse = await registerMutation({ email }).unwrap();
         console.log("data", registerResponse);
         //TODO: uncomment after signup api updated
-        
+
         if (registerResponse?.message === "User successfully signed up") {
           await AsyncStorage.setItem('registerEmail', email);
           await AsyncStorage.setItem('registerPassword', password);

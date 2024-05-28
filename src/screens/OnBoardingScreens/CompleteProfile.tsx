@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import AuthHeader from '../../components/AuthComponents/AuthHeader';
 import AuthInput from '../../components/Inputs/AuthInput';
 import PhoneInput from 'react-native-phone-number-input';
@@ -9,44 +9,82 @@ import UserIcon from '../../../assets/icons/largeUserIcon.svg';
 import CameraIcon from '../../../assets/icons/camera.svg';
 import ImagePicker from 'react-native-image-crop-picker';
 import { Avatar } from 'react-native-paper';
-import { ScrollView } from 'react-native';
-const CompleteProfile = () => {
-  interface ImageObject {
-    path: string;
-    mime: string;
-    data: string;
-    width: number;
-    height: number;
-    size: number;
-    exif: any; // Assuming exif data is of any type
-    cropRect: {
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    };
-    creationDate: string;
-  }
+import { useUpdateUserDataMutation } from '../../redux/services/auth/authApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomText from '../../components/Text/CustomText';
+import { ActivityIndicator } from 'react-native';
+
+interface UpdateData {
+  Name: string;
+  phone?: string;
+  ProfilePicture?: {
+    uri: string | null;
+    type: string | null;
+    name: string | null;
+  } | null;
+}
+
+const CompleteProfile: React.FC = () => {
   const [name, setName] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const phoneInput = React.useRef<PhoneInput>(null);
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [formError, setFormError] = useState<string | null>(null);
+  const phoneInput = useRef<PhoneInput>(null);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [photoData, setPhotoData] = useState<any>(null);
   const navigation = useNavigation();
+  const [updateUserData, { isLoading }] = useUpdateUserDataMutation();
+
   const handleNameChange = (text: string) => {
     const validatedText = text.replace(/[^a-zA-Z\s]/g, '');
     setName(validatedText);
   };
 
   const handlePhoneChange = (text: string) => {
-    // Restrict phone number to 10 digits
     const formattedPhoneNumber = text.replace(/[^\d]/g, '');
     if (formattedPhoneNumber.length <= 10) {
       setPhoneNumber(formattedPhoneNumber);
     }
   };
-  const handleNext = () => {
-    (navigation as any).navigate('SelectInterests');
+
+  const handleNext = async () => {
+    if (!photoData) {
+      setFormError('Profile picture is required');
+      return;
+    }
+
+    if (phoneNumber.length !== 10) {
+      setFormError('Phone number must be exactly 10 digits.');
+      return;
+    }
+
+    setFormError(null); // Clear any existing errors
+
+    const formData: any = new FormData();
+    formData.append('Name', name);
+    formData.append('phone', phoneNumber);
+    formData.append('ProfilePicture', {
+      uri: photoData.path,
+      type: photoData.mime,
+      name: photoData.path.split('/').pop(),
+    });
+
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (token) {
+        console.log("formData", formData);
+
+        const updateResponse = await updateUserData(formData).unwrap();
+        console.log(updateResponse);
+        // Handle response if needed
+        (navigation as any).navigate('SelectInterests');
+      } else {
+        console.error('Token not found');
+      }
+    } catch (error) {
+      console.error('Failed to update user data:', error);
+    }
   };
+
   const handleImageUpload = () => {
     ImagePicker.openPicker({
       width: 300,
@@ -55,25 +93,31 @@ const CompleteProfile = () => {
       cropperCircleOverlay: true,
       avoidEmptySpaceAroundImage: true,
       freeStyleCropEnabled: true,
-      includeBase64: true,
     }).then((image: any) => {
-      console.log(image?.mime);
-      const data = `data:${image?.mime};base64,${image?.data}`;
-      setPhoto(data);
+      console.log('image=====>', image.path);
+      setPhoto(image.path);
+      setPhotoData(image);
+    }).catch(error => {
+      console.error('Error picking image: ', error);
     });
   };
 
-
   return (
-    <View style={styles.container} className='w-screen' >
-      <ScrollView className='w-full'>
+    <View style={styles.container} className="w-screen">
+      {isLoading ? <View className="absolute h-full w-full inset-0 flex justify-center items-center bg-white bg-opacity-50">
+        <ActivityIndicator size="large" color="#FF4D67" />
+      </View> : <ScrollView className="w-full">
         <AuthHeader
           containerClass="!my-[40px]"
           descriptionClass="!text-[16px] w-full"
           title="Complete Your Profile"
           description="Don’t worry, only you can see your personal data. No one else will be able to see it."
         />
-
+        {formError && (
+          <View className='flex justify-center items-center mb-4'>
+            <CustomText className='text-[#F04438] text-[sm]'>{formError}</CustomText>
+          </View>
+        )}
         <View className="w-full flex justify-center items-center my-6">
           <TouchableOpacity
             onPress={handleImageUpload}
@@ -105,18 +149,16 @@ const CompleteProfile = () => {
             onChangeText={handlePhoneChange}
             onChangeFormattedText={handlePhoneChange}
             withDarkTheme
-            // withShadow
-            // autoFocus
             containerStyle={styles.phoneInputContainer}
             textContainerStyle={styles.phoneInputTextContainer}
             textInputStyle={styles.phoneInputText}
             textInputProps={{ placeholderTextColor: '#797979' }}
           />
-          <PrimaryBtn onPress={handleNext} btnText="Next" btnClass={'my-6'} />
-        </View>
-      </ScrollView>
-    </View>
 
+          <PrimaryBtn onPress={handleNext} btnText="Next" btnClass="my-6" />
+        </View>
+      </ScrollView>}
+    </View>
   );
 };
 

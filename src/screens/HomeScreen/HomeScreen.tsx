@@ -25,8 +25,8 @@ const HomeScreen = () => {
   }
   return (
     <View className='flex min-h-screen flex-1 justify-center items-center'>
-      <CustomText className='text-[24px]'>Welcome </CustomText>
-      <CustomText className='text-[24px] text-primaryColor'> {userData?.user?.email}</CustomText>
+      <CustomText className='text-[24px]'>Welcome,</CustomText>
+      <CustomText className='text-[24px] text-primaryColor'> {userData?.user?.Name?userData?.user?.Name:userData?.user?.email}</CustomText>
       <PrimaryBtn btnText='Log out' onPress={handleLogout} btnClass={"!w-[140px] p-2 my-4"} />
     </View>
   )

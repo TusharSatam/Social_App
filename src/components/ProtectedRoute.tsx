@@ -19,6 +19,7 @@ import { setAuthData } from '../redux/Slice/AuthSlice';
 type RootStackParamList = {
     AuthStack: undefined;
     MainStack: undefined;
+    OnBoardingStack: undefined;
     Signup: undefined;
     Signin: undefined;
     ForgotPassword: undefined;
@@ -27,7 +28,6 @@ type RootStackParamList = {
     CompleteProfile: undefined;
     VerifyCode: undefined;
     VerifyForgotPassCode: undefined;
-
     HomeScreen: undefined;
 };
 interface GetUserDataType {
@@ -74,10 +74,8 @@ const AuthStack = () => (
         />
     </Stack.Navigator>
 );
-
-const MainStack = () => (
-    <Stack.Navigator initialRouteName="HomeScreen" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
+const OnBoardingStack = () => (
+    <Stack.Navigator initialRouteName="CompleteProfile" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="SelectInterests" component={SelectInterests}
             options={{
                 title: '', // Set a title for the screen
@@ -86,6 +84,12 @@ const MainStack = () => (
                 headerShadowVisible: false,
             }}
         />
+        <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
+    </Stack.Navigator>
+);
+const MainStack = () => (
+    <Stack.Navigator initialRouteName="HomeScreen" screenOptions={{ headerShown: false }}>
+
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
     </Stack.Navigator>
 );
@@ -95,6 +99,7 @@ const ProtectedRoute: React.FC = () => {
     const dispatch = useDispatch();
     const [isContentLoading, setIsContentLoading] = useState<boolean>(true);
     const [token, setToken] = useState<string | null>(null);
+    const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState<boolean | null>(false);
     const userData = useSelector((state: any) => state.auth)
     console.log("userData=>", userData);
 
@@ -121,7 +126,11 @@ const ProtectedRoute: React.FC = () => {
         };
 
         fetchToken();
-    }, [AsyncStorage]);
+    }, []);
+
+    useEffect(() => {
+        setHasCompletedOnboarding(userData?.user?.Interests?.length > 0)
+    }, [userData])
 
     if (isContentLoading) {
         return (
@@ -130,11 +139,11 @@ const ProtectedRoute: React.FC = () => {
             </View>
         );
     }
-
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName={token ? 'MainStack' : 'AuthStack'} screenOptions={{ headerShown: false }}>
+            <Stack.Navigator initialRouteName={token ? (hasCompletedOnboarding ? 'MainStack' : 'OnBoardingStack') : 'AuthStack'} screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="AuthStack" component={AuthStack} />
+                <Stack.Screen name="OnBoardingStack" component={OnBoardingStack} />
                 <Stack.Screen name="MainStack" component={MainStack} />
             </Stack.Navigator>
         </NavigationContainer>

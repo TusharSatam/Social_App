@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
 const API_URL = 'https://social-media-11p4.onrender.com/auth'; // Replace with your actual backend API URL
@@ -19,27 +20,35 @@ interface GetUserDataType {
   token: string; // Adjust based on your actual response structure
 }
 
-interface LogoutResponse {
-  success: boolean; // Adjust based on your actual response structure
-}
-
-interface RegisterResponse {
-  message: string; // Adjust based on your actual response structure
-  user: any; // Adjust based on your actual response structure
-}
 interface SendForgotPassOTPRequest {
   email: string;
 }
 interface VerifyForgotPassOTPRequest {
   email: string;
 }
- interface ChangePassword {
+interface ChangePassword {
   email: string;
   newPassword: string;
 }
+interface UpdateData {
+  Name?: string;
+  phone?: string;
+  ProfilePicture?: string | null;
+  Interests?: string[];
+}
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({baseUrl: API_URL}),
+  baseQuery: fetchBaseQuery({
+    baseUrl: API_URL,
+    prepareHeaders: async headers => {
+      // Retrieve the token from AsyncStorage
+      const token = await AsyncStorage.getItem('token');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   endpoints: builder => ({
     // signin apis
 
@@ -96,6 +105,14 @@ export const authApi = createApi({
         body: request,
       }),
     }),
+    //onBoarding apis
+    updateUserData: builder.mutation<any, UpdateData>({
+      query: request => ({
+        url: '/update',
+        method: 'PUT',
+        body: request,
+      }),
+    }),
   }),
 });
 export const {
@@ -106,4 +123,5 @@ export const {
   useVerifyForgotPassOTPMutation,
   useChangePasswordMutation,
   useGetLoggedInUserDataMutation,
+  useUpdateUserDataMutation,
 } = authApi;
