@@ -1,14 +1,34 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import HomeScreen from "@social/screens/HomeScreen/HomeScreen";
 
-const Stack = createNativeStackNavigator<any>();
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import ExploreStack from "./ExploreStack";
+import PostCreationStack from "./PostCreationStack";
+import ShortStack from "./ShortStack";
+import ProfileStack from "./ProfileStack";
+import CustomTabBar from "./CustomTabBar";
+
+const MainStackBottomTab = createBottomTabNavigator();
 
 const MainStack = () => (
-    <Stack.Navigator
-        initialRouteName="HomeScreen"
+    <MainStackBottomTab.Navigator
+        tabBar={props => <CustomTabBar {...props} />}
         screenOptions={{headerShown: false}}>
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
-    </Stack.Navigator>
+        <MainStackBottomTab.Screen name="HomeScreen" component={HomeScreen} />
+        <MainStackBottomTab.Screen
+            name="ExploreStack"
+            component={ExploreStack}
+        />
+        <MainStackBottomTab.Screen
+            name="PostCreationStack"
+            component={PostCreationStack}
+        />
+        <MainStackBottomTab.Screen name="ShortStack" component={ShortStack} />
+        <MainStackBottomTab.Screen
+            name="ProfileStack"
+            component={ProfileStack}
+        />
+    </MainStackBottomTab.Navigator>
 );
 
 export default MainStack;

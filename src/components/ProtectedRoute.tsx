@@ -9,6 +9,7 @@ import AuthStack from "@social/navigation/AuthStack";
 import OnBoardingStack from "@social/navigation/OnBoardingStack";
 import MainStack from "@social/navigation/MainStack";
 import {setAuthData} from "@social/redux/Slice/AuthSlice";
+import {navigationRef} from "@social/refs/refs";
 
 type RootStackParamList = {
     AuthStack: undefined;
@@ -88,7 +89,7 @@ const ProtectedRoute: React.FC = () => {
         );
     }
     return (
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
                 initialRouteName={
                     token
