@@ -52,7 +52,7 @@ const CustomTabBar = props => {
     ]);
 
     const changeRoute = screenName => {
-        navigation.navigate(screenName);
+        (navigation as any).navigate(screenName);
     };
 
     return (

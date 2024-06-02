@@ -1,6 +1,6 @@
 // components/AuthInput.tsx
 import React, { useState } from 'react';
-import { TextInput, View, StyleSheet, TextInputProps, TouchableOpacity, Image } from 'react-native';
+import { TextInput, View, StyleSheet, TextInputProps, TouchableOpacity } from 'react-native';
 import { styled } from 'nativewind';
 import Icon from 'react-native-vector-icons/Feather';
 import CustomText from '../Text/CustomText';
