@@ -33,8 +33,8 @@ const styles = StyleSheet.create({
         left: 0,
     },
     headerText: {
-        fontSize: 18,
-        fontWeight: '600',
+        fontSize: 16,
+        fontWeight: 600,
     } as TextStyle,
 });
 
