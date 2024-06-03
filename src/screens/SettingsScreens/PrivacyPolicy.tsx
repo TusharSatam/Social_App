@@ -1,30 +1,72 @@
-import { useNavigation } from '@react-navigation/native'
-import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader'
-import CustomText from '@social/components/Text/CustomText'
-import { ScrollView, StyleSheet, View } from 'react-native'
+import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader';
+import CustomText from '@social/components/Text/CustomText';
 
 const PrivacyPolicy = () => {
-    const navigation = useNavigation()
+    const navigation = useNavigation();
     return (
-        <View style={styles.mainContainer} ><ScreenHeader headerName='Privacy Policy' navigation={navigation} />
+        <View style={styles.mainContainer}>
+            <ScreenHeader headerName='Privacy Policy' navigation={navigation} />
             <ScrollView style={styles.containWrapper}>
-                <View>
-                    <CustomText style={styles.title}>Terms & Conditions </CustomText>
-                    <CustomText style={styles.description}>Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm Lorem Ipsum dolor sit ametm Lorem Ipsum doletm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm LoreLorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm Lorem Ipsum dolor sit ametm Lorem Ipsum doletm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm Lore</CustomText>
-                </View>
-                <View>
-                    <CustomText style={styles.title}>Terms & Conditions </CustomText>
-                    <CustomText style={styles.description}>Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm Lorem Ipsum dolor sit ametm Lorem Ipsum doletm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm LoreLorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm Lorem Ipsum dolor sit ametm Lorem Ipsum doletm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm Lore</CustomText>
-                </View>
-                <View>
-                    <CustomText style={styles.title}>Terms & Conditions </CustomText>
-                    <CustomText style={styles.description}>Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm Lorem Ipsum dolor sit ametm Lorem Ipsum doletm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm LoreLorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm Lorem Ipsum dolor sit ametm Lorem Ipsum doletm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor stm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm Lorem Ipsum dolor sit ametm  Lorem Ipsum dolor sit ametm Lore</CustomText>
-                </View>
+                {/* <CustomText style={styles.title}>Privacy Policy</CustomText> */}
+                <CustomText style={styles.lastUpdated}>Last updated: June 03, 2024</CustomText>
+                <CustomText style={styles.description}>
+                    This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.
+                </CustomText>
+                <CustomText style={styles.description}>
+                    We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the Privacy Policy Generator.
+                </CustomText>
+                <CustomText style={styles.subtitle}>Interpretation and Definitions</CustomText>
+                <CustomText style={styles.subtitle}>Interpretation</CustomText>
+                <CustomText style={styles.description}>
+                    The words of which the initial letter is capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in plural.
+                </CustomText>
+                <CustomText style={styles.subtitle}>Definitions</CustomText>
+                <CustomText style={styles.description}>
+                    For the purposes of this Privacy Policy:
+                </CustomText>
+                <CustomText style={styles.listItem}>
+                    <CustomText style={styles.bold}>Account</CustomText> means a unique account created for You to access our Service or parts of our Service.
+                </CustomText>
+                <CustomText style={styles.listItem}>
+                    <CustomText style={styles.bold}>Affiliate</CustomText> means an entity that controls, is controlled by or is under common control with a party, where "control" means ownership of 50% or more of the shares, equity interest or other securities entitled to vote for election of directors or other managing authority.
+                </CustomText>
+                <CustomText style={styles.listItem}>
+                    <CustomText style={styles.bold}>Application</CustomText> refers to Voodle, the software program provided by the Company.
+                </CustomText>
+                <CustomText style={styles.listItem}>
+                    <CustomText style={styles.bold}>Company</CustomText> (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Voodle Pyv Ltd, Bangalore, India.
+                </CustomText>
+                <CustomText style={styles.listItem}>
+                    <CustomText style={styles.bold}>Country</CustomText> refers to: Karnataka, India
+                </CustomText>
+                <CustomText style={styles.listItem}>
+                    <CustomText style={styles.bold}>Device</CustomText> means any device that can access the Service such as a computer, a cellphone or a digital tablet.
+                </CustomText>
+                <CustomText style={styles.listItem}>
+                    <CustomText style={styles.bold}>Personal Data</CustomText> is any information that relates to an identified or identifiable individual.
+                </CustomText>
+                <CustomText style={styles.listItem}>
+                    <CustomText style={styles.bold}>Service</CustomText> refers to the Application.
+                </CustomText>
+                <CustomText style={styles.listItem}>
+                    <CustomText style={styles.bold}>Service Provider</CustomText> means any natural or legal person who processes the data on behalf of the Company. It refers to third-party companies or individuals employed by the Company to facilitate the Service, to provide the Service on behalf of the Company, to perform services related to the Service or to assist the Company in analyzing how the Service is used.
+                </CustomText>
+                <CustomText style={styles.listItem}>
+                    <CustomText style={styles.bold}>Usage Data</CustomText> refers to data collected automatically, either generated by the use of the Service or from the Service infrastructure itself (for example, the duration of a page visit).
+                </CustomText>
+                <CustomText style={styles.listItem}>
+                    <CustomText style={styles.bold}>You</CustomText> means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.
+                </CustomText>
+                {/* Continue with the rest of the policy */}
+                {/* Add the rest of the policy content similarly */}
             </ScrollView>
-
         </View>
-    )
-}
+    );
+};
+
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
@@ -33,18 +75,42 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: '600',
-        fontSize: 16,
+        fontSize: 24,
+        color: "#FF4D67",
+        marginTop: 10,
+        marginBottom: 8,
+    },
+    lastUpdated: {
+        fontSize: 14,
+        fontWeight: '400',
+        marginBottom: 16,
+    },
+    subtitle: {
+        fontFamily: '600',
+        fontSize: 18,
         color: "#FF4D67",
         marginTop: 10,
         marginBottom: 8,
     },
     description: {
-        fontSize: 12,
-        fontWeight: '400'
+        fontSize: 14,
+        fontWeight: '400',
+        marginBottom: 8,
+    },
+    listItem: {
+        fontSize: 14,
+        fontWeight: '400',
+        marginBottom: 8,
+        paddingLeft: 10,
+    },
+    bold: {
+        fontWeight: '700',
     },
     containWrapper: {
         width: "100%",
         display: "flex",
+        marginVertical:16,
     }
-})
-export default PrivacyPolicy
+});
+
+export default PrivacyPolicy;

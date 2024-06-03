@@ -29,6 +29,8 @@ const ManageAccount: React.FC = () => {
     const userData = useSelector((state: any) => state.auth);
 
     useEffect(() => {
+        console.log(userData);
+        
         if (userData?.user?.ProfilePicture !== "" && userData?.user?.ProfilePicture) {
             setPhoto(userData?.user?.ProfilePicture);
         }

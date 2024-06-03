@@ -5,7 +5,7 @@ import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import CustomText from '../../components/Text/CustomText';
 import { ALERT_TYPE, AlertNotificationRoot, Dialog } from 'react-native-alert-notification';
-import { useVerifyForgotPassOTPMutation } from '../../redux/services/auth/authApi';
+import { useResendVerifyOTPMutation, useVerifyForgotPassOTPMutation } from '../../redux/services/auth/authApi';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -20,17 +20,20 @@ const VerifyForgotPassCode: React.FC = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp<any>>();
     const [verifyForgotPassOTP, { isLoading }] = useVerifyForgotPassOTPMutation();
+    const [resendVerifyOTP, { isLoading: isResendLoading }] = useResendVerifyOTPMutation(); // Replace with your actual mutation
+
     const [code, setCode] = useState<CodeArray>(['', '', '', '']);
     const [userEmail, setUserEmail] = useState<string | null>(null);
+    const [formError, setFormError] = useState<string>('');
 
     const inputRefs = useRef<Array<TextInput | null>>([]);
 
     const handleVerifyCodeSignIn = async () => {
         if (code.join('').length === 4) {
-            const forgotCredentials: ForgotCredentials = { otp: code.join(''), email: userEmail ?? ''};
+            const forgotCredentials: ForgotCredentials = { otp: code.join(''), email: userEmail ?? '' };
             try {
                 const verifyForgotOTPResponse = await verifyForgotPassOTP(forgotCredentials).unwrap();
-                
+
                 if (verifyForgotOTPResponse?.message === "OTP verified successfully") {
                     navigation.navigate('ChangePassword');
                 }
@@ -52,9 +55,24 @@ const VerifyForgotPassCode: React.FC = () => {
         }
     };
 
-    const handleResendOTP = () => {
-        // Implement OTP resend functionality here
-        console.log('Resend OTP');
+    const handleResendOTP = async () => {
+        setFormError('');
+        console.log("in resend forgot verify otp");
+
+        try {
+            const storedEmail = await AsyncStorage.getItem('forgotEmail');
+            console.log(storedEmail);
+            
+            if (!storedEmail) {
+                setFormError('No email found to resend OTP');
+                return;
+            }
+
+            const response = await resendVerifyOTP({ email: storedEmail }).unwrap();
+        } catch (error) {
+            console.error('Failed to resend OTP:', error);
+            setFormError('Failed to resend OTP. Please try again later.');
+        }
     };
 
     const handleChangeText = (text: string, index: number) => {

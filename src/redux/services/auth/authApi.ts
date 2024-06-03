@@ -113,6 +113,14 @@ export const authApi = createApi({
         body: request,
       }),
     }),
+    //resend-otp
+    resendVerifyOTP: builder.mutation<any, SendForgotPassOTPRequest>({
+      query: request => ({
+        url: '/resend-otp',
+        method: 'POST',
+        body: request,
+      }),
+    }),
   }),
 });
 export const {
@@ -124,4 +132,5 @@ export const {
   useChangePasswordMutation,
   useGetLoggedInUserDataMutation,
   useUpdateUserDataMutation,
+  useResendVerifyOTPMutation,
 } = authApi;

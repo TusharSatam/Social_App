@@ -7,6 +7,7 @@ import AuthHeader from '../../components/AuthComponents/AuthHeader';
 import CustomText from '../../components/Text/CustomText';
 import { useChangePasswordMutation } from '../../redux/services/auth/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityIndicator } from 'react-native';
 interface ChangePassword {
     email: string;
     newPassword: string;
@@ -49,27 +50,31 @@ const ChangePassword = () => {
 
     return (
         <View className='flex-1 flex justify-start items-center bg-white p-4'>
-            <ScrollView className='w-full'>
-                <AuthHeader title='New Password' description='Your new Password must be different from previously used passwords.' />
-                {errorMessage ? <CustomText className='text-red-500 text-center'>{errorMessage}</CustomText> : null}
-                <View className='w-full'>
-                    <AuthInput
-                        placeholder="Password"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry
-                        label="Password"
-                    />
-                    <AuthInput
-                        placeholder="Confirm Password"
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                        secureTextEntry
-                        label="Confirm Password"
-                    />
-                    <PrimaryBtn onPress={handleCreateNewPassword} btnText="Create New Password" btnClass={"my-6"} />
+            {isLoading ?
+                <View className="absolute h-full w-full inset-0 flex justify-center items-center bg-white bg-opacity-50">
+                    <ActivityIndicator size="large" color="#FF4D67" />
                 </View>
-            </ScrollView>
+                : <ScrollView className='w-full'>
+                    <AuthHeader title='New Password' description='Your new Password must be different from previously used passwords.' />
+                    {errorMessage ? <CustomText className='text-red-500 text-center'>{errorMessage}</CustomText> : null}
+                    <View className='w-full'>
+                        <AuthInput
+                            placeholder="Password"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry
+                            label="Password"
+                        />
+                        <AuthInput
+                            placeholder="Confirm Password"
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                            secureTextEntry
+                            label="Confirm Password"
+                        />
+                        <PrimaryBtn onPress={handleCreateNewPassword} btnText="Create New Password" btnClass={"my-6"} />
+                    </View>
+                </ScrollView>}
         </View>
     );
 };

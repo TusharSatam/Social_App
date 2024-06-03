@@ -142,7 +142,7 @@ const Signup = () => {
                 checkedCheckBoxColor="FF4D67"
               />
               <CustomText className="ml-2 text-black">
-                Agree with <Link to="/terms"><CustomText className="text-primaryColor">Terms & Conditions</CustomText></Link>
+                Agree with <Link to="/TermsConditions"><CustomText className="text-primaryColor">Terms & Conditions</CustomText></Link>
               </CustomText>
             </View>
             {termsError ? <CustomText className=' text-[#F04438] text-[14px] mb-3 !font-normal'>{termsError}</CustomText> : null}
