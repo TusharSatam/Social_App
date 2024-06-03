@@ -77,7 +77,6 @@ const Signup = () => {
     if (valid) {
       try {
         const registerResponse = await registerMutation({ email }).unwrap();
-        console.log("data", registerResponse);
         //TODO: uncomment after signup api updated
 
         if (registerResponse?.message === "User successfully signed up") {
@@ -88,7 +87,6 @@ const Signup = () => {
       } catch (error: any) {
         if (error.data && error.data.message) {
           setFormError(error.data.message);
-          console.log("error", error.data.message);
         } else {
           console.error("Unexpected error:", error);
         }

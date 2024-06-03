@@ -33,7 +33,6 @@ const Signin: React.FC = () => {
     setFormError('')
     try {
       const loginResponse = await loginMutation({ email, password }).unwrap();
-      console.log('Login successful:', loginResponse);
       await AsyncStorage.setItem('token', loginResponse.token);
       dispatch(setAuthData(loginResponse));
       navigation.dispatch(

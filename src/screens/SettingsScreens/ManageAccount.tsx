@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, Button, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ManageAccountInput from '@social/components/Inputs/ManageAccountInput';
 import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader';
 import PrimaryBtn from '@social/components/Buttons/PrimaryBtn';
+import { useSelector } from 'react-redux';
+import { Avatar } from 'react-native-paper';
+import ImagePicker from 'react-native-image-crop-picker';
+import CameraIcon from '../../../assets/icons/camera.svg';
+import UserIcon from '../../../assets/icons/largeUserIcon.svg';
+import ImageUploadModal from '@social/components/Modal/ImageUploadModal';
 
 interface FormState {
     name: string;
@@ -20,7 +26,15 @@ interface ErrorsState {
 
 const ManageAccount: React.FC = () => {
     const navigation = useNavigation();
+    const userData = useSelector((state: any) => state.auth);
 
+    useEffect(() => {
+        if (userData?.user?.ProfilePicture !== "" && userData?.user?.ProfilePicture) {
+            setPhoto(userData?.user?.ProfilePicture);
+        }
+    }, [userData]);
+
+    const [photo, setPhoto] = useState<string | null>(null);
     const [form, setForm] = useState<FormState>({
         name: '',
         username: '',
@@ -31,6 +45,7 @@ const ManageAccount: React.FC = () => {
     });
 
     const [errors, setErrors] = useState<ErrorsState>({});
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const handleChange = (field: keyof FormState, value: string | Date) => {
         setForm({ ...form, [field]: value });
@@ -86,10 +101,47 @@ const ManageAccount: React.FC = () => {
         return valid;
     };
 
+    const handlePickImage = async () => {
+        try {
+            const image = await ImagePicker.openPicker({
+                width: 300,
+                height: 400,
+                cropping: true,
+                mediaType: 'photo',
+            });
+            if (image && image.path) {
+                setPhoto(image.path);
+                setIsModalVisible(false);
+            }
+        } catch (error) {
+            console.log('Error selecting image:', error);
+        }
+    };
+
+    const handleTakePhoto = async () => {
+        try {
+            const image = await ImagePicker.openCamera({
+                width: 300,
+                height: 400,
+                cropping: true,
+                mediaType: 'photo',
+            });
+            if (image && image.path) {
+                setPhoto(image.path);
+                setIsModalVisible(false);
+            }
+        } catch (error) {
+            console.log('Error taking photo:', error);
+        }
+    };
+
     const handleSubmit = () => {
         if (validateForm()) {
+            console.log("Form data:", form);
+            console.log("Photo data:", photo);
             Alert.alert("Form submitted successfully!");
         } else {
+            Alert.alert("Please fill out all required fields correctly.");
         }
     };
 
@@ -98,6 +150,20 @@ const ManageAccount: React.FC = () => {
             <ScreenHeader headerName='Manage Account' navigation={navigation} />
             <ScrollView style={styles.detailWrapper}>
                 <View style={styles.scrollView}>
+                    <View style={styles.avatarContainer}>
+                        <TouchableOpacity
+                            onPress={() => setIsModalVisible(true)}
+                            style={styles.avatar}>
+                            {photo ? (
+                                <Avatar.Image source={{ uri: photo }} size={142} />
+                            ) : (
+                                <UserIcon height={60} width={54} />
+                            )}
+                            <View style={styles.cameraIcon}>
+                                <CameraIcon height={32} width={32} />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                     <ManageAccountInput
                         label={"Name"}
                         placeholderText={"Enter your name"}
@@ -147,8 +213,14 @@ const ManageAccount: React.FC = () => {
                         error={errors.gender}
                     />
                 </View>
-                <PrimaryBtn btnText='Update Profile' onPress={handleSubmit} btnClass={"mb-10"}/>
+                <PrimaryBtn btnText='Update Profile' onPress={handleSubmit} btnClass={"mb-10"} />
             </ScrollView>
+            <ImageUploadModal
+                isVisible={isModalVisible}
+                onClose={() => setIsModalVisible(false)}
+                onPickImage={handlePickImage}
+                onTakePhoto={handleTakePhoto}
+            />
         </View>
     );
 };
@@ -166,6 +238,27 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         flex: 1,
+    },
+    avatarContainer: {
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    avatar: {
+        backgroundColor: '#f0f0f0',
+        width: 142,
+        height: 142,
+        borderRadius: 71,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
+    },
+    cameraIcon: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 4,
     },
 });
 

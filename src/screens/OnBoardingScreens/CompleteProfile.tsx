@@ -71,10 +71,8 @@ const CompleteProfile: React.FC = () => {
     try {
       const token = await AsyncStorage.getItem('token');
       if (token) {
-        console.log("formData", formData);
 
         const updateResponse = await updateUserData(formData).unwrap();
-        console.log(updateResponse);
         // Handle response if needed
         (navigation as any).navigate('SelectInterests');
       } else {
@@ -94,7 +92,6 @@ const CompleteProfile: React.FC = () => {
       avoidEmptySpaceAroundImage: true,
       freeStyleCropEnabled: true,
     }).then((image: any) => {
-      console.log('image=====>', image.path);
       setPhoto(image.path);
       setPhotoData(image);
     }).catch(error => {

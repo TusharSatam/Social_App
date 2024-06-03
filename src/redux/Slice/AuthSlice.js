@@ -12,7 +12,6 @@ export const AuthSlice = createSlice({
   initialState,
   reducers: {
     setAuthData(state, action) {
-      console.log(action.payload);
       state.user = action.payload.data;
       state.isAuthenticated = true;
       state.token = action.payload.token;

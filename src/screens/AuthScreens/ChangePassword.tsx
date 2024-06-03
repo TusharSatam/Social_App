@@ -34,12 +34,10 @@ const ChangePassword = () => {
         }
         setErrorMessage('');
         const userEmail = await AsyncStorage.getItem("forgotEmail");
-        console.log("success newpass", password);
 
         if (userEmail) {
             const credentials: ChangePassword = { email: userEmail, newPassword: password }
             const updatePasswordResponse = await changePassword(credentials)
-            console.log("updatePasswordResponse", updatePasswordResponse);
 
             if (updatePasswordResponse?.data?.message === "Password updated successfully") {
                 await AsyncStorage.removeItem("forgotEmail");

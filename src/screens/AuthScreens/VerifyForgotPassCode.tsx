@@ -30,7 +30,6 @@ const VerifyForgotPassCode: React.FC = () => {
             const forgotCredentials: ForgotCredentials = { otp: code.join(''), email: userEmail ?? ''};
             try {
                 const verifyForgotOTPResponse = await verifyForgotPassOTP(forgotCredentials).unwrap();
-                console.log("verifyForgotOTPResponse",verifyForgotOTPResponse);
                 
                 if (verifyForgotOTPResponse?.message === "OTP verified successfully") {
                     navigation.navigate('ChangePassword');

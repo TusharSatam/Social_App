@@ -33,7 +33,6 @@ const SelectInterests = () => {
     const [fomrError, setFormError] = useState<string>('');
     const [updateUserData, { isLoading }] = useUpdateUserDataMutation();
     const userData = useSelector((state: any) => state.auth)
-    console.log("userData===>", userData);
 
     // useEffect(() => {
     //     if (userData?.user?.Interests?.length === 0) {
@@ -75,7 +74,6 @@ const SelectInterests = () => {
     const handleDone = async () => {
         setFormError('')
         if (selectedInterests?.length > 5) {
-            console.log("selectedInterests-----------------------", selectedInterests);
             setFormError('Select up to 5 interests')
             return
         }
@@ -85,7 +83,6 @@ const SelectInterests = () => {
                     Interests: selectedInterests
                 }
                 const updateResponse = await updateUserData(Interests).unwrap();
-                console.log(updateResponse);
                 navigation.dispatch(
                     CommonActions.reset({
                         index: 0,

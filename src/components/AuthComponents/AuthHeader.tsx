@@ -16,7 +16,6 @@ const AuthHeader: React.FC<AuthHeaderPropType> = ({ title, description, descript
   useEffect(() => {
     const fetchEmail = async () => {
       const storedEmail = await AsyncStorage.getItem('email');
-      console.log(storedEmail);
       setUserEmail(storedEmail)
     }
     fetchEmail()
