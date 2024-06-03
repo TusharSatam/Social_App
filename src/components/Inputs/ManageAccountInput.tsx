@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, View, TouchableOpacity, Modal, Text, Platform } 
 import CustomText from '../Text/CustomText';
 import DatePicker from 'react-native-date-picker';
 import RNPickerSelect from 'react-native-picker-select';
+import Icon from 'react-native-vector-icons/Feather';
 
 interface ManageAccountInputProps {
     placeholderText: string;
@@ -11,6 +12,7 @@ interface ManageAccountInputProps {
     value: string | Date;
     onChange: (value: string | Date) => void;
     error?: string | null;
+    secureTextEntry?: boolean;
 }
 
 const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
@@ -19,10 +21,13 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
     inputType = 'default',
     value,
     onChange,
-    error
+    error,
+    secureTextEntry,
+    ...props
 }) => {
     const [date, setDate] = useState<Date>(new Date(value));
     const [open, setOpen] = useState<boolean>(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const isDateInput = inputType === 'date';
     const isSelectInput = inputType === 'select';
 
@@ -31,6 +36,9 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
         onChange(newDate);
     };
 
+    const togglePasswordVisibility = () => {
+        setIsPasswordVisible(!isPasswordVisible);
+    };
     return (
         <View style={styles.container}>
             {label && <CustomText style={styles.inputLabel}>{label}</CustomText>}
@@ -93,6 +101,26 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
                         );
                     }}
                 />
+            ) : secureTextEntry ? (
+                <View className='relative'>
+                    <TextInput
+                        style={styles.input}
+                        placeholderTextColor="#797979"
+                        placeholder={placeholderText}
+                        secureTextEntry={secureTextEntry && !isPasswordVisible}
+                        className={`!px-4 py-3 text-[14px]  bg-lightGray shadow-sm w-full rounded-xl  text-Gray`}
+                        {...props}
+                    />
+                    {secureTextEntry && (
+                        <TouchableOpacity
+                            onPress={togglePasswordVisibility}
+                            style={styles.icon}
+                        >
+                            <Icon name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="#797979" />
+                        </TouchableOpacity>
+                    )}
+                </View>
+
             ) : (
                 <TextInput
                     style={styles.input}
@@ -140,7 +168,7 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
         alignItems: 'center',
-        width:"80%"
+        width: "80%"
     },
     closeButton: {
         marginTop: 20,
@@ -177,6 +205,11 @@ const styles = StyleSheet.create({
         height: 12,
         top: 20,
         right: 15,
+    },
+    icon: {
+        position: 'absolute',
+        right: 15,
+        top: 15,
     },
 });
 
