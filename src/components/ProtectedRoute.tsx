@@ -91,13 +91,14 @@ const ProtectedRoute: React.FC = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                initialRouteName={
-                    token
-                        ? hasCompletedOnboarding
-                            ? "MainStack"
-                            : "OnBoardingStack"
-                        : "AuthStack"
-                }
+                // initialRouteName={
+                //     token
+                //         ? hasCompletedOnboarding
+                //             ? "MainStack"
+                //             : "OnBoardingStack"
+                //         : "AuthStack"
+                // }
+                initialRouteName="MainStack"
                 screenOptions={{headerShown: false}}>
                 <Stack.Screen name="AuthStack" component={AuthStack} />
                 <Stack.Screen

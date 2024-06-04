@@ -6,8 +6,9 @@ import ProfileIcon from "@social/components/SvgIcons/ProfileIcon";
 import SearchIcon from "@social/components/SvgIcons/SearchIcon";
 import {navigationRef} from "@social/refs/refs";
 import {colors} from "@social/utils/colors";
+import {helpers} from "@social/utils/helpers";
 import {typography} from "@social/utils/typography";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {
     Pressable,
     StyleSheet,
@@ -19,11 +20,16 @@ import {
 const HEIGHT = 30;
 const WIDTH = 30;
 
+const NO_TABBAR = {
+    PostCreationStack: true,
+    CreatePost: true,
+};
+
 const CustomTabBar = props => {
     const [routes, setRoutes] = useState(props.state.routeNames);
     const navigation = useNavigation();
 
-    const [tabs, setTabs] = useState([
+    const tabs = [
         {
             label: "Home",
             icon: <HomeIcon width={WIDTH} height={HEIGHT} />,
@@ -49,11 +55,26 @@ const CustomTabBar = props => {
             icon: <ProfileIcon width={WIDTH} height={HEIGHT} />,
             screenName: "ProfileStack",
         },
-    ]);
+    ];
 
     const changeRoute = screenName => {
         navigation.navigate(screenName);
     };
+
+    const init = async () => {
+        const isGranted = await helpers.checkReadCameraGalleryPermission();
+        if (!isGranted) {
+            helpers.requestReadCameraGalleryPermission();
+        }
+    };
+
+    useEffect(() => {
+        init();
+    }, []);
+
+    if (NO_TABBAR[navigationRef?.current?.getCurrentRoute?.()?.name]) {
+        return null;
+    }
 
     return (
         <View style={styles.rootStyle}>
@@ -61,28 +82,11 @@ const CustomTabBar = props => {
                 return (
                     <TouchableOpacity
                         onPress={() => changeRoute(item.screenName)}
-                        style={{
-                            height: "100%",
-                            flex: 1,
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
+                        style={styles.container}
                         key={index}>
-                        <View
-                            style={{
-                                width: "100%",
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}>
-                            {item.icon}
-                        </View>
+                        <View style={styles.iconStyle}>{item.icon}</View>
                         {item.label !== "Create-Post" && (
-                            <View
-                                style={{
-                                    width: "100%",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}>
+                            <View style={styles.labelStyle}>
                                 <Text style={styles.label}>{item.label}</Text>
                             </View>
                         )}
@@ -108,5 +112,21 @@ const styles = StyleSheet.create({
         fontSize: 10,
         color: colors.lightGrey,
         fontFamily: typography.sfRegular,
+    },
+    container: {
+        height: "100%",
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    iconStyle: {
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    labelStyle: {
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
     },
 });
