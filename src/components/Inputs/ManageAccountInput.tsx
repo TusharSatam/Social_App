@@ -39,6 +39,12 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
     const togglePasswordVisibility = () => {
         setIsPasswordVisible(!isPasswordVisible);
     };
+    const formatDate = (date: Date) => {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
     return (
         <View style={styles.container}>
             {label && <CustomText style={styles.inputLabel}>{label}</CustomText>}
@@ -49,7 +55,8 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
                         onPress={() => setOpen(true)}
                     >
                         <CustomText style={{ color: value ? '#242424' : '#797979' }}>
-                            {value ? new Date(value).toDateString() : placeholderText}
+                            {value ? formatDate(new Date(value)) : placeholderText}
+
                         </CustomText>
                     </TouchableOpacity>
                     <Modal

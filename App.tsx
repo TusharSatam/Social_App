@@ -1,12 +1,15 @@
 import * as React from 'react';
-import { SafeAreaView  } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProtectedRoute from './src/components/ProtectedRoute';
+import { AlertNotificationRoot } from 'react-native-alert-notification';
 
 function App() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <AlertNotificationRoot>
         <ProtectedRoute />
+      </AlertNotificationRoot>
     </SafeAreaView>
   );
 }

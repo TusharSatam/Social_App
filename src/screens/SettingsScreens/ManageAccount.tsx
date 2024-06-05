@@ -10,13 +10,15 @@ import ImagePicker from 'react-native-image-crop-picker';
 import CameraIcon from '../../../assets/icons/camera.svg';
 import UserIcon from '../../../assets/icons/largeUserIcon.svg';
 import ImageUploadModal from '@social/components/Modal/ImageUploadModal';
+import { useUpdateUserDataMutation } from '@social/redux/services/auth/authApi';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 
 interface FormState {
     name: string;
     username: string;
     phoneNumber: string;
     email: string;
-    dob: Date;
+    dob: string; // Changed to string to handle ISO format
     gender: string;
 }
 
@@ -27,22 +29,17 @@ interface ErrorsState {
 const ManageAccount: React.FC = () => {
     const navigation = useNavigation();
     const userData = useSelector((state: any) => state.auth);
-
-    useEffect(() => {
-        console.log(userData);
-        
-        if (userData?.user?.ProfilePicture !== "" && userData?.user?.ProfilePicture) {
-            setPhoto(userData?.user?.ProfilePicture);
-        }
-    }, [userData]);
+    const [updateUserData, { isLoading }] = useUpdateUserDataMutation();
 
     const [photo, setPhoto] = useState<string | null>(null);
+    const [selectedPhoto, setSelectedPhoto] = useState<any>(null);
+
     const [form, setForm] = useState<FormState>({
         name: '',
         username: '',
         phoneNumber: '',
         email: '',
-        dob: new Date(),
+        dob: new Date().toISOString(), // Default to current date in ISO format
         gender: '',
     });
 
@@ -113,6 +110,7 @@ const ManageAccount: React.FC = () => {
             });
             if (image && image.path) {
                 setPhoto(image.path);
+                setSelectedPhoto(image);
                 setIsModalVisible(false);
             }
         } catch (error) {
@@ -130,22 +128,74 @@ const ManageAccount: React.FC = () => {
             });
             if (image && image.path) {
                 setPhoto(image.path);
+                setSelectedPhoto(image);
                 setIsModalVisible(false);
             }
         } catch (error) {
             console.log('Error taking photo:', error);
         }
     };
+    const convertToISO = (dateString) => {
+        const date = new Date(dateString);
+        return date.toISOString();
+    };
 
-    const handleSubmit = () => {
+
+    const handleSubmit = async () => {
         if (validateForm()) {
-            console.log("Form data:", form);
-            console.log("Photo data:", photo);
-            Alert.alert("Form submitted successfully!");
+            const formData: any = new FormData();
+            formData.append('Name', form?.name);
+            formData.append('phone', form?.phoneNumber);
+            formData.append('email', form?.email);
+            formData.append('DOB', `${form?.dob}`);
+            formData.append('Gender', form?.gender);
+            if (selectedPhoto) {
+                formData.append('ProfilePicture', {
+                    uri: selectedPhoto.path,
+                    type: selectedPhoto.mime,
+                    name: selectedPhoto.path.split('/').pop(),
+                });
+            }
+
+            try {
+                const updateResponse = await updateUserData(formData).unwrap();
+                console.log(updateResponse);
+                Dialog.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: 'Success',
+                    textBody: 'Your Profile has been updated successfully!',
+                    button: 'close',
+                });
+            } catch (error) {
+                console.error('Failed to update user data:', error);
+                Dialog.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Error',
+                    textBody: 'Failed to update user data. Please try again later.',
+                    button: 'close',
+                });
+            }
         } else {
             Alert.alert("Please fill out all required fields correctly.");
         }
     };
+
+    useEffect(() => {
+        if (userData?.user?.ProfilePicture !== "" && userData?.user?.ProfilePicture) {
+            setPhoto(userData?.user?.ProfilePicture);
+        }
+        if (userData?.user) {
+            let existUserData = {
+                name: userData?.user?.Name ? userData?.user?.Name : '',
+                username: userData?.user?.userName ? userData?.user?.userName : '',
+                phoneNumber: userData?.user?.phone ? userData?.user?.phone : '',
+                email: userData?.user?.email ? userData?.user?.email : '',
+                dob: userData?.user?.DOB ? convertToISO(userData?.user?.DOB) : new Date().toISOString(),
+                gender: userData?.user?.Gender ? userData?.user?.Gender : "",
+            };
+            setForm(existUserData);
+        }
+    }, [userData]);
 
     return (
         <View style={styles.mainContainer}>
