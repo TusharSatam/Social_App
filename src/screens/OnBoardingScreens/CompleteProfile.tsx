@@ -166,7 +166,7 @@ const CompleteProfile: React.FC = () => {
               label="Name"
             />
             <View>
-            <CustomText className="mb-1 font-medium text-[16px]">Phone Number</CustomText>
+              <CustomText className="mb-1 font-medium text-[16px]">Phone Number</CustomText>
               <PhoneInput
                 value={phoneNumber}
                 defaultCode="IN"
