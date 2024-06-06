@@ -6,8 +6,7 @@ import {
     fetchBaseQuery,
     FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
-import { logout} from "@social/redux/Slice/AuthSlice";
-import store from "@social/redux/store";
+import {logout} from "@social/redux/Slice/AuthSlice";
 
 const API_URL = "https://social-media-11p4.onrender.com"; // Replace with your actual backend API URL
 
@@ -55,15 +54,6 @@ const baseQuery = fetchBaseQuery({
         }
         return headers;
     },
-
-    // responseHandler: async response => {
-    //     const returnData = response.status;
-    //     if (returnData === 401) {
-    //         await AsyncStorage.removeItem("token");
-    //         store.dispatch(logout());
-    //     }
-    //     return response.json();
-    // },
 });
 
 const baseQueryWrapper: BaseQueryFn<
@@ -167,6 +157,22 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
+
+        //resend-otp
+        resendVerifyOTP: builder.mutation<any, SendForgotPassOTPRequest>({
+            query: request => ({
+                url: "/auth/resend-otp",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        resendForgotVerifyOTP: builder.mutation<any, SendForgotPassOTPRequest>({
+            query: request => ({
+                url: "/auth/resend-otp/password",
+                method: "POST",
+                body: request,
+            }),
+        }),
     }),
 });
 export const {
@@ -180,4 +186,6 @@ export const {
     useUpdateUserDataMutation,
     useGetAllUsersQuery,
     useSharePostMutation,
+    useResendVerifyOTPMutation,
+    useResendForgotVerifyOTPMutation,
 } = authApi;

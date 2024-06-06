@@ -5,11 +5,12 @@ import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import CustomText from '../../components/Text/CustomText';
 import { ALERT_TYPE, AlertNotificationRoot, Dialog } from 'react-native-alert-notification';
-import { useVerifyRegisterOTPMutation } from '../../redux/services/auth/authApi';
+import { useResendVerifyOTPMutation, useVerifyRegisterOTPMutation } from '../../redux/services/auth/authApi';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setAuthData } from '../../redux/Slice/AuthSlice';
 import { CommonActions } from '@react-navigation/native';
+import { ActivityIndicator } from 'react-native';
 
 type CodeArray = [string, string, string, string];
 
@@ -23,9 +24,12 @@ const VerifyCode: React.FC = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp<any>>();
     const [verifyRegisterOTP, { isLoading }] = useVerifyRegisterOTPMutation();
+    const [resendVerifyOTP, { isLoading: isResendLoading }] = useResendVerifyOTPMutation(); // Replace with your actual mutation
+
     const [code, setCode] = useState<CodeArray>(['', '', '', '']);
     const [userEmail, setUserEmail] = useState<string | null>(null);
     const [userPassword, setUserPassword] = useState<string | null>(null);
+    const [formError, setFormError] = useState<string>('');
 
     const inputRefs = useRef<Array<TextInput | null>>([]);
 
@@ -34,7 +38,6 @@ const VerifyCode: React.FC = () => {
             const registerCredentials: RegisterCredentials = { otp: code.join(''), email: userEmail ?? '', password: userPassword ?? '' };
             try {
                 const verifyOTPResponse = await verifyRegisterOTP(registerCredentials).unwrap();
-                console.log("verifyOTPResponse", verifyOTPResponse);
 
                 if (verifyOTPResponse?.message === "OTP verified successfully") {
                     // TODO: Verify OTP API integration pending because of invalid OTP length from API response
@@ -70,9 +73,27 @@ const VerifyCode: React.FC = () => {
         }
     };
 
-    const handleResendOTP = () => {
-        // Implement OTP resend functionality here
-        console.log('Resend OTP');
+    const handleResendOTP = async () => {
+        setFormError('');
+
+        try {
+            const storedEmail = await AsyncStorage.getItem('registerEmail');
+            if (!storedEmail) {
+                setFormError('No email found to resend OTP');
+                return;
+            }
+
+            const response = await resendVerifyOTP({ email: storedEmail }).unwrap();
+            Dialog.show({
+                type: ALERT_TYPE.SUCCESS,
+                title: 'Success',
+                textBody: 'OTP has been resent to your email.',
+                button: 'close',
+            });
+        } catch (error) {
+            console.error('Failed to resend OTP:', error);
+            setFormError('Failed to resend OTP. Please try again later.');
+        }
     };
 
     const handleChangeText = (text: string, index: number) => {
@@ -104,8 +125,15 @@ const VerifyCode: React.FC = () => {
     return (
         <AlertNotificationRoot>
             <View className="flex-1 flex justify-start items-center bg-white !p-4">
-                <ScrollView className='w-full'>
+                {isResendLoading || isLoading ? <View className="absolute h-full w-full inset-0 flex justify-center items-center bg-white bg-opacity-50">
+                    <ActivityIndicator size="large" color="#FF4D67" />
+                </View> : <ScrollView className='w-full'>
                     <AuthHeader title="Verify Code" description="Please enter the code we just sent to your email" displayEmail descriptionClass="!w-full" />
+                    {formError ? (
+                        <View className="flex justify-center items-center mb-4">
+                            <CustomText className="text-[#F04438]">{formError}</CustomText>
+                        </View>
+                    ) : null}
                     <View className="flex-row space-x-2 mt-4 mx-auto">
                         {code.map((digit, index) => (
                             <TextInput
@@ -135,7 +163,7 @@ const VerifyCode: React.FC = () => {
                         </TouchableOpacity>
                     </View>
                     <PrimaryBtn btnText="Sign In" onPress={handleVerifyCodeSignIn} />
-                </ScrollView>
+                </ScrollView>}
             </View>
         </AlertNotificationRoot>
     );

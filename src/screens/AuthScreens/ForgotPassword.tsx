@@ -27,7 +27,6 @@ const ForgotPassword = () => {
 
         try {
             const response = await sendForgotPassOTP({ email }).unwrap(); // Adjust the API call as per your actual implementation
-            console.log('OTP sent successfully:', response);
             await AsyncStorage.setItem('forgotEmail', email);
             (navigation as any).navigate('VerifyForgotPassCode');
         } catch (error) {

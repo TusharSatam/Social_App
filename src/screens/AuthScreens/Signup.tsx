@@ -77,7 +77,6 @@ const Signup = () => {
     if (valid) {
       try {
         const registerResponse = await registerMutation({ email }).unwrap();
-        console.log("data", registerResponse);
         //TODO: uncomment after signup api updated
 
         if (registerResponse?.message === "User successfully signed up") {
@@ -88,7 +87,6 @@ const Signup = () => {
       } catch (error: any) {
         if (error.data && error.data.message) {
           setFormError(error.data.message);
-          console.log("error", error.data.message);
         } else {
           console.error("Unexpected error:", error);
         }
@@ -144,7 +142,7 @@ const Signup = () => {
                 checkedCheckBoxColor="FF4D67"
               />
               <CustomText className="ml-2 text-black">
-                Agree with <Link to="/terms"><CustomText className="text-primaryColor">Terms & Conditions</CustomText></Link>
+                Agree with <Link to="/TermsConditions"><CustomText className="text-primaryColor">Terms & Conditions</CustomText></Link>
               </CustomText>
             </View>
             {termsError ? <CustomText className=' text-[#F04438] text-[14px] mb-3 !font-normal'>{termsError}</CustomText> : null}

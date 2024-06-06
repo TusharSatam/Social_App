@@ -11,6 +11,7 @@ import OnBoardingStack from "@social/navigation/OnBoardingStack";
 import MainStack from "@social/navigation/MainStack";
 import { setAuthData } from "@social/redux/Slice/AuthSlice";
 import { navigationRef } from "@social/refs/refs";
+import TermsAndConditions from "@social/screens/SettingsScreens/TermsAndConditions";
 
 type RootStackParamList = {
     AuthStack: undefined;
@@ -32,6 +33,7 @@ type RootStackParamList = {
     HelpCenter: undefined
     PrivacyPolicy: undefined;
     Logout: undefined;
+    TermsConditions:undefined;
 };
 interface GetUserDataType {
     token: string | null; // Adjust based on your actual response structure
@@ -48,7 +50,6 @@ const ProtectedRoute: React.FC = () => {
         boolean | null
     >(false);
     const userData = useSelector((state: any) => state.auth);
-    // console.log("userData=>", userData);
 
     useEffect(() => {
         const fetchToken = async () => {
@@ -59,7 +60,6 @@ const ProtectedRoute: React.FC = () => {
                     const getUserDataResponse = await getLoggedInUserData(
                         tokenObj,
                     ).unwrap();
-                    console.log("getUserDataResponse", getUserDataResponse);
                     let userData = {
                         token: storedToken,
                         data: getUserDataResponse,
@@ -113,6 +113,8 @@ const ProtectedRoute: React.FC = () => {
                     component={OnBoardingStack}
                 />
                 <Stack.Screen name="MainStack" component={MainStack} />
+                <Stack.Screen name="TermsConditions" component={TermsAndConditions} />
+
             </Stack.Navigator>
         </NavigationContainer>
     );
