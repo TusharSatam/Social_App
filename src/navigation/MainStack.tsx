@@ -13,13 +13,16 @@ const MainStackBottomTab = createBottomTabNavigator();
 const MainStack = () => (
     <MainStackBottomTab.Navigator
         tabBar={props => <CustomTabBar {...props} />}
-        screenOptions={{ headerShown: false }}>
+        screenOptions={{
+            headerShown: false,
+        }}>
         <MainStackBottomTab.Screen name="HomeScreen" component={HomeScreen} />
         <MainStackBottomTab.Screen
             name="ExploreStack"
             component={ExploreStack}
         />
         <MainStackBottomTab.Screen
+            options={{unmountOnBlur: true}}
             name="PostCreationStack"
             component={PostCreationStack}
         />

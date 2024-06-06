@@ -48,7 +48,7 @@ const ProtectedRoute: React.FC = () => {
         boolean | null
     >(false);
     const userData = useSelector((state: any) => state.auth);
-    console.log("userData=>", userData);
+    // console.log("userData=>", userData);
 
     useEffect(() => {
         const fetchToken = async () => {
