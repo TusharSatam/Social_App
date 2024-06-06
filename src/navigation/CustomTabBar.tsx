@@ -1,15 +1,15 @@
-import {useNavigation} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import CircularPlusIcon from "@social/components/SvgIcons/CircularPlusIcon";
 import HomeIcon from "@social/components/SvgIcons/HomeIcon";
 import PlayIcon from "@social/components/SvgIcons/PlayIcon";
 import ProfileIcon from "@social/components/SvgIcons/ProfileIcon";
 import SearchIcon from "@social/components/SvgIcons/SearchIcon";
-import {clearMediaPost} from "@social/redux/Slice/PostSlice";
-import {navigationRef} from "@social/refs/refs";
-import {colors} from "@social/utils/colors";
-import {helpers} from "@social/utils/helpers";
-import {typography} from "@social/utils/typography";
-import {useEffect, useState} from "react";
+import { clearMediaPost } from "@social/redux/Slice/PostSlice";
+import { navigationRef } from "@social/refs/refs";
+import { colors } from "@social/utils/colors";
+import { helpers } from "@social/utils/helpers";
+import { typography } from "@social/utils/typography";
+import { useEffect, useState } from "react";
 import {
     Pressable,
     StyleSheet,
@@ -17,7 +17,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import {useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 
 const HEIGHT = 30;
 const WIDTH = 30;
@@ -68,6 +68,10 @@ const CustomTabBar = props => {
                 screen: "CreatePost",
             });
         }
+        else {
+            (navigation as any).navigate(screenName);
+        }
+
     };
 
     const init = async () => {

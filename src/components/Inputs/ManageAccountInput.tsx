@@ -115,6 +115,7 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
                         placeholderTextColor="#797979"
                         placeholder={placeholderText}
                         secureTextEntry={secureTextEntry && !isPasswordVisible}
+                        onChangeText={onChange}
                         className={`!px-4 py-3 text-[14px]  bg-lightGray shadow-sm w-full rounded-xl  text-Gray`}
                         {...props}
                     />

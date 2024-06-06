@@ -30,6 +30,11 @@ interface GetUserDataType {
 interface SendForgotPassOTPRequest {
     email: string;
 }
+interface UpdateProfilePassword {
+    email: string;
+    currentPassword: string;
+    newPassword: string;
+}
 interface VerifyForgotPassOTPRequest {
     email: string;
 }
@@ -143,21 +148,6 @@ export const authApi = createApi({
             }),
         }),
 
-        sharePost: builder.mutation<
-            any,
-            {media: any[]; id: string} & Partial<{
-                caption: string;
-                location: string;
-                tag: any;
-            }>
-        >({
-            query: request => ({
-                url: "/post/onboard",
-                method: "POST",
-                body: request,
-            }),
-        }),
-
         //resend-otp
         resendVerifyOTP: builder.mutation<any, SendForgotPassOTPRequest>({
             query: request => ({
@@ -169,6 +159,30 @@ export const authApi = createApi({
         resendForgotVerifyOTP: builder.mutation<any, SendForgotPassOTPRequest>({
             query: request => ({
                 url: "/auth/resend-otp/password",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        //update Password from Profile
+        updateProfilePassword: builder.mutation<any, UpdateProfilePassword>({
+            query: request => ({
+                url: "/auth/password-manager",
+                method: "POST",
+                body: request,
+            }),
+        }),
+
+        // -----Post Creation----------
+        sharePost: builder.mutation<
+            any,
+            {media: any[]; id: string} & Partial<{
+                caption: string;
+                location: string;
+                tag: any;
+            }>
+        >({
+            query: request => ({
+                url: "/post/onboard",
                 method: "POST",
                 body: request,
             }),
@@ -186,6 +200,7 @@ export const {
     useUpdateUserDataMutation,
     useGetAllUsersQuery,
     useSharePostMutation,
+    useUpdateProfilePasswordMutation,
     useResendVerifyOTPMutation,
     useResendForgotVerifyOTPMutation,
 } = authApi;

@@ -145,6 +145,7 @@ const ManageAccount: React.FC = () => {
         if (validateForm()) {
             const formData: any = new FormData();
             formData.append('Name', form?.name);
+            formData.append('username', form?.username);
             formData.append('phone', form?.phoneNumber);
             formData.append('email', form?.email);
             formData.append('DOB', `${form?.dob}`);
@@ -187,7 +188,7 @@ const ManageAccount: React.FC = () => {
         if (userData?.user) {
             let existUserData = {
                 name: userData?.user?.Name ? userData?.user?.Name : '',
-                username: userData?.user?.userName ? userData?.user?.userName : '',
+                username: userData?.user?.username ? userData?.user?.username : '',
                 phoneNumber: userData?.user?.phone ? userData?.user?.phone : '',
                 email: userData?.user?.email ? userData?.user?.email : '',
                 dob: userData?.user?.DOB ? convertToISO(userData?.user?.DOB) : new Date().toISOString(),

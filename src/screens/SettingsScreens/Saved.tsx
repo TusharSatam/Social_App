@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 const Saved = () => {
     return (
-        <View><CustomText>Saved</CustomText></View>
+        <View className='h-screen w-screen flex justify-center items-center'><CustomText>Saved Screen </CustomText></View>
     )
 }
 

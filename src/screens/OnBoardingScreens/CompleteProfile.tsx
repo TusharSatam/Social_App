@@ -9,10 +9,12 @@ import UserIcon from '../../../assets/icons/largeUserIcon.svg';
 import CameraIcon from '../../../assets/icons/camera.svg';
 import ImagePicker from 'react-native-image-crop-picker';
 import { Avatar } from 'react-native-paper';
-import { useUpdateUserDataMutation } from '../../redux/services/auth/authApi';
+import { useGetLoggedInUserDataMutation, useUpdateUserDataMutation } from '../../redux/services/auth/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomText from '../../components/Text/CustomText';
 import { ActivityIndicator } from 'react-native';
+import { setAuthData } from '@social/redux/Slice/AuthSlice';
+import { useDispatch } from 'react-redux';
 
 interface UpdateData {
   Name: string;
@@ -33,7 +35,8 @@ const CompleteProfile: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
   const navigation = useNavigation();
   const [updateUserData, { isLoading }] = useUpdateUserDataMutation();
-
+  const [getLoggedInUserData, { isLoading: isUserDataLoading }] = useGetLoggedInUserDataMutation();
+  const dispatch = useDispatch()
   const handleNameChange = (text: string) => {
     const validatedText = text.replace(/[^a-zA-Z\s]/g, '');
     setName(validatedText);
@@ -72,6 +75,29 @@ const CompleteProfile: React.FC = () => {
       const token = await AsyncStorage.getItem('token');
       if (token) {
         const updateResponse = await updateUserData(formData).unwrap();
+        const fetchToken = async () => {
+          try {
+            const storedToken = await AsyncStorage.getItem("token");
+            if (storedToken) {
+              const tokenObj = { token: storedToken };
+              const getUserDataResponse = await getLoggedInUserData(
+                tokenObj,
+              ).unwrap();
+              let userData = {
+                token: storedToken,
+                data: getUserDataResponse,
+              };
+              dispatch(setAuthData(userData));
+            }
+          } catch (error) {
+            console.error(
+              "Failed to fetch the token from AsyncStorage:",
+              error,
+            );
+          }
+        };
+
+        await fetchToken();
         // Handle response if needed
         (navigation as any).navigate('SelectInterests');
       } else {
