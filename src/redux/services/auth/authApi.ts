@@ -6,7 +6,7 @@ import {
     fetchBaseQuery,
     FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
-import {callFn, logout} from "@social/redux/Slice/AuthSlice";
+import { logout} from "@social/redux/Slice/AuthSlice";
 import store from "@social/redux/store";
 
 const API_URL = "https://social-media-11p4.onrender.com"; // Replace with your actual backend API URL
