@@ -141,7 +141,7 @@ const SharePost = () => {
             )}
             <View style={styles.container}>
                 <GenericHeader>
-                    <Header onHeaderLeftAction={() => {}} />
+                    <Header onHeaderLeftAction={() => navigation.goBack()} />
                 </GenericHeader>
                 <Spacing size={5} />
                 <ScrollView
