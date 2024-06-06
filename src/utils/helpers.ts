@@ -12,6 +12,7 @@ const helpers = {
             PERMISSIONS.ANDROID.CAMERA,
             PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
             PERMISSIONS.ANDROID.READ_MEDIA_VIDEO,
+            PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
         ]);
 
         if ((Platform.Version as number) < 33) {
@@ -35,6 +36,7 @@ const helpers = {
             PERMISSIONS.ANDROID.CAMERA,
             PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
             PERMISSIONS.ANDROID.READ_MEDIA_VIDEO,
+            PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
         ]);
 
         return responses;

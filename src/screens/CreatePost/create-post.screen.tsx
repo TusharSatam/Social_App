@@ -5,6 +5,8 @@ import {
     TouchableOpacity,
     ScrollView,
     FlatList,
+    NativeEventEmitter,
+    NativeModules,
 } from "react-native";
 import React, {useEffect, useState} from "react";
 import GenericHeader from "@social/components/GenericHeader/GenericHeader";
@@ -12,7 +14,7 @@ import HeaderCross from "@social/components/SvgIcons/HeaderCross";
 import HeaderRightArrow from "@social/components/SvgIcons/HeaderRightArrow";
 import {typography} from "@social/utils/typography";
 import {colors} from "@social/utils/colors";
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import ImageCropPicker from "react-native-image-crop-picker";
 import type {
     ImageOrVideo,
@@ -28,11 +30,18 @@ import {FFmpegKit, ReturnCode} from "ffmpeg-kit-react-native";
 import Video from "react-native-video";
 import Toast from "react-native-toast-message";
 import TrimVideo from "./components/trim-video";
+import {cleanFiles, isValidVideo, showEditor} from "react-native-video-trim";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    setMediaPosts,
+    singleMediaPost,
+    updateMediaPosts,
+} from "@social/redux/Slice/PostSlice";
 
 const SPACING_HORIZONTAL = 15;
 
 const Header = props => {
-    const {onHeaderLeftAction} = props;
+    const {onHeaderLeftAction, onHeaderRightAction} = props;
     return (
         <View style={styles.root}>
             <TouchableOpacity onPress={onHeaderLeftAction}>
@@ -41,21 +50,29 @@ const Header = props => {
             <View>
                 <Text style={styles.headerText}>Create Post</Text>
             </View>
-            <HeaderRightArrow height={20} />
+            <TouchableOpacity onPress={onHeaderRightAction}>
+                <HeaderRightArrow height={20} />
+            </TouchableOpacity>
         </View>
     );
 };
 
 const CreatePost = () => {
-    const [mediaPosts, setMediaPosts] = useState([]);
+    const mediaPosts = useSelector<any, []>(state => state.post.mediaPosts);
+    const dispatch = useDispatch();
     const [selectedPost, setSelectedPost] = useState<any>(null);
     const navigation = useNavigation();
+
     const [cameraOptionIndex, setCameraOptionIndex] = useState<-1 | 0>(-1);
     const [trimVideoIndex, setTrimVideoIndex] = useState<-1 | 0>(-1);
     const [mediaToTrim, setMediaToTrim] = useState<VideoType | null>(null);
 
     const onHeaderLeftAction = () => {
         navigation.goBack();
+    };
+
+    const onHeaderRightAction = () => {
+        navigation.navigate("SharePost");
     };
 
     const setCameraOptionIndexCB = value => {
@@ -76,21 +93,23 @@ const CreatePost = () => {
             navigation.goBack();
         } else {
             setSelectedPost(newMediaPosts[0]);
-            setMediaPosts(() => {
-                return newMediaPosts;
-            });
+            dispatch(updateMediaPosts(newMediaPosts));
+            //  setMediaPosts(() => {
+            //     return newMediaPosts;
+            // });
         }
     };
 
     const clearData = () => {
-        setMediaPosts([]);
+        dispatch(updateMediaPosts([]));
         setSelectedPost(null);
     };
 
     const setMediaPostsCB = value => {
-        setMediaPosts(prev => {
-            return [...prev, value];
-        });
+        dispatch(setMediaPosts(value));
+        // setMediaPosts(prev => {
+        //     return [...prev, value];
+        // });
     };
 
     const renderEmpty = () => {
@@ -161,18 +180,35 @@ const CreatePost = () => {
                         visibilityTime: 1000,
                     });
                 } else {
-                    console.log(media);
-                    setMediaToTrim(media as VideoType);
-                    return setTrimVideoIndex(0);
+                    // console.log(media);
+                    // setMediaToTrim(media as VideoType);
+                    // return setTrimVideoIndex(0);
+                    await showEditor(media.path, {
+                        maxDuration: 60,
+                        minDuration: 5,
+                    });
                 }
+            } else {
+                dispatch(singleMediaPost(media));
             }
-
-            setMediaPosts(prev => {
-                return [...prev, media];
-            });
         } catch (error) {
             console.log(error, " ON open camera");
         }
+    };
+
+    const oneAtTime = (path: any) => {
+        const promise = new Promise(async (resolve, reject) => {
+            await showEditor(path, {
+                maxDuration: 60,
+                minDuration: 5,
+            });
+
+            setTimeout(() => {
+                return resolve(true);
+            }, 600);
+        });
+
+        return promise;
     };
 
     const openGallery = async () => {
@@ -182,9 +218,10 @@ const CreatePost = () => {
                 compressImageQuality: 0.8,
             });
 
-            fetchMedia.forEach(media => {
-                if (media.mime.split("/")[0] === "video") {
-                    const vidDuration = (media as VideoType).duration / 1000;
+            for (let i = 0; i < fetchMedia.length; i++) {
+                if (fetchMedia?.[i].mime.split("/")[0] === "video") {
+                    const vidDuration =
+                        (fetchMedia?.[i] as VideoType).duration / 1000;
                     if (vidDuration < 5) {
                         return Toast.show({
                             type: "info",
@@ -192,19 +229,22 @@ const CreatePost = () => {
                             visibilityTime: 500,
                         });
                     } else {
-                        console.log(media);
-                        setMediaToTrim(media as VideoType);
-                        setTrimVideoIndex(0);
+                        await oneAtTime(fetchMedia?.[i]?.path);
                     }
+                } else {
+                    dispatch(singleMediaPost(fetchMedia[i]));
+                    // setMediaPosts(prev => {
+                    //     return [...prev, ...fetchMedia];
+                    // });
                 }
-            });
+            }
 
             // if (mediaPosts.length > 0) {
             //     setMediaPosts(prev => {
             //         return [...prev, ...fetchMedia];
             //     });
             // } else {
-            //     setSelectedPost(fetchMedia[0]);
+            setSelectedPost(fetchMedia[0]);
             //     setMediaPosts(fetchMedia);
             // }
         } catch (error) {
@@ -215,18 +255,68 @@ const CreatePost = () => {
     };
 
     useEffect(() => {
-        navigation.addListener("focus", () => {
-            if (mediaPosts.length === 0) {
-                openGallery();
+        const eventEmitter = new NativeEventEmitter(NativeModules.VideoTrim);
+        const subscription = eventEmitter.addListener("VideoTrim", event => {
+            switch (event.name) {
+                case "onShow": {
+                    // on Dialog show
+                    console.log("onShowListener", event);
+                    break;
+                }
+                case "onHide": {
+                    // on Dialog hide
+                    console.log("onHide", event);
+                    break;
+                }
+                case "onStartTrimming": {
+                    // on start trimming
+                    console.log("onStartTrimming", event);
+                    break;
+                }
+                case "onFinishTrimming": {
+                    // on trimming is done
+                    console.log("onFinishTrimming", event);
+                    dispatch(
+                        singleMediaPost({
+                            path: `file://${event.outputPath}`,
+                            mime: "video/mp4",
+                        }),
+                    );
+
+                    break;
+                }
+                case "onCancelTrimming": {
+                    // when user clicks Cancel button
+                    console.log("onCancelTrimming", event);
+                    break;
+                }
+                case "onError": {
+                    // any error occured: invalid file, lack of permissions to write to photo/gallery, unexpected error...
+                    console.log("onError", event);
+                    break;
+                }
             }
         });
+
+        return () => {
+            subscription.remove();
+        };
     }, []);
+
+    useEffect(() => {
+        if (mediaPosts.length === 0) {
+            openGallery();
+        }
+    }, [mediaPosts]);
 
     return (
         <View style={{flex: 1}}>
             <View style={styles.container}>
                 <GenericHeader>
-                    <Header onHeaderLeftAction={onHeaderLeftAction} />
+                    <Header
+                        onHeaderLeftAction={onHeaderLeftAction}
+                        onHeaderRightAction={onHeaderRightAction}
+                    />
                 </GenericHeader>
                 <FlatList
                     ListEmptyComponent={renderEmpty}
@@ -241,7 +331,7 @@ const CreatePost = () => {
                                     style={{
                                         aspectRatio: 1,
                                     }}>
-                                    {selectedPost.mime.split("/")[0] ===
+                                    {selectedPost?.mime?.split("/")[0] ===
                                     "video" ? (
                                         <Video
                                             onTimedMetadata={e =>
@@ -260,7 +350,7 @@ const CreatePost = () => {
                                                     FastImage.priority.normal,
                                             }}
                                             resizeMode={
-                                                FastImage.resizeMode.cover
+                                                FastImage.resizeMode.contain
                                             }
                                         />
                                     )}

@@ -40,7 +40,7 @@ const ProtectedRoute: React.FC = () => {
         boolean | null
     >(false);
     const userData = useSelector((state: any) => state.auth);
-    console.log("userData=>", userData);
+    // console.log("userData=>", userData);
 
     useEffect(() => {
         const fetchToken = async () => {
@@ -91,14 +91,14 @@ const ProtectedRoute: React.FC = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                // initialRouteName={
-                //     token
-                //         ? hasCompletedOnboarding
-                //             ? "MainStack"
-                //             : "OnBoardingStack"
-                //         : "AuthStack"
-                // }
-                initialRouteName="MainStack"
+                initialRouteName={
+                    token
+                        ? hasCompletedOnboarding
+                            ? "MainStack"
+                            : "OnBoardingStack"
+                        : "AuthStack"
+                }
+                // initialRouteName="MainStack"
                 screenOptions={{headerShown: false}}>
                 <Stack.Screen name="AuthStack" component={AuthStack} />
                 <Stack.Screen

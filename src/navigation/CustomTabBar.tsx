@@ -4,6 +4,7 @@ import HomeIcon from "@social/components/SvgIcons/HomeIcon";
 import PlayIcon from "@social/components/SvgIcons/PlayIcon";
 import ProfileIcon from "@social/components/SvgIcons/ProfileIcon";
 import SearchIcon from "@social/components/SvgIcons/SearchIcon";
+import {clearMediaPost} from "@social/redux/Slice/PostSlice";
 import {navigationRef} from "@social/refs/refs";
 import {colors} from "@social/utils/colors";
 import {helpers} from "@social/utils/helpers";
@@ -16,6 +17,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import {useDispatch} from "react-redux";
 
 const HEIGHT = 30;
 const WIDTH = 30;
@@ -23,9 +25,11 @@ const WIDTH = 30;
 const NO_TABBAR = {
     PostCreationStack: true,
     CreatePost: true,
+    SharePost: true,
 };
 
 const CustomTabBar = props => {
+    const dispatch = useDispatch();
     const [routes, setRoutes] = useState(props.state.routeNames);
     const navigation = useNavigation();
 
@@ -58,7 +62,12 @@ const CustomTabBar = props => {
     ];
 
     const changeRoute = screenName => {
-        navigation.navigate(screenName);
+        if (screenName === "PostCreationStack") {
+            dispatch(clearMediaPost());
+            navigation.navigate<any>(screenName, {
+                screen: "CreatePost",
+            });
+        }
     };
 
     const init = async () => {
