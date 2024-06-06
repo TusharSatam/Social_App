@@ -98,7 +98,7 @@ const SharePost = () => {
                 });
             }
             userPrompt.caption &&
-                formData.append("content", userPrompt.caption);
+                formData.append("caption", userPrompt.caption);
             userPrompt.location &&
                 formData.append("location", userPrompt.location);
             userPrompt.tag.length > 0 &&
