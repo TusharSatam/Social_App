@@ -119,6 +119,12 @@ const SharePost = () => {
                 },
             });
         } catch (error) {
+            console.log(error, "HI");
+            Toast.show({
+                type: "error",
+                text1: error?.data?.message,
+                visibilityTime: 1400,
+            });
             console.log(error);
         }
     };
