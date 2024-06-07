@@ -70,11 +70,11 @@ const PasswordManager: React.FC = () => {
             const updatePasswordResponse = await updateProfilePassword(Credential);
             console.log("updatePasswordResponse", updatePasswordResponse);
 
-            if (updatePasswordResponse.data?.message === "Password updated successfully") {
+            if (updatePasswordResponse.data?.message === "Password changed successfully") {
                 Dialog.show({
                     type: ALERT_TYPE.SUCCESS,
                     title: 'Success',
-                    textBody: 'Password updated successfully.',
+                    textBody: 'Password changed successfully.',
                     button: 'close',
                 });
             } else if (updatePasswordResponse?.error?.data?.message === "Current password is incorrect") {
