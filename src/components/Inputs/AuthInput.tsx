@@ -4,6 +4,7 @@ import { TextInput, View, StyleSheet, TextInputProps, TouchableOpacity } from 'r
 import { styled } from 'nativewind';
 import Icon from 'react-native-vector-icons/Feather';
 import CustomText from '../Text/CustomText';
+import { typography } from '@social/utils/typography';
 interface AuthInputProps extends TextInputProps {
     className?: string;
     label?: string;
@@ -17,14 +18,14 @@ const AuthInput: React.FC<AuthInputProps> = ({ className, label, secureTextEntry
     };
 
     return (
-        <View className='w-full'>
-            {label && <CustomText className="mb-1 font-medium text-[16px]">{label}</CustomText>}
+        <View className='w-full' style={styles.Field}>
+            {label && <CustomText style={styles.label}>{label}</CustomText>}
             <View className='relative'>
                 <TextInput
                     style={styles.input}
                     placeholderTextColor="#797979"
                     secureTextEntry={secureTextEntry && !isPasswordVisible}
-                    className={`!px-4 py-3 text-[16px] mb-3 bg-lightGray shadow-sm w-full rounded-xl ${className} text-Gray`}
+                    className={`!px-4 py-3 text-[16px] mb-0 bg-lightGray shadow-sm w-full rounded-xl ${className} text-[#242424]`}
                     {...props}
                 />
                 {secureTextEntry && (
@@ -43,8 +44,12 @@ const AuthInput: React.FC<AuthInputProps> = ({ className, label, secureTextEntry
 const styles = StyleSheet.create({
     input: {
         fontFamily: 'SFProDisplay-Regular',
+        fontWeight: "400",
         color: '#242424',
         fontSize: 16,
+    },
+    Field: {
+        marginVertical: 14,
     },
     icon: {
         position: 'absolute',
@@ -52,8 +57,10 @@ const styles = StyleSheet.create({
         top: 15,
     },
     label: {
-        marginBottom: 8,
+        marginBottom: 6,
         fontSize: 16,
+        fontFamily: typography.sfMedium,
+        // fontWeight:"500",
         color: '#242424',
     },
 });

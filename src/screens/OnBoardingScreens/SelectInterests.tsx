@@ -32,13 +32,6 @@ const SelectInterests = () => {
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [fomrError, setFormError] = useState<string>('');
     const [updateUserData, { isLoading }] = useUpdateUserDataMutation();
-    const userData = useSelector((state: any) => state.auth)
-
-    // useEffect(() => {
-    //     if (userData?.user?.Interests?.length === 0) {
-    //         //dont allow user on this screen
-    //     }
-    // }, [userData])
 
     const Interests = [
         { image: GamingIcon, name: "Gaming", isSvg: true },
@@ -99,7 +92,7 @@ const SelectInterests = () => {
     };
 
     return (
-        <View className="flex-1 justify-start items-center bg-white p-4 px-2">
+        <View className="flex-1 justify-start items-center bg-white">
             {
                 isLoading ?
                     <View className="absolute h-full w-full inset-0 flex justify-center items-center bg-white bg-opacity-50">
@@ -107,17 +100,17 @@ const SelectInterests = () => {
                     </View >
                     :
                     <>
-                        <AuthHeader containerClass='!mt-2 !mb-10' title="Select up to 5 interests" description="Discover Meaningful Connections by Selecting Your Interests" />
-                        <View className="flex justify-between items-center w-full flex-1">
-                            <View className='flex justify-center items-center mb-4'>
-                                <CustomText className='text-[#F04438] text-[sm]'>{fomrError}</CustomText>
-                            </View>
-                            <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="w-full">
-                                <View className='flex flex-wrap w-full flex-row items-center justify-center gap-[13px] py-4 mx-auto'>
+                        <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="w-full">
+                        <AuthHeader containerClass='!mb-[40px]' title="Select up to 5 interests" description="Discover Meaningful Connections by Selecting Your Interests" backArrow />
+                            <View className="flex justify-between items-center w-full flex-1">
+                                {fomrError ? <View className='flex justify-center items-center mb-4'>
+                                    <CustomText className='text-[#F04438] text-[sm]'>{fomrError}</CustomText>
+                                </View> : null}
+                                <View className='flex flex-wrap w-full flex-row items-center justify-center gap-[17px] mx-auto '>
                                     {Interests.map((Interest, index) => (
                                         <TouchableOpacity
                                             key={index}
-                                            className={`rounded-full p-[5px] h-[42px] px-[12px] flex flex-row items-center justify-center ${(selectedInterests as any).includes(Interest.name) ? 'bg-primaryColor' : 'bg-lightGray'}`}
+                                            className={`rounded-full p-[5px] h-[42px] px-[14px] flex flex-row items-center justify-center ${(selectedInterests as any).includes(Interest.name) ? 'bg-primaryColor' : 'bg-lightGray'}`}
                                             onPress={() => toggleInterest(Interest.name)}
                                         >
                                             {Interest?.image && <Interest.image isSelected={(selectedInterests as any).includes(Interest.name)} />}
@@ -125,9 +118,9 @@ const SelectInterests = () => {
                                         </TouchableOpacity>
                                     ))}
                                 </View>
-                            </ScrollView>
-                            <PrimaryBtn onPress={handleDone} btnText="Done" btnClass="my-3" />
-                        </View>
+                                <PrimaryBtn onPress={handleDone} btnText="Done" btnClass="my-3" />
+                            </View>
+                        </ScrollView>
                     </>
             }
         </View>

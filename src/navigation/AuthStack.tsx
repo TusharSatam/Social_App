@@ -1,4 +1,4 @@
-import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ChangePassword from "@social/screens/AuthScreens/ChangePassword";
 import ForgotPassword from "@social/screens/AuthScreens/ForgotPassword";
 import Signin from "@social/screens/AuthScreens/Signin";
@@ -11,7 +11,10 @@ const Stack = createNativeStackNavigator<any>();
 const AuthStack = () => (
     <Stack.Navigator
         initialRouteName="Signin"
-        screenOptions={{headerShown: false}}>
+        screenOptions={{
+            headerShown: false,
+            contentStyle: { paddingHorizontal: 25,backgroundColor:"white" },
+        }}>
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Signin" component={Signin} />
         <Stack.Screen
@@ -40,7 +43,7 @@ const AuthStack = () => (
             options={{
                 title: "", // Set a title for the screen
                 headerBackTitle: "Back", // Set a custom back button label
-                headerShown: true, // Show the header
+                headerShown: false, // Show the header
                 headerShadowVisible: false,
             }}
         />

@@ -48,7 +48,7 @@ const Signin: React.FC = () => {
   };
 
   return (
-    <View className="flex-1 flex justify-start items-center bg-white p-4">
+    <View className="flex-1 flex justify-start items-center bg-white">
       {isLoading ?
         <View className="absolute h-full w-full inset-0 flex justify-center items-center bg-white bg-opacity-50">
           <ActivityIndicator size="large" color="#FF4D67" />

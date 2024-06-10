@@ -7,14 +7,17 @@ const Stack = createNativeStackNavigator<any>();
 const OnBoardingStack = () => (
     <Stack.Navigator
         initialRouteName="CompleteProfile"
-        screenOptions={{headerShown: false}}>
+           screenOptions={{
+            headerShown: false,
+            contentStyle: { paddingHorizontal: 25,backgroundColor:"white" },
+        }}>
         <Stack.Screen
             name="SelectInterests"
             component={SelectInterests}
             options={{
                 title: "", // Set a title for the screen
                 headerBackTitle: "Back", // Set a custom back button label
-                headerShown: true, // Show the header
+                headerShown: false, // Show the header
                 headerShadowVisible: false,
             }}
         />

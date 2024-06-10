@@ -1,6 +1,6 @@
 import { Link, useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View, Alert, ActivityIndicator, StyleSheet } from 'react-native';
 import AuthHeader from '../../components/AuthComponents/AuthHeader';
 import AuthInput from '../../components/Inputs/AuthInput';
 import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
@@ -12,6 +12,7 @@ import { useRegisterMutation } from '../../redux/services/auth/authApi';
 import { setAuthData } from '../../redux/Slice/AuthSlice';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { typography } from '@social/utils/typography';
 
 interface RegisterError {
   data: {
@@ -26,7 +27,7 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [isAgreed, setIsAgreed] = useState<boolean>(false);
   const [emailError, setEmailError] = useState<string>('');
-  const [fomrError, setFormError] = useState<string>('');
+  const [formError, setFormError] = useState<string>('');
 
   const [passwordError, setPasswordError] = useState<string>('');
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>('');
@@ -100,12 +101,14 @@ const Signup = () => {
 
   return (
     <AlertNotificationRoot>
-      <View className=" flex-1 flex justify-start items-center bg-white !p-4">
+      <View className=" flex-1 flex justify-start items-center bg-white">
         {!isLoading && <ScrollView className='w-full'>
-          <AuthHeader title='Create Account' description='Fill your information below or register with your social account.' />
-          <View className='flex justify-center items-center'>
-            <CustomText className='text-[#F04438] text-[sm]'>{fomrError}</CustomText>
-          </View>
+          <AuthHeader title='Create Account' description='  Fill your information below or register with your social account.' />
+          {formError ? (
+            <View className="flex justify-center items-center">
+              <CustomText className="text-[#F04438] text-[sm]">{formError}</CustomText>
+            </View>
+          ) : null}
           <View className='w-full'>
             <AuthInput
               placeholder="example@gmail.com"
@@ -114,25 +117,25 @@ const Signup = () => {
               keyboardType="email-address"
               label="Email"
             />
-            {emailError ? <CustomText className=' text-[#F04438] text-[14px] mb-3 !font-normal'>{emailError}</CustomText> : null}
+            {emailError ? <CustomText className=' text-[#F04438] text-[14px] !font-normal'>{emailError}</CustomText> : null}
 
             <AuthInput
-              placeholder="Password"
+              placeholder="••••••••"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
               label="Password"
             />
-            {passwordError ? <CustomText className=' text-[#F04438] text-[14px] mb-3 !font-normal'>{passwordError}</CustomText> : null}
+            {passwordError ? <CustomText className=' text-[#F04438] text-[14px] !font-normal'>{passwordError}</CustomText> : null}
 
             <AuthInput
-              placeholder="Confirm Password"
+              placeholder="••••••••"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry
               label="Confirm Password"
             />
-            {confirmPasswordError ? <CustomText className=' text-[#F04438] text-[14px] mb-3 !font-normal'>{confirmPasswordError}</CustomText> : null}
+            {confirmPasswordError ? <CustomText className=' text-[#F04438] mb-3 text-[14px] !font-normal'>{confirmPasswordError}</CustomText> : null}
 
             <View className='flex flex-row items-center'>
               <CheckBox
@@ -141,16 +144,16 @@ const Signup = () => {
                 checkBoxColor="#FF4D67"
                 checkedCheckBoxColor="FF4D67"
               />
-              <CustomText className="ml-2 text-black">
-                Agree with <Link to="/TermsConditions"><CustomText className="text-primaryColor">Terms & Conditions</CustomText></Link>
+              <CustomText className="ml-2 text-black !font-normal">
+                Agree with <Link to="/TermsConditions"><CustomText className="text-primaryColor underline " style={styles.textSemibold}>Terms & Conditions</CustomText></Link>
               </CustomText>
             </View>
-            {termsError ? <CustomText className=' text-[#F04438] text-[14px] mb-3 !font-normal'>{termsError}</CustomText> : null}
+            {termsError ? <CustomText className=' text-[#F04438] text-[14px] mt-3 !font-normal'>{termsError}</CustomText> : null}
           </View>
-          <PrimaryBtn onPress={handleSignup} btnText="Sign Up" btnClass={"my-6"} />
+          <PrimaryBtn onPress={handleSignup} btnText="Sign Up" btnClass={"mt-[37px] mb-[48px]"} />
           <SocialMediaSignin />
-          <View className=' gap-1 flex flex-row justify-center items-center'><CustomText className='text-Gray font-medium text-[16px]'>Already have an account?</CustomText>
-            <TouchableOpacity onPress={handleNavigationToSignin} ><CustomText className='text-primaryColor underline font-semibold text-[16px]'>Sign in</CustomText></TouchableOpacity>
+          <View style={styles.container}><CustomText className='text-Gray font-medium text-[16px]'>Already have an account?</CustomText>
+            <TouchableOpacity onPress={handleNavigationToSignin} ><CustomText style={styles.textSemibold} className='text-primaryColor underline font-semibold text-[16px]'>Sign in</CustomText></TouchableOpacity>
           </View>
         </ScrollView>}
         {isLoading && (
@@ -162,5 +165,22 @@ const Signup = () => {
     </AlertNotificationRoot>
   )
 }
+const styles = StyleSheet.create({
+
+  textSemibold: {
+    fontFamily: typography.sfSemiBold,
+  },
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 4,
+    fontFamily: typography.sfMedium,
+    marginBottom: 72,
+
+  },
+
+});
+
 
 export default Signup;

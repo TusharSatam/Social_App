@@ -15,6 +15,7 @@ import CustomText from '../../components/Text/CustomText';
 import { ActivityIndicator } from 'react-native';
 import { setAuthData } from '@social/redux/Slice/AuthSlice';
 import { useDispatch } from 'react-redux';
+import { typography } from '@social/utils/typography';
 
 interface UpdateData {
   Name: string;
@@ -192,7 +193,7 @@ const CompleteProfile: React.FC = () => {
               label="Name"
             />
             <View>
-              <CustomText className="mb-1 font-medium text-[16px]">Phone Number</CustomText>
+              <CustomText style={styles.textMedium} className="mb-1 font-medium text-[16px]">Phone Number</CustomText>
               <PhoneInput
                 value={phoneNumber}
                 defaultCode="IN"
@@ -204,9 +205,9 @@ const CompleteProfile: React.FC = () => {
                 textContainerStyle={styles.phoneInputTextContainer}
                 textInputStyle={styles.phoneInputText}
                 textInputProps={{ placeholderTextColor: '#797979' }}
-              />
+            />
             </View>
-            <PrimaryBtn onPress={handleNext} btnText="Next" btnClass="my-6" />
+            <PrimaryBtn onPress={handleNext} btnText="Next" btnClass="mt-[36px]" />
           </View>
         </ScrollView>
       )}
@@ -244,7 +245,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 16,
+  },
+  textMedium: {
+    fontFamily: typography.sfMedium
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -277,10 +280,9 @@ const styles = StyleSheet.create({
   cameraIcon: {
     position: 'absolute',
     bottom: 0,
-    right: 0,
+    right: 4,
     backgroundColor: '#fff',
     borderRadius: 16,
-    padding: 4,
   },
   inputContainer: {
     width: '100%',
