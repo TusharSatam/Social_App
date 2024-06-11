@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "500310476138",
-    "project_id": "socialnativeapp",
-    "storage_bucket": "socialnativeapp.appspot.com"
+    "project_number": "514412335294",
+    "project_id": "voodledev",
+    "storage_bucket": "voodledev.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:500310476138:android:61c571f258ed454f201113",
+        "mobilesdk_app_id": "1:514412335294:android:358d3a766b8766586eceef",
         "android_client_info": {
-          "package_name": "com.social"
+          "package_name": "com.voodledev"
         }
       },
       "oauth_client": [
         {
-          "client_id": "500310476138-009ngvbln297ral9v5o8b40pg4n2oape.apps.googleusercontent.com",
+          "client_id": "514412335294-1q4njbv74qkv71n8euarqnmfctudun8b.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.social",
-            "certificate_hash": "98f6207ae26820f077744134a0c0bf8b1226029f"
+            "package_name": "com.voodledev",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {
-          "client_id": "500310476138-34o1401e63au8jo4r3g74v9ald288pfg.apps.googleusercontent.com",
+          "client_id": "514412335294-5oni06176lc16e0pai2af1fgc6m94kcs.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCqa0PymBJm8QHCTiPSWU_yP-n8_Mnb154"
+          "current_key": "AIzaSyDi4V0x8cbvwwAGqh8RWGuJu7ndg9BrBcc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "500310476138-34o1401e63au8jo4r3g74v9ald288pfg.apps.googleusercontent.com",
+              "client_id": "514412335294-5oni06176lc16e0pai2af1fgc6m94kcs.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
