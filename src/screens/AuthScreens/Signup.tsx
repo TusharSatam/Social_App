@@ -103,7 +103,7 @@ const Signup = () => {
     <AlertNotificationRoot>
       <View className=" flex-1 flex justify-start items-center bg-white">
         {!isLoading && <ScrollView className='w-full'>
-          <AuthHeader title='Create Account' description='  Fill your information below or register with your social account.' />
+          <AuthHeader title='Create Account' description='Fill your information below or register with your social account.' descriptionClass={styles.descriptionClass} />
           {formError ? (
             <View className="flex justify-center items-center">
               <CustomText className="text-[#F04438] text-[sm]">{formError}</CustomText>
@@ -152,7 +152,7 @@ const Signup = () => {
           </View>
           <PrimaryBtn onPress={handleSignup} btnText="Sign Up" btnClass={"mt-[37px] mb-[48px]"} />
           <SocialMediaSignin />
-          <View style={styles.container}><CustomText className='text-Gray font-medium text-[16px]'>Already have an account?</CustomText>
+          <View style={styles.container}><CustomText className='text-Gray  text-[16px]'>Already have an account? </CustomText>
             <TouchableOpacity onPress={handleNavigationToSignin} ><CustomText style={styles.textSemibold} className='text-primaryColor underline font-semibold text-[16px]'>Sign in</CustomText></TouchableOpacity>
           </View>
         </ScrollView>}
@@ -174,12 +174,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 4,
     fontFamily: typography.sfMedium,
     marginBottom: 72,
-
   },
-
+  descriptionClass:{
+    width:260,
+  }
 });
 
 

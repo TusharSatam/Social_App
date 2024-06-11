@@ -13,6 +13,7 @@ import { logout } from '@social/redux/Slice/AuthSlice';
 import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Settings = ({ navigation }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -29,6 +30,7 @@ const Settings = ({ navigation }) => {
 
     const handleLogout = async () => {
         await dispatch(logout());
+        await GoogleSignin.signOut();
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,

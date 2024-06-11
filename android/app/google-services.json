@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "500310476138",
+    "project_id": "socialnativeapp",
+    "storage_bucket": "socialnativeapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:500310476138:android:61c571f258ed454f201113",
+        "android_client_info": {
+          "package_name": "com.social"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "500310476138-009ngvbln297ral9v5o8b40pg4n2oape.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.social",
+            "certificate_hash": "98f6207ae26820f077744134a0c0bf8b1226029f"
+          }
+        },
+        {
+          "client_id": "500310476138-34o1401e63au8jo4r3g74v9ald288pfg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqa0PymBJm8QHCTiPSWU_yP-n8_Mnb154"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "500310476138-34o1401e63au8jo4r3g74v9ald288pfg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

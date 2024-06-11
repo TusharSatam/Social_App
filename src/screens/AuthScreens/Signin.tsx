@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, TouchableOpacity, View, Alert } from 'react-native';
+import { ScrollView, TouchableOpacity, View, Alert, StyleSheet } from 'react-native';
 import AuthHeader from '../../components/AuthComponents/AuthHeader';
 import SocialMediaSignin from '../../components/AuthComponents/SocialMediaSignin';
 import CustomText from '../../components/Text/CustomText';
@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommonActions } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native';
+import { typography } from '@social/utils/typography';
 const Signin: React.FC = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const dispatch = useDispatch();
@@ -67,29 +68,47 @@ const Signin: React.FC = () => {
               label="Email"
             />
             <AuthInput
-              placeholder="Password"
+              placeholder="••••••••"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
               label="Password"
             />
             <TouchableOpacity onPress={handleNavigationToForgotPassword}>
-              <CustomText className="text-primaryColor text-right font-semibold underline">
+              <CustomText className="text-primaryColor text-right font-semibold underline" style={styles.textSemibold}>
                 Forgot Password?
               </CustomText>
             </TouchableOpacity>
-            <PrimaryBtn onPress={handleSignin} btnText="Sign In" btnClass="my-6" />
+            <PrimaryBtn onPress={handleSignin} btnText="Sign In" btnClass="mt-[36px] mb-[42px]" />
           </View>
           <SocialMediaSignin />
-          <View className="text-base gap-1 flex flex-row justify-center items-center">
-            <CustomText className="text-Gray font-medium text-[16px]">Don't have an account?</CustomText>
+          <View  style={styles.dontHaveAnAccountContainer}>
+            <CustomText style={styles.dontHaveAnAccount}>Don't have an account?</CustomText>
             <TouchableOpacity onPress={handleNavigationToSignup}>
-              <CustomText className="text-primaryColor underline font-semibold text-[16px]">Sign up</CustomText>
+              <CustomText style={styles.textSemibold} className="text-primaryColor underline font-semibold text-[16px]">Sign up</CustomText>
             </TouchableOpacity>
           </View>
         </ScrollView>}
     </View>
   );
 };
+const styles = StyleSheet.create({
 
+  textSemibold: {
+    fontFamily: typography.sfSemiBold,
+  },
+  dontHaveAnAccount:{
+    color:"#797979",
+    fontFamily:typography.sfMedium,
+    fontSize:16,
+  },
+  dontHaveAnAccountContainer:{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontFamily: typography.sfMedium,
+    marginBottom:72,
+    gap:4,
+  }
+});
 export default Signin;

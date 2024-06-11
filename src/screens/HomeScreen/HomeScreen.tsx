@@ -1,12 +1,13 @@
 import React from "react";
-import {Image, Text, View} from "react-native";
+import { Image, Text, View } from "react-native";
 import CustomText from "../../components/Text/CustomText";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PrimaryBtn from "../../components/Buttons/PrimaryBtn";
-import {logout} from "../../redux/Slice/AuthSlice";
-import {CommonActions, useNavigation} from "@react-navigation/native";
+import { logout } from "../../redux/Slice/AuthSlice";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CircularPlusIcon from "@social/components/SvgIcons/CircularPlusIcon";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 const HomeScreen = () => {
     const userData = useSelector((state: any) => state.auth);
@@ -15,10 +16,11 @@ const HomeScreen = () => {
 
     const handleLogout = async () => {
         await dispatch(logout());
+        await GoogleSignin.signOut();
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,
-                routes: [{name: "AuthStack"}],
+                routes: [{ name: "AuthStack" }],
             }),
         );
         await AsyncStorage.clear();

@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 interface AuthHeaderPropType {
   title: string;
   description: string;
-  descriptionClass?: string;
+  descriptionClass?: any;
   containerClass?: string;
   displayEmail?: boolean;
   backArrow?: boolean;
@@ -35,9 +35,12 @@ const AuthHeader: React.FC<AuthHeaderPropType> = ({ title, description, descript
       </TouchableOpacity>}
       <View style={[styles.container, containerClass && styles[containerClass]]}>
         <CustomText style={styles.title}>{title}</CustomText>
-        <CustomText style={[styles.description, descriptionClass && styles[descriptionClass]]} >{description}</CustomText>
+        <View style={descriptionClass}>
+          <CustomText style={[styles.description]}>{description}</CustomText>
+        </View>
         {displayEmail && <CustomText style={styles.email}>{userEmail ? userEmail : ""}</CustomText>}
       </View>
+
     </View>
   );
 };
@@ -50,7 +53,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 32,
+    marginTop: 32,
+    marginBottom: 20,
   },
   title: {
     fontWeight: '500',
@@ -65,6 +69,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#797979",
     fontFamily: typography.sfRegular,
+    width: "100%",
   },
   email: {
     fontFamily: typography.sfMedium,
