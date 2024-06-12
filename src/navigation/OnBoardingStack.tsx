@@ -6,10 +6,10 @@ const Stack = createNativeStackNavigator<any>();
 
 const OnBoardingStack = () => (
     <Stack.Navigator
-    initialRouteName="SelectInterests"
+    initialRouteName="CompleteProfile"
            screenOptions={{
             headerShown: false,
-            contentStyle: { paddingHorizontal: 25,backgroundColor:"white" },
+            contentStyle: { paddingHorizontal: 0,backgroundColor:"white" },
         }}>
         <Stack.Screen
             name="SelectInterests"

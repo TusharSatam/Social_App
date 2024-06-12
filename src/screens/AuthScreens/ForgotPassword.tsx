@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Alert } from 'react-native';
+import { ScrollView, View, Alert, StyleSheet } from 'react-native';
 import CustomText from '../../components/Text/CustomText';
 import AuthHeader from '../../components/AuthComponents/AuthHeader';
 import AuthInput from '../../components/Inputs/AuthInput';
@@ -36,13 +36,13 @@ const ForgotPassword = () => {
     };
 
     return (
-        <View className="flex-1 flex justify-start items-center bg-white !p-4 w-full relative">
+        <View className="flex-1 flex justify-start items-center bg-white w-full relative">
             {isLoading ?
                 <View className="absolute h-full w-full inset-0 flex justify-center items-center bg-white bg-opacity-50">
                     <ActivityIndicator size="large" color="#FF4D67" />
                 </View>
                 : <ScrollView className="w-full">
-                    <AuthHeader title="Forgot Password" description="Can’t remember your password? Enter your email below for OTP confirmation." descriptionClass="!w-[300px]" />
+                    <AuthHeader title="Forgot Password" description="Can’t Remember Password. Enter your email below for OTP confiramtion"  descriptionClass={styles.descriptionClass} backArrow/>
                     <View className="flex w-full">
                         {formError ? (
                             <View className="flex justify-center items-center mb-4">
@@ -62,5 +62,10 @@ const ForgotPassword = () => {
         </View>
     );
 };
+const styles = StyleSheet.create({
+    descriptionClass: {
+        maxWidth: 320,
+    },
+})
 
 export default ForgotPassword;

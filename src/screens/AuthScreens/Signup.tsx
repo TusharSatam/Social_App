@@ -151,7 +151,7 @@ const Signup = () => {
             {termsError ? <CustomText className=' text-[#F04438] text-[14px] mt-3 !font-normal'>{termsError}</CustomText> : null}
           </View>
           <PrimaryBtn onPress={handleSignup} btnText="Sign Up" btnClass={"mt-[37px] mb-[48px]"} />
-          <SocialMediaSignin />
+          <SocialMediaSignin isSignup={true}/>
           <View style={styles.container}><CustomText className='text-Gray  text-[16px]'>Already have an account? </CustomText>
             <TouchableOpacity onPress={handleNavigationToSignin} ><CustomText style={styles.textSemibold} className='text-primaryColor underline font-semibold text-[16px]'>Sign in</CustomText></TouchableOpacity>
           </View>

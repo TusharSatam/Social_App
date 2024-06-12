@@ -51,6 +51,10 @@ const CompleteProfile: React.FC = () => {
   };
 
   const handleNext = async () => {
+    if (!name.trim()) {
+      setFormError('Name is required');
+      return;
+    }
     if (!photoData) {
       setFormError('Profile picture is required');
       return;
@@ -160,10 +164,9 @@ const CompleteProfile: React.FC = () => {
       ) : (
         <ScrollView>
           <AuthHeader
-            containerClass="my-8"
-            descriptionClass="text-sm w-full"
             title="Complete Your Profile"
             description="Don’t worry, only you can see your personal data. No one else will be able to see it."
+            descriptionClass={styles.descriptionClass}
           />
           {formError && (
             <View style={styles.errorContainer}>
@@ -205,7 +208,7 @@ const CompleteProfile: React.FC = () => {
                 textContainerStyle={styles.phoneInputTextContainer}
                 textInputStyle={styles.phoneInputText}
                 textInputProps={{ placeholderTextColor: '#797979' }}
-            />
+              />
             </View>
             <PrimaryBtn onPress={handleNext} btnText="Next" btnClass="mt-[36px]" />
           </View>
@@ -245,6 +248,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    paddingHorizontal: 26,
+    width: "100%"
   },
   textMedium: {
     fontFamily: typography.sfMedium
@@ -326,6 +331,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333',
   },
+  descriptionClass: {
+    width: 300,
+  },
+  sidePadding: {
+    paddingHorizontal: 26,
+    width: "100%"
+  }
 });
 
 export default CompleteProfile;

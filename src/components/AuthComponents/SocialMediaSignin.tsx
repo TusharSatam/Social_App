@@ -22,7 +22,7 @@ GoogleSignin.configure({
     webClientId:
         "514412335294-5oni06176lc16e0pai2af1fgc6m94kcs.apps.googleusercontent.com",
 });
-const SocialMediaSignin = () => {
+const SocialMediaSignin = ({isSignup}) => {
     // const navigation = useNavigation()
     const handleGoogleSignup = async () => {
         try {
@@ -94,7 +94,7 @@ const SocialMediaSignin = () => {
                 <CustomText
                     className="text-Gray font-medium text-[16px] whitespace-nowrap"
                     style={styles.orSignInWith}>
-                    Or sign in with
+                    Or sign {isSignup?"up":"in"} with
                 </CustomText>
                 <View className="h-[1px] bg-Gray  w-[90px]"></View>
             </View>

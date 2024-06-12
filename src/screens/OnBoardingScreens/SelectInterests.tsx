@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, View, Alert, ScrollView, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, View, Alert, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import AuthHeader from '../../components/AuthComponents/AuthHeader';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
@@ -24,6 +24,7 @@ import Travel from '../../components/SvgIcons/Travel';
 import Cars from '../../components/SvgIcons/Cars';
 import { useUpdateUserDataMutation } from '../../redux/services/auth/authApi';
 import { useSelector } from 'react-redux';
+import { typography } from '@social/utils/typography';
 interface UpdateData {
     Interests?: string[];
 }
@@ -66,9 +67,12 @@ const SelectInterests = () => {
 
     const handleDone = async () => {
         setFormError('')
-        if (selectedInterests?.length > 5) {
-            setFormError('Select up to 5 interests')
-            return
+        if (selectedInterests.length < 1) {
+            setFormError('Please select at least one interest.');
+            return;
+        } else if (selectedInterests.length > 5) {
+            setFormError('Select up to 5 interests');
+            return;
         }
         else {
             try {
@@ -101,24 +105,32 @@ const SelectInterests = () => {
                     :
                     <>
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="w-full">
-                        <AuthHeader containerClass='!mb-[40px]' title="Select up to 5 interests" description="Discover Meaningful Connections by Selecting Your Interests" backArrow />
-                            <View className="flex justify-between items-center w-full flex-1">
-                                {fomrError ? <View className='flex justify-center items-center mb-4'>
+                            <View style={styles.sidePadding}>
+                                <AuthHeader title="Select up to 5 interests" description="Discover Meaningful Connections by Selecting Your Interests" backArrow descriptionClass={styles.descriptionClass} containerClass={styles.containerClass} />
+                            </View>
+                            <View style={styles.interestsContainer}>
+                                {fomrError ? <View className='flex justify-center items-center'>
                                     <CustomText className='text-[#F04438] text-[sm]'>{fomrError}</CustomText>
                                 </View> : null}
-                                <View className='flex flex-wrap w-full flex-row items-center justify-center gap-[17px] mx-auto '>
+                                <View style={styles.interestsWrapper}>
                                     {Interests.map((Interest, index) => (
                                         <TouchableOpacity
                                             key={index}
-                                            className={`rounded-full p-[5px] h-[42px] px-[14px] flex flex-row items-center justify-center ${(selectedInterests as any).includes(Interest.name) ? 'bg-primaryColor' : 'bg-lightGray'}`}
+                                            style={[
+                                                styles.interestItem,
+                                                (selectedInterests as any).includes(Interest.name) ? styles.selectedInterest : styles.unselectedInterest
+                                            ]}
+                                            // className={`rounded-full p-[5px] h-[42px] pl-[14px] pr-[16px] flex flex-row items-center justify-center ${(selectedInterests as any).includes(Interest.name) ? 'bg-primaryColor' : 'bg-lightGray'}`}
                                             onPress={() => toggleInterest(Interest.name)}
                                         >
                                             {Interest?.image && <Interest.image isSelected={(selectedInterests as any).includes(Interest.name)} />}
-                                            <CustomText className={`!font-medium text-Gray text-[14px] ml-[7px] ${(selectedInterests as any).includes(Interest.name) ? 'text-white' : 'text-Gray'}`}>{Interest.name}</CustomText>
+                                            <CustomText style={styles.fontMedium} className={`!font-medium text-Gray text-[14px] ml-[7px] ${(selectedInterests as any).includes(Interest.name) ? 'text-white' : 'text-Gray'}`}>{Interest.name}</CustomText>
                                         </TouchableOpacity>
                                     ))}
                                 </View>
-                                <PrimaryBtn onPress={handleDone} btnText="Done" btnClass="my-3" />
+                                <View style={styles.sidePadding} >
+                                    <PrimaryBtn onPress={handleDone} btnText="Done" btnClass="my-3" />
+                                </View>
                             </View>
                         </ScrollView>
                     </>
@@ -126,5 +138,53 @@ const SelectInterests = () => {
         </View>
     );
 };
-
+const styles = StyleSheet.create({
+    fontMedium: {
+        fontFamily: typography.sfMedium,
+    },
+    interestsContainer: {
+        flex: 1,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: "100%",
+        marginTop: 28,
+        borderColor: "black",
+        paddingHorizontal: 8,
+    },
+    interestsWrapper: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 17,
+    },
+    descriptionClass: {
+        width: 320,
+    },
+    containerClass: {
+        marginBottom: 40,
+    },
+    sidePadding: {
+        paddingHorizontal: 26,
+        width: "100%"
+    },
+    interestItem: {
+        borderRadius: 50,
+        padding: 5,
+        height: 42,
+        paddingLeft: 14,
+        paddingRight: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    selectedInterest: {
+        backgroundColor: '#FF4D67',
+    },
+    unselectedInterest: {
+        backgroundColor: "#F6F6F6",
+    },
+});
 export default SelectInterests;

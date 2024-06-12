@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { TextInput, TouchableOpacity, View, NativeSyntheticEvent, TextInputKeyPressEventData, ScrollView, ActivityIndicator } from 'react-native';
+import { TextInput, TouchableOpacity, View, NativeSyntheticEvent, TextInputKeyPressEventData, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import AuthHeader from '../../components/AuthComponents/AuthHeader';
 import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import { ALERT_TYPE, AlertNotificationRoot, Dialog } from 'react-native-alert-no
 import { useResendForgotVerifyOTPMutation, useVerifyForgotPassOTPMutation } from '../../redux/services/auth/authApi';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { typography } from '@social/utils/typography';
 
 type CodeArray = [string, string, string, string];
 
@@ -61,7 +62,6 @@ const VerifyForgotPassCode: React.FC = () => {
 
         try {
             const storedEmail = await AsyncStorage.getItem('forgotEmail');
-            console.log(storedEmail);
 
             if (!storedEmail) {
                 setFormError('No email found to resend OTP');
@@ -107,12 +107,12 @@ const VerifyForgotPassCode: React.FC = () => {
 
     return (
         <AlertNotificationRoot>
-            <View className="flex-1 flex justify-start items-center bg-white !p-4">
+            <View className="flex-1 flex justify-start items-center bg-white">
                 {isResendLoading || isLoading ? <View className="absolute h-full w-full inset-0 flex justify-center items-center bg-white bg-opacity-50">
                     <ActivityIndicator size="large" color="#FF4D67" />
                 </View> :
                     <ScrollView className='w-full'>
-                        <AuthHeader title="Verify Code" description="Please enter the code we just sent to your email" displayEmail descriptionClass="!w-full" />
+                        <AuthHeader title="Verify Code" description="Please enter the code we just sent to your email" displayEmail descriptionClass="!w-full" backArrow/>
                         <View className="flex-row space-x-2 mt-4 mx-auto">
                             {code.map((digit, index) => (
                                 <TextInput
@@ -135,17 +135,38 @@ const VerifyForgotPassCode: React.FC = () => {
                                 />
                             ))}
                         </View>
-                        <View className="w-full items-center justify-center flex my-6">
-                            <CustomText className="text-Gray text-[14px] !font-medium">Didn't receive OTP?</CustomText>
-                            <TouchableOpacity onPress={handleResendOTP}>
-                                <CustomText className="!font-semibold text-[15px] !underline text-primaryColor">Resend code</CustomText>
-                            </TouchableOpacity>
-                        </View>
+                        <View style={styles.container}>
+                        <CustomText style={styles.textMedium}>Didn't receive OTP?</CustomText>
+                        <TouchableOpacity onPress={handleResendOTP}>
+                            <CustomText style={styles.textSemibold}>Resend code</CustomText>
+                        </TouchableOpacity>
+                    </View>
                         <PrimaryBtn btnText="Sign In" onPress={handleVerifyCodeSignIn} />
                     </ScrollView>}
             </View>
         </AlertNotificationRoot>
     );
 };
-
+const styles = StyleSheet.create({
+    container: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 44,
+        marginBottom: 36, // Equivalent to my-6 in Tailwind CSS
+    },
+    textMedium: {
+        color: '#797979', // Replace 'Gray' with the actual color code
+        fontSize: 14,
+        fontWeight: '500',
+        fontFamily: typography.sfMedium,
+    },
+    textSemibold: {
+        fontWeight: '600',
+        fontSize: 15,
+        textDecorationLine: 'underline',
+        color: '#FF4D67', // Replace 'primaryColor' with your actual primary color
+        fontFamily: typography.sfSemiBold,
+    },
+});
 export default VerifyForgotPassCode;

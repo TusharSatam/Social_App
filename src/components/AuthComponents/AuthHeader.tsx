@@ -10,7 +10,7 @@ interface AuthHeaderPropType {
   title: string;
   description: string;
   descriptionClass?: any;
-  containerClass?: string;
+  containerClass?: any;
   displayEmail?: boolean;
   backArrow?: boolean;
 }
@@ -20,9 +20,11 @@ const AuthHeader: React.FC<AuthHeaderPropType> = ({ title, description, descript
   const navigation = useNavigation()
   useEffect(() => {
     const fetchEmail = async () => {
-      const storedEmail = await AsyncStorage.getItem('registerEmail');
+      let storedEmail = await AsyncStorage.getItem('registerEmail');
+      if (!storedEmail) {
+        storedEmail = await AsyncStorage.getItem('forgotEmail');        
+      }
       setUserEmail(storedEmail);
-      console.log(storedEmail);
     };
     fetchEmail();
 
@@ -35,12 +37,11 @@ const AuthHeader: React.FC<AuthHeaderPropType> = ({ title, description, descript
       </TouchableOpacity>}
       <View style={[styles.container, containerClass && styles[containerClass]]}>
         <CustomText style={styles.title}>{title}</CustomText>
-        <View style={descriptionClass}>
+        <View style={descriptionClass} className='w-full'>
           <CustomText style={[styles.description]}>{description}</CustomText>
         </View>
         {displayEmail && <CustomText style={styles.email}>{userEmail ? userEmail : ""}</CustomText>}
       </View>
-
     </View>
   );
 };
@@ -55,6 +56,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 32,
     marginBottom: 20,
+    width: "100%",
   },
   title: {
     fontWeight: '500',
