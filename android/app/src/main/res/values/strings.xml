@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">VoodleApp</string>
+    
+<string name="facebook_app_id">439208525529989</string>
+<string name="fb_login_protocol_scheme">fb439208525529989</string>
+<string name="facebook_client_token">9b11024c92a647b85cc18444196a4056</string>
+
+
 </resources>
