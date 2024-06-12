@@ -33,7 +33,7 @@ const AuthStack = () => (
             options={{
                 title: "", // Set a title for the screen
                 headerBackTitle: "Back", // Set a custom back button label
-                headerShown: true, // Show the header
+                headerShown: false, // Show the header
                 headerShadowVisible: false,
             }}
         />

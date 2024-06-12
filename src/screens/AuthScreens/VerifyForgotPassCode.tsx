@@ -112,7 +112,7 @@ const VerifyForgotPassCode: React.FC = () => {
                     <ActivityIndicator size="large" color="#FF4D67" />
                 </View> :
                     <ScrollView className='w-full'>
-                        <AuthHeader title="Verify Code" description="Please enter the code we just sent to your email" displayEmail descriptionClass="!w-full" backArrow/>
+                        <AuthHeader title="Verify Code" description="Please enter the code we just sent to  email" displayEmail descriptionClass="!w-full" backArrow/>
                         <View className="flex-row space-x-2 mt-4 mx-auto">
                             {code.map((digit, index) => (
                                 <TextInput

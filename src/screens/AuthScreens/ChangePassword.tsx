@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text } from 'react-native';
+import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import AuthInput from '../../components/Inputs/AuthInput';
 import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import CustomText from '../../components/Text/CustomText';
 import { useChangePasswordMutation } from '../../redux/services/auth/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from 'react-native';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 interface ChangePassword {
     email: string;
     newPassword: string;
@@ -41,21 +42,29 @@ const ChangePassword = () => {
             const updatePasswordResponse = await changePassword(credentials)
 
             if (updatePasswordResponse?.data?.message === "Password updated successfully") {
-                await AsyncStorage.removeItem("forgotEmail");
-                (navigation as any).navigate('Signin');
+                Dialog.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: 'Success',
+                    textBody: 'Password updated successfully.',
+                    button: 'close',
+                    onPressButton: async () => {
+                        await AsyncStorage.removeItem("forgotEmail");
+                        (navigation as any).navigate('Signin');
+                    }
+                });
             }
         }
 
     };
 
     return (
-        <View className='flex-1 flex justify-start items-center bg-white p-4'>
+        <View className='flex-1 flex justify-start items-center bg-white'>
             {isLoading ?
                 <View className="absolute h-full w-full inset-0 flex justify-center items-center bg-white bg-opacity-50">
                     <ActivityIndicator size="large" color="#FF4D67" />
                 </View>
                 : <ScrollView className='w-full'>
-                    <AuthHeader title='New Password' description='Your new Password must be different from previously used passwords.' />
+                    <AuthHeader title='New Password' description='Your new Password must be different from previously used passwords.' backArrow descriptionClass={styles.descriptionClass}/>
                     {errorMessage ? <CustomText className='text-red-500 text-center'>{errorMessage}</CustomText> : null}
                     <View className='w-full'>
                         <AuthInput
@@ -78,5 +87,9 @@ const ChangePassword = () => {
         </View>
     );
 };
-
+const styles = StyleSheet.create({
+    descriptionClass:{
+        width:260,
+      }
+});
 export default ChangePassword;
