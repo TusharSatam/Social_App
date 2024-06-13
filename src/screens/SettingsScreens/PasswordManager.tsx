@@ -11,6 +11,7 @@ import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { logout } from '@social/redux/Slice/AuthSlice';
 import ConfirmModal from '@social/components/Modal/ConfirmModal';
+import { typography } from '@social/utils/typography';
 
 type Errors = {
     newPassword?: string;
@@ -67,7 +68,7 @@ const PasswordManager: React.FC = () => {
                 newPassword: newPassword,
             };
             console.log(Credential);
-            const updatePasswordResponse = await updateProfilePassword(Credential);
+            const updatePasswordResponse:any = await updateProfilePassword(Credential);
             console.log("updatePasswordResponse", updatePasswordResponse);
 
             if (updatePasswordResponse.data?.message === "Password changed successfully") {
@@ -153,7 +154,7 @@ const PasswordManager: React.FC = () => {
                 </View>
                 {errorMessage ? <CustomText style={styles.errorText}>{errorMessage}</CustomText> : null}
                 <View style={styles.submitButton}>
-                    <PrimaryBtn btnText="Submit" onPress={handleSubmit} />
+                    <PrimaryBtn btnText="Update Password" onPress={handleSubmit} />
                 </View>
             </ScrollView>
             <ConfirmModal
@@ -171,6 +172,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     contentContainer: {
+        flex:1,
         paddingHorizontal: 16,
         paddingBottom: 24,
     },
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
         marginTop: 16,
     },
     submitButton: {
-        marginTop: 24,
+        marginTop: "auto",
     },
     loadingOverlay: {
         ...StyleSheet.absoluteFillObject,
@@ -188,10 +190,11 @@ const styles = StyleSheet.create({
         zIndex: 10,
     },
     forgotPasswordText: {
-        color: '#FF4D67', // Your primary color
+        color: '#FF4D67',
         textAlign: 'right',
         fontWeight: '600',
         textDecorationLine: 'underline',
+        fontFamily:typography.sfSemiBold,
     },
     errorText: {
         color: 'red',

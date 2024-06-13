@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader';
 import CustomText from '@social/components/Text/CustomText';
+import { typography } from '@social/utils/typography';
 
 const PrivacyPolicy = () => {
     const navigation = useNavigation();
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     title: {
-        fontFamily: '600',
+        fontFamily: typography.sfSemiBold,
         fontSize: 24,
         color: "#FF4D67",
         marginTop: 10,
@@ -83,10 +84,11 @@ const styles = StyleSheet.create({
     lastUpdated: {
         fontSize: 14,
         fontWeight: '400',
+        fontFamily: typography.sfRegular,
         marginBottom: 16,
     },
     subtitle: {
-        fontFamily: '600',
+        fontFamily: typography.sfSemiBold,
         fontSize: 18,
         color: "#FF4D67",
         marginTop: 10,
@@ -95,21 +97,24 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 14,
         fontWeight: '400',
+        fontFamily: typography.sfRegular,
         marginBottom: 8,
     },
     listItem: {
         fontSize: 14,
         fontWeight: '400',
+        fontFamily: typography.sfRegular,
         marginBottom: 8,
         paddingLeft: 10,
     },
     bold: {
         fontWeight: '700',
+        fontFamily: typography.sfBold
     },
     containWrapper: {
         width: "100%",
         display: "flex",
-        marginVertical:16,
+        marginVertical: 16,
     }
 });
 

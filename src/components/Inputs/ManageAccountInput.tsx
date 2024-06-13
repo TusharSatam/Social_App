@@ -3,8 +3,9 @@ import { StyleSheet, TextInput, View, TouchableOpacity, Modal, Text, Platform } 
 import CustomText from '../Text/CustomText';
 import DatePicker from 'react-native-date-picker';
 import RNPickerSelect from 'react-native-picker-select';
-import Icon from 'react-native-vector-icons/Feather';
-
+import { typography } from '@social/utils/typography';
+import EyeHidden from '../SvgIcons/InputIcons/EyeHidden';
+import EyeVisible from '../SvgIcons/InputIcons/EyeVisible';
 interface ManageAccountInputProps {
     placeholderText: string;
     label: string;
@@ -71,7 +72,7 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
                                     date={date}
                                     onDateChange={handleDateChange}
                                     mode="date"
-                                    maximumDate={new Date()} // Ensures date picker only allows past dates
+                                    maximumDate={new Date()} 
                                 />
                                 <TouchableOpacity
                                     onPress={() => setOpen(false)}
@@ -124,7 +125,11 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
                             onPress={togglePasswordVisibility}
                             style={styles.icon}
                         >
-                            <Icon name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="#797979" />
+                          {isPasswordVisible ?
+                            <EyeHidden/>
+                            :
+                            <EyeVisible/>
+                            }
                         </TouchableOpacity>
                     )}
                 </View>
@@ -147,23 +152,25 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
-        marginBottom: 16,
+        marginBottom: 17,
         display: 'flex',
-        gap: 10,
+        gap: 6,
     },
     inputLabel: {
         fontSize: 13,
         fontWeight: '500',
+        fontFamily:typography.sfMedium
     },
     input: {
         width: '100%',
         backgroundColor: '#f6f6f6',
-        paddingVertical: 10,
+        paddingVertical: 8,
         paddingHorizontal: 16,
         fontSize: 14,
         fontWeight: '400',
         borderRadius: 10,
         color: '#242424',
+        fontFamily:typography.sfRegular,
     },
     modalContainer: {
         flex: 1,
@@ -174,7 +181,10 @@ const styles = StyleSheet.create({
     modalContent: {
         backgroundColor: 'black',
         padding: 20,
+        paddingRight:40,
         borderRadius: 10,
+        display:"flex",
+        justifyContent:"center",
         alignItems: 'center',
         width: "80%"
     },

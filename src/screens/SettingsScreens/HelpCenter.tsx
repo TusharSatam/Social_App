@@ -19,6 +19,7 @@ import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader';
 import SearchHelpIcon from '@social/components/SvgIcons/HelpCenter/SearchHelpIcon';
 import ContactUsIcon from '@social/components/SvgIcons/SettingScreenIcons/ContactUsIcon';
 import Dot from '@social/components/SvgIcons/SettingScreenIcons/Dot';
+import { typography } from '@social/utils/typography';
 
 if (
     Platform.OS === 'android' &&
@@ -41,17 +42,32 @@ const HelpCenter = () => {
 
     const [faqData, setFaqData] = useState([
         {
-            question: 'Is this social media app free to use?',
-            answer: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, set do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            question: 'What is Voodle?',
+            answer: 'Voodle is a social media platform that allows users to share short reels and videos, connect with friends, discover new content, and engage with a global community.',
             expanded: true,
             category: 'General',
         },
-        { question: 'How can I unfollow a user?', answer: 'Answer to this question.', expanded: false, category: 'Services' },
-        { question: 'How can I stay updated on new features?', answer: 'Answer to this question.', expanded: false, category: 'General' },
-        { question: 'How can I verify my account on this app?', answer: 'Answer to this question.', expanded: false, category: 'Accounts' },
-        { question: 'How do I contact customer support?', answer: 'Answer to this question.', expanded: false, category: 'Services' },
-        { question: 'What if I encounter technical problems?', answer: 'Answer to this question.', expanded: false, category: 'General' },
-        { question: 'How to add app review?', answer: 'Answer to this question.', expanded: false, category: 'Accounts' },
+        { question: 'How do I adjust my privacy settings on Voodle?', answer: 'Go to your profile, tap the three lines (menu) icon, select "Settings," and then navigate to "Privacy." Here, you can adjust who can see your posts, send you messages, and follow you.', expanded: false, category: 'General' },
+        { question: 'What should I do if I encounter inappropriate content?', answer: `If you come across content that violates Voodle's community guidelines, tap the three dots (menu) icon on the post, and select "Report." You can also block or mute users who share inappropriate content.`, expanded: false, category: 'General' },
+
+        {
+            question: 'How can I upload a video or reel on Voodle?', answer: `
+Tap the "+" button at the bottom of the screen, select or record a video, add effects, music, or filters, and then tap "Post" to share it with your followers and the Voodle community.`, expanded: false, category: 'Services'
+        },
+        { question: 'What video formats and lengths are supported?', answer: 'Voodle supports most common video formats including MP4, MOV, and AVI. Videos can be up to 60 seconds long.', expanded: false, category: 'Services' },
+        { question: 'How do I find and follow other users on Voodle?', answer: 'You can search for users by their username using the search bar, browse through the Discover tab, or connect with suggested friends based on your contacts or social media connections. Tap "Follow" on a user’s profile to start following them.', expanded: false, category: 'Services' },
+        {
+            question: 'How do I interact with other users’ videos?', answer: `You can like, comment on, and share other users’ videos by tapping the respective icons below each video. To send a video directly to a friend, tap the share icon and choose the recipient.
+`, expanded: false, category: 'Services'
+        },
+        { question: 'How does Voodle recommend videos to me?', answer: `Voodle uses an algorithm that considers your interactions, such as videos you've liked, shared, and commented on, as well as your follows, to recommend content that matches your interests.`, expanded: false, category: 'Services' },
+        { question: 'Is there a way to save videos for offline viewing?', answer: `Currently, Voodle does not support offline viewing. However, you can save videos to your profile by tapping the bookmark icon to watch them later within the app.`, expanded: false, category: 'Accounts' },
+
+
+        { question: 'How do I create an account on Voodle?', answer: 'To create an account, download the Voodle app from the App Store or Google Play Store, open the app, and follow the on-screen instructions to sign up using your email address or phone number.', expanded: false, category: 'Accounts' },
+        { question: 'What do I do if I forget my password?', answer: 'If you forget your password, tap "Forgot Password?" on the login screen and follow the instructions to reset it via email or SMS.', expanded: false, category: 'Accounts' },
+        { question: 'How can I contact Voodle support?', answer: `For any issues or questions, you can contact Voodle support by navigating to the "Help & Feedback" section in the app's settings or by emailing support@voodle.com.`, expanded: false, category: 'Accounts' },
+
     ]);
 
     const toggleExpandCustomerService = () => {
@@ -137,28 +153,33 @@ const HelpCenter = () => {
                         ]}>Accounts</CustomText>
                     </TouchableOpacity>
                 </View>
-                {filteredData.length === 0 ? (
-                    <View style={styles.noResultsContainer}>
-                        <CustomText style={styles.noResultsText}>No results found.</CustomText>
-                    </View>
-                ) : (
-                    filteredData.map((item, index) => (
-                        <View key={index}>
-                            <TouchableOpacity
-                                style={styles.faqContainer}
-                                onPress={() => toggleExpand(index)}
-                            >
-                                <CustomText style={styles.faqQuestion}>{item.question}</CustomText>
-                                <Icon name={item.expanded ? 'chevron-up' : 'chevron-down'} size={20} color="#FF4D67" />
-                            </TouchableOpacity>
-                            {item.expanded && (
-                                <View style={styles.faqAnswerContainer}>
-                                    <CustomText style={styles.faqAnswer}>{item.answer}</CustomText>
-                                </View>
-                            )}
+                <View style={styles.ContentContainer}>
+                    {filteredData.length === 0 ? (
+                        <View style={styles.noResultsContainer}>
+                            <CustomText style={styles.noResultsText}>No results found.</CustomText>
                         </View>
-                    ))
-                )}
+                    ) : (
+                        <View style={styles.FAQsWrapper}>
+                            {filteredData.map((item, index) => (
+                                <View key={index} style={styles.FAQWrap}>
+                                    <TouchableOpacity
+                                        style={styles.faqContainer}
+                                        onPress={() => toggleExpand(index)}
+                                    >
+                                        <CustomText style={styles.faqQuestion}>{item.question}</CustomText>
+                                        <Icon name={item.expanded ? 'chevron-up' : 'chevron-down'} size={20} color="#FF4D67" />
+                                    </TouchableOpacity>
+                                    {item.expanded && (
+                                        <View style={styles.faqAnswerContainer}>
+                                            <CustomText style={styles.faqAnswer}>{item.answer}</CustomText>
+                                        </View>
+                                    )}
+                                </View>
+                            ))}
+                        </View>
+
+                    )}
+                </View>
             </ScrollView>
         );
     };
@@ -189,10 +210,10 @@ const HelpCenter = () => {
     const renderTabBar = (props: any) => (
         <TabBar
             {...props}
-            indicatorStyle={{ backgroundColor: '#FF4D67' }}
+            indicatorStyle={{ backgroundColor: '#FF4D67',height:3,borderTopRightRadius:8,borderTopLeftRadius:8 }}
             style={{ backgroundColor: 'white' }}
             renderLabel={({ route, focused }) => (
-                <CustomText style={{ color: focused ? '#FF4D67' : '#999', margin: 8, fontWeight: '500' }}>
+                <CustomText style={{ color: focused ? '#FF4D67' : '#999', margin: 8, fontWeight: typography.sfMedium }}>
                     {route.title}
                 </CustomText>
             )}
@@ -255,7 +276,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#F5F5F5',
-        borderRadius: 8,
+        borderRadius: 10,
         paddingHorizontal: 10,
         marginVertical: 12,
         height: 42,
@@ -266,19 +287,24 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         fontSize: 15,
         fontWeight: "400",
-        color: '#797979'
+        color: '#242424'
     },
     tabContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 16,
     },
+    fontMedium:{
+        fontFamily: typography.sfMedium
+    },
     tabButton: {
         borderRadius: 20,
         backgroundColor: '#F5F5F5',
+        fontFamily: typography.sfRegular
     },
     activeTabButton: {
         backgroundColor: '#FF4D67',
+        fontFamily: typography.sfMedium
     },
     tabButtonText: {
         paddingHorizontal: 16,
@@ -286,30 +312,53 @@ const styles = StyleSheet.create({
         color: '#999',
         fontSize: 14,
         fontWeight: '500',
+        fontFamily: typography.sfRegular
     },
     activeTabButtonText: {
         color: '#fff',
+        fontFamily: typography.sfMedium
     },
     faqContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E5E5E5',
+        // paddingVertical: 12,
+        // borderBottomWidth: 1,
+        // borderBottomColor: '#E5E5E5',
+        width: "100%",
+    },
+    FAQsWrapper: {
+        display: "flex",
+        gap: 12,
+    },
+    FAQWrap: {
+        borderColor: "#F1F1F1",
+        borderWidth: 1,
+        padding: 12,
+        borderRadius: 10,
+    },
+    ContentContainer: {
+        marginBottom: 99,
     },
     faqQuestion: {
         fontSize: 16,
-        fontWeight: '500',
+        fontWeight: '600',
+        width: "90%",
+        fontFamily: typography.sfSemiBold,
+        color: "#242424"
     },
     faqAnswerContainer: {
         paddingVertical: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E5E5E5',
+        // borderBottomWidth: 1,
+        // borderBottomColor: '#E5E5E5',
+        borderTopWidth: 1,
+        borderTopColor: '#E5E5E5',
+        marginTop: 10,
     },
     faqAnswer: {
         fontSize: 14,
         color: '#666',
+        fontFamily: typography.sfRegular,
     },
     noResultsContainer: {
         alignItems: 'center',
@@ -338,6 +387,7 @@ const styles = StyleSheet.create({
         color: '#333',
         flex: 1,
         marginLeft: 8,
+        fontFamily:typography.sfSemiBold,
     },
     contactCardContent: {
         marginTop: 10,
@@ -346,6 +396,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 400,
         color: '#FF4D67',
+        fontFamily:typography.sfRegular,
     },
 });
 

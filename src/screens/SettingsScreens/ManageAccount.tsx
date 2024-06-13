@@ -200,7 +200,7 @@ const ManageAccount: React.FC = () => {
 
     return (
         <View style={styles.mainContainer}>
-            <ScreenHeader headerName='Manage Account' navigation={navigation} />
+            <ScreenHeader headerName='Your Profile' navigation={navigation} />
             <ScrollView style={styles.detailWrapper}>
                 <View style={styles.scrollView}>
                     <View style={styles.avatarContainer}>
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     },
     detailWrapper: {
         flex: 1,
-        paddingTop: 20,
+        paddingTop: 12,
         width: '100%',
     },
     scrollView: {
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     },
     avatarContainer: {
         alignItems: 'center',
-        marginTop: 20,
+        marginBottom:28,
     },
     avatar: {
         backgroundColor: '#f0f0f0',
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
         right: 0,
         backgroundColor: '#fff',
         borderRadius: 16,
-        padding: 4,
+        padding: 0,
     },
 });
 

@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, View, ViewStyle, TextStyle } from 'react-
 import { NavigationProp } from '@react-navigation/native';
 import CustomText from '../Text/CustomText';
 import BackIcon from '../SvgIcons/NavigationHeaderIcons/BackIcon';
+import { typography } from '@social/utils/typography';
 
 interface ScreenHeaderProps {
     navigation: NavigationProp<any>;
@@ -35,6 +36,7 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 16,
         fontWeight: 600,
+        fontFamily:typography.sfSemiBold
     } as TextStyle,
 });
 

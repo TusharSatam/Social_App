@@ -2,12 +2,10 @@
 import React, { useState } from 'react';
 import { TextInput, View, StyleSheet, TextInputProps, TouchableOpacity } from 'react-native';
 import { styled } from 'nativewind';
-import Icon from 'react-native-vector-icons/Feather';
-import EYEIcon from 'react-native-vector-icons/Octicons';
-
-
 import CustomText from '../Text/CustomText';
 import { typography } from '@social/utils/typography';
+import EyeHidden from '../SvgIcons/InputIcons/EyeHidden';
+import EyeVisible from '../SvgIcons/InputIcons/EyeVisible';
 interface AuthInputProps extends TextInputProps {
     className?: string;
     label?: string;
@@ -37,9 +35,9 @@ const AuthInput: React.FC<AuthInputProps> = ({ className, label, secureTextEntry
                         style={styles.icon}
                     >
                         {isPasswordVisible ?
-                            <Icon name={"eye-off"} size={24} color="#797979" />
+                            <EyeHidden />
                             :
-                            <EYEIcon name={"eye"} size={24} color="#797979" />
+                            <EyeVisible />
                         }
                     </TouchableOpacity>
                 )}

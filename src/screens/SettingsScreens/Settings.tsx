@@ -14,6 +14,7 @@ import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { typography } from '@social/utils/typography';
 
 const Settings = ({ navigation }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -115,6 +116,7 @@ const styles = StyleSheet.create({
     },
     optionText: {
         fontSize: 16,
+        fontFamily: typography.sfMedium,
     },
     modalContainer: {
         flex: 1,
@@ -136,17 +138,18 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     modalTitle: {
-        fontWeight: "600",
+        fontFamily: typography.sfSemiBold,
         fontSize: 16,
-        paddingBottom: 16,
+        paddingBottom: 15,
     },
     modalText: {
         fontSize: 14,
         fontWeight: '500',
+        fontFamily: typography.sfMedium,
         color: "#797979",
         borderTopWidth: 1.5,
         borderTopColor: "#f6f6f6",
-        paddingTop: 16,
+        paddingTop: 17,
         width: "100%",
         textAlign: "center"
     },
@@ -154,32 +157,39 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
-        marginVertical: 14,
+        marginVertical:33,
     },
     cancelButton: {
         flex: 1,
         backgroundColor: '#f0f0f0',
-        padding: 16,
         borderRadius: 100,
-        marginRight: 10,
+        marginRight: 16,
+        justifyContent:"center",
+        display:"flex",
         alignItems: 'center',
+        height: 44,
+        width: 156,
     },
     logoutButton: {
         flex: 1,
         backgroundColor: '#FF4D67',
-        padding: 16,
         borderRadius: 100,
-        marginLeft: 10,
+        justifyContent:"center",
+        display:"flex",
         alignItems: 'center',
+        height: 44,
+        width: 156,
     },
     cancelButtonText: {
         color: '#FF4D67',
         fontWeight: '600',
+        fontFamily: typography.sfSemiBold,
         fontSize: 15,
     },
     buttonText: {
         color: 'white',
         fontWeight: '600',
+        fontFamily: typography.sfSemiBold,
         fontSize: 15,
 
     },

@@ -34,7 +34,7 @@ const SocialMediaSignin = ({ isSignup }) => {
             });
             // Get the users ID token
             const { idToken, user } = await GoogleSignin.signIn();
-            console.log(user);
+            console.log("GoogleResponse -> ",user);
 
             // Create a Google credential with the token
             const googleCredential =
@@ -123,7 +123,7 @@ const SocialMediaSignin = ({ isSignup }) => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleFacebookSignup().then(res => {
-                    console.log("FacebookResponse",res)
+                    console.log("FacebookResponse -> ",res)
                 })}>
                     <View style={styles.iconContainer}>
                         <FacebookIcon width={24} height={24} />
