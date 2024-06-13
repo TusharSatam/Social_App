@@ -9,16 +9,19 @@ interface PrimaryBtnProps {
     btnClass?: String;
     textColor?: string;
     disabled?: boolean;
+    style?: any;
+    btnstyle?: any;
 }
 
-const PrimaryBtn: React.FC<PrimaryBtnProps> = ({ btnText, onPress, btnClass, textColor = 'white', disabled }) => {
+const PrimaryBtn: React.FC<PrimaryBtnProps> = ({ btnText, onPress, style, btnClass, btnstyle, textColor = 'white', disabled }) => {
     return (
         <TouchableOpacity
             onPress={onPress}
-            className={`bg-primaryColor rounded-[100px] !p-[12px] w-full font-semibold text-lg ${btnClass}`}
+            className={`bg-primaryColor flex justify-center items-center rounded-[100px] !p-[12px] w-full font-semibold text-lg ${btnClass}`}
             disabled={disabled}
+            style={style}
         >
-            <CustomText style={[styles.text, { color: textColor }]}>{btnText}</CustomText>
+            <CustomText style={[styles.text, btnstyle, { color: textColor }]}>{btnText}</CustomText>
         </TouchableOpacity>
     );
 };

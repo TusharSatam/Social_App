@@ -17,7 +17,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const HEIGHT = 30;
 const WIDTH = 30;
@@ -32,6 +32,7 @@ const CustomTabBar = props => {
     const dispatch = useDispatch();
     const [routes, setRoutes] = useState(props.state.routeNames);
     const navigation = useNavigation();
+    const loggedInProfileData = useSelector((state: any) => state.auth)
 
     const tabs = [
         {
@@ -58,15 +59,19 @@ const CustomTabBar = props => {
             label: "Profile",
             icon: <ProfileIcon width={WIDTH} height={HEIGHT} />,
             screenName: "ProfileStack",
+            paramData: { userId: loggedInProfileData?.user?._id,loggedInUserId:loggedInProfileData?.user?._id }
         },
     ];
 
-    const changeRoute = screenName => {
+    const changeRoute = (screenName, paramData = null) => {
         if (screenName === "PostCreationStack") {
             dispatch(clearMediaPost());
             (navigation as any).navigate(screenName, {
                 screen: "CreatePost",
             });
+        }
+        else if (paramData) {            
+            (navigation as any).navigate(screenName, paramData);
         }
         else {
             (navigation as any).navigate(screenName);
@@ -94,7 +99,7 @@ const CustomTabBar = props => {
             {tabs.map((item, index) => {
                 return (
                     <TouchableOpacity
-                        onPress={() => changeRoute(item.screenName)}
+                        onPress={() => changeRoute(item.screenName, item?.paramData)}
                         style={styles.container}
                         key={index}>
                         <View style={styles.iconStyle}>{item.icon}</View>
