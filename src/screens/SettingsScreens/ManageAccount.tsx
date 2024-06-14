@@ -4,14 +4,16 @@ import { useNavigation } from '@react-navigation/native';
 import ManageAccountInput from '@social/components/Inputs/ManageAccountInput';
 import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader';
 import PrimaryBtn from '@social/components/Buttons/PrimaryBtn';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Avatar } from 'react-native-paper';
 import ImagePicker from 'react-native-image-crop-picker';
 import CameraIcon from '../../../assets/icons/camera.svg';
 import UserIcon from '../../../assets/icons/largeUserIcon.svg';
 import ImageUploadModal from '@social/components/Modal/ImageUploadModal';
-import { useUpdateUserDataMutation } from '@social/redux/services/auth/authApi';
+import { useGetLoggedInUserDataMutation, useUpdateUserDataMutation } from '@social/redux/services/auth/authApi';
 import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setAuthData } from '@social/redux/Slice/AuthSlice';
 
 interface FormState {
     name: string;
@@ -30,7 +32,8 @@ const ManageAccount: React.FC = () => {
     const navigation = useNavigation();
     const userData = useSelector((state: any) => state.auth);
     const [updateUserData, { isLoading }] = useUpdateUserDataMutation();
-
+    const [getLoggedInUserData, { isLoading:isLoggedInDataLoading }] = useGetLoggedInUserDataMutation();
+    const dispatch = useDispatch();
     const [photo, setPhoto] = useState<string | null>(null);
     const [selectedPhoto, setSelectedPhoto] = useState<any>(null);
 
@@ -160,6 +163,18 @@ const ManageAccount: React.FC = () => {
 
             try {
                 const updateResponse = await updateUserData(formData).unwrap();
+                const storedToken = await AsyncStorage.getItem("token");
+                if (storedToken) {
+                    const tokenObj = { token: storedToken };
+                    const getUserDataResponse = await getLoggedInUserData(
+                        tokenObj,
+                    ).unwrap();
+                    let userData = {
+                        token: storedToken,
+                        data: getUserDataResponse,
+                    };
+                    dispatch(setAuthData(userData));
+                }
                 console.log(updateResponse);
                 Dialog.show({
                     type: ALERT_TYPE.SUCCESS,

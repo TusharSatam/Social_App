@@ -1,11 +1,15 @@
-import React from 'react'
-import { Image, StyleSheet, View } from 'react-native'
-import CustomText from '../Text/CustomText'
-import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader';
+import CustomText from '@social/components/Text/CustomText';
+import React from 'react';
+import { StyleSheet, View, FlatList, Image, Dimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
-const ProfilePostsTab = () => {
-    const profileData = useSelector((state: any) => state.auth?.user);
+const windowWidth = Dimensions.get('window').width;
+const numColumns = 3; // Number of columns
+
+const MySavedPosts = () => {
+    const navigation = useNavigation();
     const postsData = [
         { id: '1', source: { uri: 'https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500' } },
         { id: '2', source: { uri: 'https://cdn.pixabay.com/photo/2017/08/24/11/04/brain-2676370_640.jpg' } },
@@ -18,30 +22,39 @@ const ProfilePostsTab = () => {
         { id: '9', source: { uri: '	https://media.istockphoto.com/id/485866983/vector/…20&c=0dBjVrm88Gj4brbAk3Z-gsbAbPyIdg_ESWACFQBC2Mo=' } },
     ];
 
+    // Calculate item width dynamically based on window width and number of columns
+    const itemWidth = (windowWidth - 32 - (numColumns - 1) * 10) / numColumns; // 32 is for horizontal padding, 10 is for margin between items
+
+    // Function to render each item in the FlatList
+    const renderItem = ({ item }) => (
+        <Image
+            source={item.source}
+            style={{ width: itemWidth, height: itemWidth, margin: 2.5, borderRadius: 8 }}
+        />
+    );
+
     return (
-        <ScrollView>
-            <View style={styles.postContainer}>
-                {postsData?.map((post,index)=>(
-                <Image source={{ uri: post?.source?.uri }} style={styles.profileImage} />
-                ))}
-            </View>
-        </ScrollView>
-    )
-}
+        <View style={styles.savedContainer}>
+            <ScreenHeader headerName='Saved Posts' navigation={navigation} />
+            <FlatList
+                data={postsData}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id}
+                numColumns={numColumns} // Render 3 columns
+                contentContainerStyle={styles.savedPosts}
+            />
+        </View>
+    );
+};
+
 const styles = StyleSheet.create({
-    postContainer: {
-        width: "100%",
-        backgroundColor: "#F6F6F6",
-        flexDirection: "row",
-        flexWrap: "wrap",
-        gap:5,
-        paddingVertical: 11,
+    savedContainer: {
         paddingHorizontal: 16,
     },
-    profileImage: {
-        height: 106,
-        aspectRatio: 1, // To maintain aspect ratio (1:1 square images)
-        borderRadius: 5,
+    savedPosts: {
+        // paddingTop: 16,
+        // paddingHorizontal: 10,
     },
-})
-export default ProfilePostsTab
+});
+
+export default MySavedPosts;

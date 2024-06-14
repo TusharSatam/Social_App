@@ -13,8 +13,9 @@ import PostTabIcon from '@social/components/SvgIcons/ProfileScreenIcons/PostTabI
 import ReelsTabIcon from '@social/components/SvgIcons/ProfileScreenIcons/ReelsTabIcon';
 import SavedTabIcon from '@social/components/SvgIcons/ProfileScreenIcons/SavedTabIcon';
 import ProfilePostsTab from '@social/components/ProfileComponents/ProfilePostsTab';
-import ProfileReelsTab from '@social/components/ProfileComponents/ProfileReelsTab';
+import ProfileReelsTab from '@social/components/ProfileComponents/ProfileShortsTab';
 import ProfileSavedTab from '@social/components/ProfileComponents/ProfileSavedTab';
+import LocationPin from '@social/components/SvgIcons/ProfileScreenIcons/LocationPin';
 
 const Profile = ({ route }) => {
     const paramData = route.params;
@@ -94,7 +95,10 @@ const Profile = ({ route }) => {
                 {/* Bio and Location sections */}
                 <View style={styles.userLocBio}>
                     <CustomText style={styles.bio}>{profileData?.bio ? profileData?.bio : "bio N/A"}</CustomText>
-                    <CustomText style={styles.location}>{profileData?.location ? profileData?.location : "location N/A"}</CustomText>
+                    <View style={styles.locationWrapper}>
+                        <LocationPin />
+                        <CustomText style={styles.location}>{profileData?.location ? profileData?.location : "location N/A"}</CustomText>
+                    </View>
                 </View>
                 {/* Button Container */}
                 <View style={styles.buttonContainer}>
@@ -168,7 +172,7 @@ const styles = StyleSheet.create({
     moreOptionBtn: {
         position: "absolute",
         right: 16,
-        top: 26,
+        top: 0,
     },
     userImgName: {
         display: "flex",
@@ -231,12 +235,19 @@ const styles = StyleSheet.create({
         fontFamily: typography.sfMedium,
         marginTop: 16,
     },
-    location: {
+    locationWrapper: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        alignContent: "center",
+        justifyContent: "center",
+        gap: 4,
         marginTop: 6,
+    },
+    location: {
         fontSize: 12,
         color: 'gray',
         fontFamily: typography.sfMedium,
-
     },
     editButton: {
         backgroundColor: '#000',

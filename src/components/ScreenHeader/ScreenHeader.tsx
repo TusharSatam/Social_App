@@ -8,11 +8,12 @@ import { typography } from '@social/utils/typography';
 interface ScreenHeaderProps {
     navigation: NavigationProp<any>;
     headerName?: string;
+    headerStyle?:any;
 }
 
-const ScreenHeader: React.FC<ScreenHeaderProps> = ({ navigation, headerName }) => {
+const ScreenHeader: React.FC<ScreenHeaderProps> = ({headerStyle,navigation, headerName }) => {
     return (
-        <View style={styles.header}>
+        <View style={[styles.header,headerStyle]}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backArrow}>
                 <BackIcon />
             </TouchableOpacity>

@@ -1,4 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import MySavedPosts from "@social/screens/Profile/SavedScreens/MySavedPosts";
+import MySavedShorts from "@social/screens/Profile/SavedScreens/MySavedShorts";
 import Profile from "@social/screens/Profile/profile.screen";
 import HelpCenter from "@social/screens/SettingsScreens/HelpCenter";
 import Logout from "@social/screens/SettingsScreens/Logout";
@@ -16,6 +18,14 @@ const ProfileStack = () => {
             <ProfileStackNavigator.Screen
                 name={"Profile"}
                 component={Profile}
+            />
+               <ProfileStackNavigator.Screen
+                name={"MySavedPosts"}
+                component={MySavedPosts}
+            />
+               <ProfileStackNavigator.Screen
+                name={"MySavedShorts"}
+                component={MySavedShorts}
             />
             <ProfileStackNavigator.Screen
                 name={"Settings"}
