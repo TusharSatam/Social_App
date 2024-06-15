@@ -19,10 +19,10 @@ import LocationPin from '@social/components/SvgIcons/ProfileScreenIcons/Location
 
 const Profile = ({ route }) => {
     const paramData = route.params;
-    const isLoggedInUser = paramData === paramData?.loggedInUserId;
     const navigation = useNavigation();
     const loggedInProfileData = useSelector((state: any) => state.auth);
 
+    const [isLoggedInUser, setIsLoggedInUser] = useState<boolean>(true);
     const [isContentLoading, setisContentLoading] = useState<boolean>(true);
     const [isFollow, setIsFollow] = useState<boolean>(true);
     const [profileData, setProfileData] = useState<any | null>(null);
@@ -46,13 +46,21 @@ const Profile = ({ route }) => {
     }
 
     useEffect(() => {
+        console.log("profile.screen", paramData);
+        if (loggedInProfileData && paramData) {
+            console.log("profile.screen", paramData);
+            setIsLoggedInUser(paramData.userId === loggedInProfileData?.user?.id?true:false);
+        }
+    }, [paramData, loggedInProfileData]);
+
+    useEffect(() => {
         if (loggedInProfileData && isLoggedInUser) {
             setisContentLoading(false);
             setProfileData(loggedInProfileData?.user);
         } else {
             // Fetch the user profile data if needed
         }
-    }, [loggedInProfileData])
+    }, [loggedInProfileData, isLoggedInUser])
 
     // Function to render content based on active tab
     const renderContent = () => {
@@ -122,14 +130,14 @@ const Profile = ({ route }) => {
                         <CustomText style={styles.statsNumber}>200</CustomText>
                         <CustomText style={styles.statsText}>Posts</CustomText>
                     </View>
-                    <View style={styles.statsItem} className='border-x-[.5px] border-[#F1F1F1]'>
+                    <TouchableOpacity style={styles.statsItem} className='border-x-[.5px] border-[#F1F1F1]' onPress={() => handleNavigation(isLoggedInUser ? "MyFollowers" : "Followers")}>
                         <CustomText style={styles.statsNumber}>975</CustomText>
                         <CustomText style={styles.statsText}>{profileData?.followers} Followers</CustomText>
-                    </View>
-                    <View style={styles.statsItem}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.statsItem} onPress={() => handleNavigation(isLoggedInUser ? "MyFollowing" : "Following")}>
                         <CustomText style={styles.statsNumber}>121</CustomText>
                         <CustomText style={styles.statsText}>Following</CustomText>
-                    </View>
+                    </TouchableOpacity>
                 </View>
                 {/* Tab Buttons */}
                 <View style={styles.tabContainer}>

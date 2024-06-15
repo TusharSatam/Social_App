@@ -43,7 +43,7 @@ const Settings = ({ navigation }) => {
     };
     return (
         <View style={styles.container}>
-            <ScreenHeader headerName={"Settings"} navigation={navigation} />
+            <ScreenHeader headerName={"Settings"}  />
             <ScrollView>
                 {settingsOptions.map((Option, index) => (
                     <TouchableOpacity

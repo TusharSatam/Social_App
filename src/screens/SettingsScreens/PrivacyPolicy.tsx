@@ -1,15 +1,13 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader';
 import CustomText from '@social/components/Text/CustomText';
 import { typography } from '@social/utils/typography';
 
 const PrivacyPolicy = () => {
-    const navigation = useNavigation();
     return (
         <View style={styles.mainContainer}>
-            <ScreenHeader headerName='Privacy Policy' navigation={navigation} />
+            <ScreenHeader headerName='Privacy Policy' />
             <ScrollView style={styles.containWrapper}>
                 {/* <CustomText style={styles.title}>Privacy Policy</CustomText> */}
                 <CustomText style={styles.lastUpdated}>Last updated: June 03, 2024</CustomText>

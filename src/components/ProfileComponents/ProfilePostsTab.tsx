@@ -21,8 +21,8 @@ const ProfilePostsTab = () => {
     return (
         <ScrollView>
             <View style={styles.postContainer}>
-                {postsData?.map((post,index)=>(
-                <Image source={{ uri: post?.source?.uri }} style={styles.profileImage} />
+                {postsData?.map((post, index) => (
+                    <Image source={{ uri: post?.source?.uri }} style={styles.profileImage} key={post?.id}/>
                 ))}
             </View>
         </ScrollView>
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#F6F6F6",
         flexDirection: "row",
         flexWrap: "wrap",
-        gap:5,
+        gap: 5,
         paddingVertical: 11,
         paddingHorizontal: 16,
     },

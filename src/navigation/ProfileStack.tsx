@@ -1,4 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Followers from "@social/screens/Profile/FollowersScreens/Followers";
+import MyFollowers from "@social/screens/Profile/FollowersScreens/MyFollowers";
+import Following from "@social/screens/Profile/FollowingScreens/Following";
+import MyFollowing from "@social/screens/Profile/FollowingScreens/MyFollowing";
 import MySavedPosts from "@social/screens/Profile/SavedScreens/MySavedPosts";
 import MySavedShorts from "@social/screens/Profile/SavedScreens/MySavedShorts";
 import Profile from "@social/screens/Profile/profile.screen";
@@ -19,13 +23,29 @@ const ProfileStack = () => {
                 name={"Profile"}
                 component={Profile}
             />
-               <ProfileStackNavigator.Screen
+            <ProfileStackNavigator.Screen
                 name={"MySavedPosts"}
                 component={MySavedPosts}
             />
-               <ProfileStackNavigator.Screen
+            <ProfileStackNavigator.Screen
                 name={"MySavedShorts"}
                 component={MySavedShorts}
+            />
+            <ProfileStackNavigator.Screen
+                name={"MyFollowing"}
+                component={MyFollowing}
+            />
+            <ProfileStackNavigator.Screen
+                name={"MyFollowers"}
+                component={MyFollowers}
+            />
+            <ProfileStackNavigator.Screen
+                name={"Followers"}
+                component={Followers}
+            />
+            <ProfileStackNavigator.Screen
+                name={"Following"}
+                component={Following}
             />
             <ProfileStackNavigator.Screen
                 name={"Settings"}

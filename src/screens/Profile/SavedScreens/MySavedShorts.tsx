@@ -30,7 +30,7 @@ const MySavedPosts = () => {
 
   return (
     <View style={styles.savedContainer}>
-      <ScreenHeader headerName='Saved Shorts' navigation={navigation} />
+      <ScreenHeader headerName='Saved Shorts'  />
       <FlatList
         data={shortsData}
         renderItem={renderItem}

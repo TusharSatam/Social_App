@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import CircularPlusIcon from "@social/components/SvgIcons/CircularPlusIcon";
 import HomeIcon from "@social/components/SvgIcons/HomeIcon";
 import PlayIcon from "@social/components/SvgIcons/PlayIcon";
@@ -59,7 +59,7 @@ const CustomTabBar = props => {
             label: "Profile",
             icon: <ProfileIcon width={WIDTH} height={HEIGHT} />,
             screenName: "ProfileStack",
-            paramData: { userId: loggedInProfileData?.user?._id,loggedInUserId:loggedInProfileData?.user?._id }
+            paramData: { userId: loggedInProfileData?.user?._id, loggedInUserId: loggedInProfileData?.user?._id }
         },
     ];
 
@@ -70,8 +70,20 @@ const CustomTabBar = props => {
                 screen: "CreatePost",
             });
         }
-        else if (paramData) {            
-            (navigation as any).navigate(screenName, paramData);
+        else if (screenName === "ProfileStack") {
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: screenName,
+                        },
+                    ],
+                })
+            );
+        }
+        else if (paramData) {
+            (navigation as any).navigate(screenName,paramData);
         }
         else {
             (navigation as any).navigate(screenName);

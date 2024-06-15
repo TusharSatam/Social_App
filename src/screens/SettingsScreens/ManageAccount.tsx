@@ -215,7 +215,7 @@ const ManageAccount: React.FC = () => {
 
     return (
         <View style={styles.mainContainer}>
-            <ScreenHeader headerName='Your Profile' navigation={navigation} />
+            <ScreenHeader headerName='Your Profile' />
             <ScrollView style={styles.detailWrapper}>
                 <View style={styles.scrollView}>
                     <View style={styles.avatarContainer}>

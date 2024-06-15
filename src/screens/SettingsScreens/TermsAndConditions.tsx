@@ -1,13 +1,11 @@
-import { useNavigation } from '@react-navigation/native';
 import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader';
 import CustomText from '@social/components/Text/CustomText';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 const TermsAndConditions = () => {
-    const navigation = useNavigation();
     return (
         <View style={styles.mainContainer}>
-            <ScreenHeader headerName='Terms and Conditions' navigation={navigation} />
+            <ScreenHeader headerName='Terms and Conditions'  />
             <ScrollView style={styles.containWrapper}>
 
                 <View>

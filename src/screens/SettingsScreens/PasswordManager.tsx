@@ -121,7 +121,7 @@ const PasswordManager: React.FC = () => {
                 </View>
             )}
             <ScrollView contentContainerStyle={styles.contentContainer}>
-                <ScreenHeader headerName='Password Manager' navigation={navigation} />
+                <ScreenHeader headerName='Password Manager' />
                 <View style={styles.currentPassword}>
                     <ManageAccountInput
                         placeholderText="Current Password"

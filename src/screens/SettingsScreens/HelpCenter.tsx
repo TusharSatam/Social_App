@@ -222,7 +222,7 @@ Tap the "+" button at the bottom of the screen, select or record a video, add ef
 
     return (
         <View style={styles.mainContainer}>
-            <ScreenHeader headerName='Help Center' navigation={navigation} />
+            <ScreenHeader headerName='Help Center'  />
             <View style={styles.searchContainer}>
                 <SearchHelpIcon />
                 <TextInput

@@ -35,7 +35,7 @@ const MySavedPosts = () => {
 
     return (
         <View style={styles.savedContainer}>
-            <ScreenHeader headerName='Saved Posts' navigation={navigation} />
+            <ScreenHeader headerName='Saved Posts'  />
             <FlatList
                 data={postsData}
                 renderItem={renderItem}
