@@ -14,6 +14,7 @@ import { useGetLoggedInUserDataMutation, useUpdateUserDataMutation } from '@soci
 import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setAuthData } from '@social/redux/Slice/AuthSlice';
+import { ActivityIndicator } from 'react-native';
 
 interface FormState {
     name: string;
@@ -32,7 +33,7 @@ const ManageAccount: React.FC = () => {
     const navigation = useNavigation();
     const userData = useSelector((state: any) => state.auth);
     const [updateUserData, { isLoading }] = useUpdateUserDataMutation();
-    const [getLoggedInUserData, { isLoading:isLoggedInDataLoading }] = useGetLoggedInUserDataMutation();
+    const [getLoggedInUserData, { isLoading: isLoggedInDataLoading }] = useGetLoggedInUserDataMutation();
     const dispatch = useDispatch();
     const [photo, setPhoto] = useState<string | null>(null);
     const [selectedPhoto, setSelectedPhoto] = useState<any>(null);
@@ -215,74 +216,82 @@ const ManageAccount: React.FC = () => {
 
     return (
         <View style={styles.mainContainer}>
-            <ScreenHeader headerName='Your Profile' />
-            <ScrollView style={styles.detailWrapper}>
-                <View style={styles.scrollView}>
-                    <View style={styles.avatarContainer}>
-                        <TouchableOpacity
-                            onPress={() => setIsModalVisible(true)}
-                            style={styles.avatar}>
-                            {photo ? (
-                                <Avatar.Image source={{ uri: photo }} size={142} />
-                            ) : (
-                                <UserIcon height={60} width={54} />
-                            )}
-                            <View style={styles.cameraIcon}>
-                                <CameraIcon height={32} width={32} />
-                            </View>
-                        </TouchableOpacity>
+            {
+                isLoading ?
+                    <View style={styles.loadingOverlay}>
+                        <ActivityIndicator size="large" color="#FF4D67" />
                     </View>
-                    <ManageAccountInput
-                        label={"Name"}
-                        placeholderText={"Enter your name"}
-                        inputType="default"
-                        value={form.name}
-                        onChange={(value) => handleChange('name', value)}
-                        error={errors.name}
-                    />
-                    <ManageAccountInput
-                        label={"Username"}
-                        placeholderText={"Enter your username"}
-                        inputType="default"
-                        value={form.username}
-                        onChange={(value) => handleChange('username', value)}
-                        error={errors.username}
-                    />
-                    <ManageAccountInput
-                        label={"Phone Number"}
-                        placeholderText={"Enter your phone number"}
-                        inputType="phone-pad"
-                        value={form.phoneNumber}
-                        onChange={(value) => handleChange('phoneNumber', value)}
-                        error={errors.phoneNumber}
-                    />
-                    <ManageAccountInput
-                        label={"Email"}
-                        placeholderText={"Enter your email"}
-                        inputType="email-address"
-                        value={form.email}
-                        onChange={(value) => handleChange('email', value)}
-                        error={errors.email}
-                    />
-                    <ManageAccountInput
-                        label={"DOB"}
-                        placeholderText={"Select your date of birth"}
-                        inputType="date"
-                        value={form.dob}
-                        onChange={(value) => handleChange('dob', value)}
-                        error={errors.dob}
-                    />
-                    <ManageAccountInput
-                        label={"Gender"}
-                        placeholderText={"Select your gender"}
-                        inputType="select"
-                        value={form.gender}
-                        onChange={(value) => handleChange('gender', value)}
-                        error={errors.gender}
-                    />
-                </View>
-                <PrimaryBtn btnText='Update Profile' onPress={handleSubmit} btnClass={"mb-10"} />
-            </ScrollView>
+                    :
+                    <ScrollView style={styles.detailWrapper}>
+                        <ScreenHeader headerName='Your Profile' />
+                        <View style={styles.scrollView}>
+                            <View style={styles.avatarContainer}>
+                                <TouchableOpacity
+                                    onPress={() => setIsModalVisible(true)}
+                                    style={styles.avatar}>
+                                    {photo ? (
+                                        <Avatar.Image source={{ uri: photo }} size={142} />
+                                    ) : (
+                                        <UserIcon height={60} width={54} />
+                                    )}
+                                    <View style={styles.cameraIcon}>
+                                        <CameraIcon height={32} width={32} />
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                            <ManageAccountInput
+                                label={"Name"}
+                                placeholderText={"Enter your name"}
+                                inputType="default"
+                                value={form.name}
+                                onChange={(value) => handleChange('name', value)}
+                                error={errors.name}
+                            />
+                            <ManageAccountInput
+                                label={"Username"}
+                                placeholderText={"Enter your username"}
+                                inputType="default"
+                                value={form.username}
+                                onChange={(value) => handleChange('username', value)}
+                                error={errors.username}
+                            />
+                            <ManageAccountInput
+                                label={"Phone Number"}
+                                placeholderText={"Enter your phone number"}
+                                inputType="phone-pad"
+                                value={form.phoneNumber}
+                                onChange={(value) => handleChange('phoneNumber', value)}
+                                error={errors.phoneNumber}
+                            />
+                            <ManageAccountInput
+                                label={"Email"}
+                                placeholderText={"Enter your email"}
+                                inputType="email-address"
+                                value={form.email}
+                                onChange={(value) => handleChange('email', value)}
+                                error={errors.email}
+                            />
+                            <ManageAccountInput
+                                label={"DOB"}
+                                placeholderText={"Select your date of birth"}
+                                inputType="date"
+                                value={form.dob}
+                                onChange={(value) => handleChange('dob', value)}
+                                error={errors.dob}
+                            />
+                            <ManageAccountInput
+                                label={"Gender"}
+                                placeholderText={"Select your gender"}
+                                inputType="select"
+                                value={form.gender}
+                                onChange={(value) => handleChange('gender', value)}
+                                error={errors.gender}
+                            />
+                        </View>
+                        <PrimaryBtn btnText='Update Profile' onPress={handleSubmit} btnClass={"mb-10"} />
+                    </ScrollView>
+            }
+
             <ImageUploadModal
                 isVisible={isModalVisible}
                 onClose={() => setIsModalVisible(false)}
@@ -294,6 +303,12 @@ const ManageAccount: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+    loadingOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     mainContainer: {
         flex: 1,
         backgroundColor: '#fff',
@@ -309,7 +324,7 @@ const styles = StyleSheet.create({
     },
     avatarContainer: {
         alignItems: 'center',
-        marginBottom:28,
+        marginBottom: 28,
     },
     avatar: {
         backgroundColor: '#f0f0f0',

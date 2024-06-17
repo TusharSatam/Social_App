@@ -78,8 +78,12 @@ const CompleteProfile: React.FC = () => {
 
     try {
       const token = await AsyncStorage.getItem('token');
+      console.log("token",token);
+      
       if (token) {
         const updateResponse = await updateUserData(formData).unwrap();
+        console.log("updateResponse--->",updateResponse);
+        
         const fetchToken = async () => {
           try {
             const storedToken = await AsyncStorage.getItem("token");

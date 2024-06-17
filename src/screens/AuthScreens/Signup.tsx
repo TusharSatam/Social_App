@@ -8,7 +8,7 @@ import CheckBox from 'react-native-check-box';
 import CustomText from '../../components/Text/CustomText';
 import SocialMediaSignin from '../../components/AuthComponents/SocialMediaSignin';
 import { ALERT_TYPE, AlertNotificationRoot, Dialog } from 'react-native-alert-notification';
-import { useRegisterMutation } from '../../redux/services/auth/authApi';
+import { useFacebookFirebaseLoginMutation, useGoogleFirebaseLoginMutation, useRegisterMutation } from '../../redux/services/auth/authApi';
 import { setAuthData } from '../../redux/Slice/AuthSlice';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -33,6 +33,9 @@ const Signup = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>('');
   const [termsError, setTermsError] = useState<string>('');
   const [registerMutation, { isLoading }] = useRegisterMutation();
+  const [googleFirebaseLogin, { isLoading: isGoogleAuthLoading }] = useGoogleFirebaseLoginMutation();
+  const [facebookFirebaseLogin, { isLoading: isFacebooSignupLoading }] =useFacebookFirebaseLoginMutation();
+
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -78,7 +81,6 @@ const Signup = () => {
     if (valid) {
       try {
         const registerResponse = await registerMutation({ email }).unwrap();
-        //TODO: uncomment after signup api updated
 
         if (registerResponse?.message === "User successfully signed up") {
           await AsyncStorage.setItem('registerEmail', email);
@@ -151,12 +153,12 @@ const Signup = () => {
             {termsError ? <CustomText className=' text-[#F04438] text-[14px] mt-3 !font-normal'>{termsError}</CustomText> : null}
           </View>
           <PrimaryBtn onPress={handleSignup} btnText="Sign Up" btnClass={"mt-[37px] mb-[48px]"} />
-          <SocialMediaSignin isSignup={true}/>
+          <SocialMediaSignin isSignup={true} googleFirebaseLogin={googleFirebaseLogin}  facebookFirebaseLogin={facebookFirebaseLogin}/>
           <View style={styles.container}><CustomText className='text-Gray  text-[16px]'>Already have an account? </CustomText>
             <TouchableOpacity onPress={handleNavigationToSignin} ><CustomText style={styles.textSemibold} className='text-primaryColor underline font-semibold text-[16px]'>Sign in</CustomText></TouchableOpacity>
           </View>
         </ScrollView>}
-        {isLoading && (
+        {isLoading || isGoogleAuthLoading || isFacebooSignupLoading && (
           <View className="absolute h-full w-full inset-0 flex justify-center items-center bg-white bg-opacity-50">
             <ActivityIndicator size="large" color="#FF4D67" />
           </View>
@@ -177,8 +179,8 @@ const styles = StyleSheet.create({
     fontFamily: typography.sfMedium,
     marginBottom: 72,
   },
-  descriptionClass:{
-    width:260,
+  descriptionClass: {
+    width: 260,
   }
 });
 

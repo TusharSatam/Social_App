@@ -16,6 +16,9 @@ import ProfilePostsTab from '@social/components/ProfileComponents/ProfilePostsTa
 import ProfileReelsTab from '@social/components/ProfileComponents/ProfileShortsTab';
 import ProfileSavedTab from '@social/components/ProfileComponents/ProfileSavedTab';
 import LocationPin from '@social/components/SvgIcons/ProfileScreenIcons/LocationPin';
+import UserIcon from '@social/components/SvgIcons/SettingScreenIcons/UserIcon';
+import ProfileIcon from '@social/components/SvgIcons/ProfileIcon';
+import DefaultProfileIcon from '@social/components/SvgIcons/ProfileScreenIcons/DefaultProfileIcon';
 
 const Profile = ({ route }) => {
     const paramData = route.params;
@@ -46,10 +49,8 @@ const Profile = ({ route }) => {
     }
 
     useEffect(() => {
-        console.log("profile.screen", paramData);
         if (loggedInProfileData && paramData) {
-            console.log("profile.screen", paramData);
-            setIsLoggedInUser(paramData.userId === loggedInProfileData?.user?.id?true:false);
+            setIsLoggedInUser(paramData.userId === loggedInProfileData?.user?.id ? true : false);
         }
     }, [paramData, loggedInProfileData]);
 
@@ -57,6 +58,8 @@ const Profile = ({ route }) => {
         if (loggedInProfileData && isLoggedInUser) {
             setisContentLoading(false);
             setProfileData(loggedInProfileData?.user);
+            console.log(loggedInProfileData);
+            
         } else {
             // Fetch the user profile data if needed
         }
@@ -93,7 +96,14 @@ const Profile = ({ route }) => {
                 </View>
                 <View style={styles.userImgName}>
                     <View style={styles.profileImageWrapper}>
-                        <Image source={{ uri: profileData?.ProfilePicture }} style={styles.profileImage} />
+                        {profileData?.ProfilePicture !== ""
+                            ?
+                            <Image source={{ uri: profileData?.ProfilePicture }} style={styles.profileImage} />
+                            :
+                            <View style={[styles.profileImage]} >
+                                <DefaultProfileIcon />
+                            </View>
+                        }
                     </View>
                     <View style={styles.nameWrap}>
                         <CustomText style={styles.username}>{profileData?.username ? profileData?.username : "username N/A"}</CustomText>
@@ -111,7 +121,7 @@ const Profile = ({ route }) => {
                 {/* Button Container */}
                 <View style={styles.buttonContainer}>
                     {isLoggedInUser ? (
-                        <SecondaryBtn btnText='Edit Profile' onPress={() => handleNavigation("MessageScreen")} />
+                        <SecondaryBtn btnText='Edit Profile' onPress={() => handleNavigation("ManageAccount")} />
                     ) : (
                         <>
                             <SecondaryBtn btnText='Message' onPress={() => handleNavigation("MessageScreen")} btnClass={styles.messageBtn} />
@@ -221,11 +231,20 @@ const styles = StyleSheet.create({
         width: 96,
         height: 96,
         borderRadius: 50,
+        display: "flex",
+        justifyContent: "center",
+        alignContent: "center",
+        alignItems: "center"
     },
     profileImage: {
+        backgroundColor: "#F6F6F6",
         height: "100%",
         width: "100%",
         borderRadius: 50,
+        display: "flex",
+        justifyContent: "center",
+        alignContent: "center",
+        alignItems: "center"
     },
     username: {
         fontSize: 17,

@@ -20,7 +20,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isVisible, onClose,
                     <Text style={styles.optionText}>Take Photo</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={onClose} style={styles.option}>
-                    <Text style={styles.optionText}>Cancel</Text>
+                    <Text style={styles.cancelText}>Cancel</Text>
                 </TouchableOpacity>
             </View>
         </Modal>
@@ -29,7 +29,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isVisible, onClose,
 
 const styles = StyleSheet.create({
     modalContent: {
-        backgroundColor: 'black',
+        backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,
     },
@@ -39,8 +39,12 @@ const styles = StyleSheet.create({
     },
     optionText: {
         fontSize: 16,
-        color:"white",
+        color:"black",
     },
+    cancelText:{
+        fontSize: 16,
+        color:"#FF4D67",
+    }
 });
 
 export default ImageUploadModal;

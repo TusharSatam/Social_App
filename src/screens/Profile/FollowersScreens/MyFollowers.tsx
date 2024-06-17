@@ -68,7 +68,7 @@ const MyFollowers = () => {
                                     style={[styles.button, styles.buttonClose]}
                                     onPress={() => setModalVisible(!modalVisible)}
                                 >
-                                    <Text style={styles.textStyle}>Cancel</Text>
+                                    <Text style={styles.cancelTextStyle}>Cancel</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={[styles.button, styles.buttonConfirm]}
@@ -103,9 +103,9 @@ const styles = StyleSheet.create({
     },
     modalView: {
         margin: 20,
-        backgroundColor: "black",
+        backgroundColor: "white",
         borderRadius: 20,
-        padding: 35,
+        padding: 30,
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
         width: '45%',
     },
     buttonClose: {
-        backgroundColor: "#797979",
+        backgroundColor: "#F6F6F6",
     },
     buttonConfirm: {
         backgroundColor: "#FF4D67",
@@ -139,10 +139,14 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
     },
+    cancelTextStyle:{
+        color: "#FF4D67",
+        fontWeight: "bold",
+        textAlign: "center",
+    },
     modalText: {
         marginBottom: 15,
         textAlign: "center",
-        color:"white",
         fontSize:16,
     }
 });

@@ -8,7 +8,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import {logout} from "@social/redux/Slice/AuthSlice";
 
-const API_URL = "https://social-media-11p4.onrender.com"; // Replace with your actual backend API URL
+const API_URL = "https://social-media-node-n6qc.onrender.com"; // Replace with your actual backend API URL
 
 // Define types for credentials and userData
 
@@ -34,6 +34,11 @@ interface UpdateProfilePassword {
     email: string;
     currentPassword: string;
     newPassword: string;
+}
+interface SocialLoginProps {
+    email: string;
+    name: string;
+    photo: string;
 }
 interface VerifyForgotPassOTPRequest {
     email: string;
@@ -171,7 +176,22 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
-
+        // -------------Faceboook Signup------------------
+        facebookFirebaseLogin: builder.mutation<any, SocialLoginProps>({
+            query: request => ({
+                url: "/auth/facebook-login",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        // -------------Google Signup------------------
+        googleFirebaseLogin: builder.mutation<any, SocialLoginProps>({
+            query: request => ({
+                url: "/auth/google-login",
+                method: "POST",
+                body: request,
+            }),
+        }),
         // -----Post Creation----------
         sharePost: builder.mutation<
             any,
@@ -203,4 +223,6 @@ export const {
     useUpdateProfilePasswordMutation,
     useResendVerifyOTPMutation,
     useResendForgotVerifyOTPMutation,
+    useGoogleFirebaseLoginMutation,
+    useFacebookFirebaseLoginMutation,
 } = authApi;

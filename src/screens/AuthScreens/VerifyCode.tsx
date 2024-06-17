@@ -40,9 +40,9 @@ const VerifyCode: React.FC = () => {
             const registerCredentials: RegisterCredentials = { otp: code.join(''), email: userEmail ?? '', password: userPassword ?? '' };
             try {
                 const verifyOTPResponse = await verifyRegisterOTP(registerCredentials).unwrap();
+                console.log(verifyOTPResponse);
 
                 if (verifyOTPResponse?.message === "OTP verified successfully") {
-                    // TODO: Verify OTP API integration pending because of invalid OTP length from API response
                     await AsyncStorage.setItem('token', verifyOTPResponse.token);
                     await AsyncStorage.removeItem("registerEmail");
                     await AsyncStorage.removeItem("registerPasword");

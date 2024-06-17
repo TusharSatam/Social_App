@@ -1,40 +1,43 @@
-import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import {
     ALERT_TYPE,
-    AlertNotificationRoot,
     Dialog,
 } from "react-native-alert-notification";
-import { Text } from "react-native-svg";
 import GoogleIcon from "../../../assets/icons/googleIcon.svg";
 import FacebookIcon from "../../../assets/icons/facebookIcon.svg";
 import CustomText from "../Text/CustomText";
 import {
     GoogleSignin,
-    GoogleSigninButton,
     statusCodes,
 } from "@react-native-google-signin/google-signin";
 import auth from "@react-native-firebase/auth";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { typography } from "@social/utils/typography";
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setAuthData } from "@social/redux/Slice/AuthSlice";
+import { useDispatch } from "react-redux";
+
+//Todo:temporary using Tushar personl account firebase account,facebook developer account to handle Google and Facebook auth. Need client account credentials while deployment
 GoogleSignin.configure({
     webClientId:
         "514412335294-5oni06176lc16e0pai2af1fgc6m94kcs.apps.googleusercontent.com",
 });
-const SocialMediaSignin = ({ isSignup }) => {
-    // const navigation = useNavigation()
-    const handleGoogleSignup = async () => {
+const SocialMediaSignin = ({ isSignup, googleFirebaseLogin, facebookFirebaseLogin }) => {
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
+
+    const firebaseGoogleSignUpIn = async () => {
         try {
             console.log("start");
 
-            // await GoogleSignin.signOut();
+            await GoogleSignin.signOut();
             await GoogleSignin.hasPlayServices({
                 showPlayServicesUpdateDialog: true,
             });
             // Get the users ID token
             const { idToken, user } = await GoogleSignin.signIn();
-            console.log("GoogleResponse -> ",user);
+            console.log("GoogleResponse -> ", user);
 
             // Create a Google credential with the token
             const googleCredential =
@@ -52,17 +55,15 @@ const SocialMediaSignin = ({ isSignup }) => {
             } else {
                 console.log("error.message", error.message);
             }
+            Dialog.show({
+                type: ALERT_TYPE.DANGER,
+                title: 'Info',
+                textBody: 'Google authentication Failed.',
+                button: 'close',
+            })
         }
-
-        // //Todo:remove toast during api intgration
-        // Dialog.show({
-        //     type: ALERT_TYPE.WARNING,
-        //     title: 'Info',
-        //     textBody: 'Google authentication is still under development.',
-        //     button: 'close',
-        // })
     };
-    const handleFacebookSignup = async () => {
+    const firebaseFacebookSignup = async () => {
         // Attempt login with permissions
         const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
 
@@ -82,14 +83,111 @@ const SocialMediaSignin = ({ isSignup }) => {
 
         // Sign-in the user with the credential
         return auth().signInWithCredential(facebookCredential);
-        // //Todo:remove toast during api intgration
-        // Dialog.show({
-        //     type: ALERT_TYPE.WARNING,
-        //     title: "Info",
-        //     textBody: "Facebook authentication is still under development.",
-        //     button: "close",
-        // });
     };
+
+    const handleGoogleSignup = async () => {
+        let googleResponse: any = await firebaseGoogleSignUpIn()
+        // console.log("GoogleResponse -> ", googleResponse)
+        // if success send to backend
+        if (googleResponse.user) {
+            let googlePayload = {
+                email: googleResponse.user.email,
+                name: googleResponse.user.displayName,
+                photo: googleResponse.user.photoURL
+            }
+            console.log(googlePayload);
+
+            const Response = await googleFirebaseLogin(googlePayload).unwrap();
+            console.log("Response-->", Response);
+
+            if (Response.token) {
+                await AsyncStorage.setItem('token', Response.token);
+                if (Response.message === "User successfully signed up with Google") {
+                    await dispatch(setAuthData(Response));
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: 'OnBoardingStack' }],
+                        })
+                    );
+                    (navigation as any).navigate('CompleteProfile');
+                }
+                else if (Response.message === "User successfully logged in with Google") {
+                    await dispatch(setAuthData(Response));
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: 'MainStack' }],
+                        })
+                    );
+                }
+            }
+            else {
+                Dialog.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "Info",
+                    textBody: "Google Authentication Failed",
+                    button: "close",
+                });
+            }
+        }
+    }
+    const handleFacebookSignup = async () => {
+        let facebookResponse = await firebaseFacebookSignup()
+        console.log("FacebookResponse -> ", facebookResponse)
+        // if success send to backend
+        if (facebookResponse.user) {
+            let facebookPayload = {
+                email: facebookResponse.user.email,
+                name: facebookResponse.user.displayName,
+                photo: facebookResponse.user.photoURL
+            }
+            console.log("facebookPayload-->", facebookPayload);
+
+            let Response = await facebookFirebaseLogin(facebookPayload).unwrap();
+            console.log(Response);
+
+            if (Response.token) {
+                await AsyncStorage.setItem('token', Response.token);
+                if (Response.message === "User successfully signed up with Facebook") {
+                    await dispatch(setAuthData(Response));
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: 'OnBoardingStack' }],
+                        })
+                    );
+                    (navigation as any).navigate('CompleteProfile');
+                }
+                else if (Response.message === "User successfully logged in with Facebook") {
+                    await dispatch(setAuthData(Response));
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: 'MainStack' }],
+                        })
+                    );
+                }
+            }
+            else {
+                Dialog.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "Info",
+                    textBody: "Facebook Authentication Failed",
+                    button: "close",
+                });
+            }
+        }
+        else {
+            Dialog.show({
+                type: ALERT_TYPE.DANGER,
+                title: "Info",
+                textBody: "Facebook Authentication Failed",
+                button: "close",
+            });
+        }
+    }
+
 
     // useEffect(() => {
     //     const unsubscribe = auth().onAuthStateChanged(user => {
@@ -122,9 +220,7 @@ const SocialMediaSignin = ({ isSignup }) => {
                         <GoogleIcon width={24} height={24} />
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleFacebookSignup().then(res => {
-                    console.log("FacebookResponse -> ",res)
-                })}>
+                <TouchableOpacity onPress={handleFacebookSignup}>
                     <View style={styles.iconContainer}>
                         <FacebookIcon width={24} height={24} />
                     </View>

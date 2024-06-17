@@ -6,7 +6,7 @@ import CustomText from '../../components/Text/CustomText';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import AuthInput from '../../components/Inputs/AuthInput';
 import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
-import { useLoginMutation } from '../../redux/services/auth/authApi';
+import { useFacebookFirebaseLoginMutation, useGoogleFirebaseLoginMutation, useLoginMutation } from '../../redux/services/auth/authApi';
 import { setAuthData } from '../../redux/Slice/AuthSlice';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,7 +17,8 @@ const Signin: React.FC = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const dispatch = useDispatch();
   const [loginMutation, { isLoading }] = useLoginMutation();
-
+  const [googleFirebaseLogin, { isLoading: isGoogleAuthLoading }] = useGoogleFirebaseLoginMutation();
+  const [facebookFirebaseLogin, { isLoading: isFacebooSignupLoading }] =useFacebookFirebaseLoginMutation();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [fomrError, setFormError] = useState<string>('');
@@ -32,6 +33,10 @@ const Signin: React.FC = () => {
 
   const handleSignin = async () => {
     setFormError('')
+    if (!email || !password) {
+      setFormError('Email and password are required');
+      return;
+    }
     try {
       const loginResponse = await loginMutation({ email, password }).unwrap();
       await AsyncStorage.setItem('token', loginResponse.token);
@@ -81,7 +86,7 @@ const Signin: React.FC = () => {
             </TouchableOpacity>
             <PrimaryBtn onPress={handleSignin} btnText="Sign In" btnClass="mt-[36px] mb-[42px]" />
           </View>
-          <SocialMediaSignin />
+          <SocialMediaSignin isSignup={false} googleFirebaseLogin={googleFirebaseLogin}  facebookFirebaseLogin={facebookFirebaseLogin}/>
           <View  style={styles.dontHaveAnAccountContainer}>
             <CustomText style={styles.dontHaveAnAccount}>Don't have an account?</CustomText>
             <TouchableOpacity onPress={handleNavigationToSignup}>
