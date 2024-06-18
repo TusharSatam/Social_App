@@ -1,15 +1,15 @@
-import { useNavigation } from "@react-navigation/native";
+import {useNavigation} from "@react-navigation/native";
 import CircularPlusIcon from "@social/components/SvgIcons/CircularPlusIcon";
 import HomeIcon from "@social/components/SvgIcons/HomeIcon";
 import PlayIcon from "@social/components/SvgIcons/PlayIcon";
 import ProfileIcon from "@social/components/SvgIcons/ProfileIcon";
 import SearchIcon from "@social/components/SvgIcons/SearchIcon";
-import { clearMediaPost } from "@social/redux/Slice/PostSlice";
-import { navigationRef } from "@social/refs/refs";
-import { colors } from "@social/utils/colors";
-import { helpers } from "@social/utils/helpers";
-import { typography } from "@social/utils/typography";
-import { useEffect, useState } from "react";
+import {clearMediaPost} from "@social/redux/Slice/PostSlice";
+import {navigationRef} from "@social/refs/refs";
+import {colors} from "@social/utils/colors";
+import {helpers} from "@social/utils/helpers";
+import {typography} from "@social/utils/typography";
+import {useCallback, useEffect, useState} from "react";
 import {
     Pressable,
     StyleSheet,
@@ -17,7 +17,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import {useDispatch} from "react-redux";
 
 const HEIGHT = 30;
 const WIDTH = 30;
@@ -32,31 +32,49 @@ const CustomTabBar = props => {
     const dispatch = useDispatch();
     const [routes, setRoutes] = useState(props.state.routeNames);
     const navigation = useNavigation();
+    const [activeTab, setActiveTab] = useState(0);
 
     const tabs = [
         {
             label: "Home",
-            icon: <HomeIcon width={WIDTH} height={HEIGHT} />,
+            activeIcon: <HomeIcon width={WIDTH} height={HEIGHT} />,
+            inactiveIcon: (
+                <HomeIcon fill={"white"} width={WIDTH} height={HEIGHT} />
+            ),
             screenName: "HomeScreen",
         },
         {
             label: "Explore",
-            icon: <SearchIcon width={25} height={25} />,
+            inactiveIcon: <SearchIcon width={WIDTH} height={HEIGHT} />,
+            activeIcon: (
+                <SearchIcon
+                    fill={"black"}
+                    stroke={"white"}
+                    width={WIDTH}
+                    height={HEIGHT}
+                />
+            ),
             screenName: "ExploreStack",
         },
         {
             label: "Create-Post",
-            icon: <CircularPlusIcon width={45} height={45} />,
+            activeIcon: <CircularPlusIcon width={60} height={60} />,
             screenName: "PostCreationStack",
         },
         {
             label: "Shorts",
-            icon: <PlayIcon width={WIDTH} height={HEIGHT} />,
+            inactiveIcon: <PlayIcon width={WIDTH} height={HEIGHT} />,
+            activeIcon: (
+                <PlayIcon fill={"black"} width={WIDTH} height={HEIGHT} />
+            ),
             screenName: "ShortStack",
         },
         {
             label: "Profile",
-            icon: <ProfileIcon width={WIDTH} height={HEIGHT} />,
+            inactiveIcon: <ProfileIcon width={WIDTH} height={HEIGHT} />,
+            activeIcon: (
+                <ProfileIcon fill={"black"} width={WIDTH} height={HEIGHT} />
+            ),
             screenName: "ProfileStack",
         },
     ];
@@ -67,11 +85,9 @@ const CustomTabBar = props => {
             (navigation as any).navigate(screenName, {
                 screen: "CreatePost",
             });
-        }
-        else {
+        } else {
             (navigation as any).navigate(screenName);
         }
-
     };
 
     const init = async () => {
@@ -85,6 +101,13 @@ const CustomTabBar = props => {
         init();
     }, []);
 
+    useEffect(() => {
+        setActiveTab(props.state.index);
+    }, [props.state.index]);
+
+    // console.log(navigationRef?.current?.getCurrentRoute?.()?.name);
+    // console.log(JSON.stringify(props.state, undefined, 4));
+
     if (NO_TABBAR[navigationRef?.current?.getCurrentRoute?.()?.name]) {
         return null;
     }
@@ -92,17 +115,32 @@ const CustomTabBar = props => {
     return (
         <View style={styles.rootStyle}>
             {tabs.map((item, index) => {
+                if (item.label === "Create-Post") {
+                    return (
+                        <TouchableOpacity
+                            onPress={() => changeRoute(item.screenName)}
+                            style={[
+                                styles.container,
+                                {position: "relative", top: -30},
+                            ]}
+                            key={index}>
+                            <View style={styles.iconStyle}>
+                                {item.activeIcon}
+                            </View>
+                        </TouchableOpacity>
+                    );
+                }
+
                 return (
                     <TouchableOpacity
                         onPress={() => changeRoute(item.screenName)}
                         style={styles.container}
                         key={index}>
-                        <View style={styles.iconStyle}>{item.icon}</View>
-                        {item.label !== "Create-Post" && (
-                            <View style={styles.labelStyle}>
-                                <Text style={styles.label}>{item.label}</Text>
-                            </View>
-                        )}
+                        <View style={styles.iconStyle}>
+                            {activeTab === index
+                                ? item.activeIcon
+                                : item.inactiveIcon}
+                        </View>
                     </TouchableOpacity>
                 );
             })}
@@ -116,10 +154,19 @@ const styles = StyleSheet.create({
     rootStyle: {
         height: 65,
         width: "100%",
-        backgroundColor: colors.black,
+        backgroundColor: colors.white,
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+
+        elevation: 7,
     },
     label: {
         fontSize: 10,

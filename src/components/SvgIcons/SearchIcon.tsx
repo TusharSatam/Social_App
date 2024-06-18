@@ -1,18 +1,23 @@
 import * as React from "react";
 import Svg, {SvgProps, Path} from "react-native-svg";
-/* SVGR has dropped some elements not supported by react-native-svg: title */
-const SearchIcon = (props: SvgProps) => (
+const SvgComponent = (props: SvgProps) => (
     <Svg
         xmlns="http://www.w3.org/2000/svg"
         width={24}
         height={24}
-        viewBox="0 0 32 32"
+        fill="none"
+        viewBox="0 0 29 28"
         {...props}>
         <Path
-            fill="#A7A7A7"
-            fillRule="evenodd"
-            d="M13.46 24.45c-6.29 0-11.389-5.01-11.389-11.2 0-6.19 5.099-11.21 11.389-11.21 6.29 0 11.39 5.02 11.39 11.21 0 6.19-5.1 11.2-11.39 11.2Zm18.228 5.8-8.259-8.13c2.162-2.35 3.491-5.45 3.491-8.87C26.92 5.93 20.894 0 13.46 0 6.026 0 0 5.93 0 13.25c0 7.31 6.026 13.24 13.46 13.24a13.52 13.52 0 0 0 8.472-2.96l8.292 8.16c.405.4 1.06.4 1.464 0 .405-.39.405-1.04 0-1.44Z"
+            stroke={"#797979"}
+            strokeWidth={1.9}
+            d="M17.57 21.673c-6.923 2.766-10.385 4.152-12.36 2.81a4.496 4.496 0 0 1-1.192-1.192c-1.343-1.977.041-5.439 2.81-12.36.59-1.476.886-2.214 1.393-2.794.13-.147.269-.286.416-.416.58-.507 1.318-.803 2.794-1.393 6.921-2.769 10.383-4.153 12.36-2.81.468.32.872.723 1.191 1.192 1.343 1.976-.042 5.437-2.81 12.36-.59 1.475-.886 2.213-1.393 2.793-.13.148-.268.286-.416.416-.58.507-1.317.803-2.794 1.394Z"
+        />
+        <Path
+            stroke={props.stroke ?? "#797979"}
+            strokeWidth={1.9}
+            d="M14.5 17.301a3.3 3.3 0 1 0 0-6.6 3.3 3.3 0 0 0 0 6.6Z"
         />
     </Svg>
 );
-export default SearchIcon;
+export default SvgComponent;

@@ -8,7 +8,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import {logout} from "@social/redux/Slice/AuthSlice";
 
-const API_URL = "https://social-media-11p4.onrender.com"; // Replace with your actual backend API URL
+const API_URL = "https://social-media-node-n6qc.onrender.com"; // Replace with your actual backend API URL
 
 // Define types for credentials and userData
 

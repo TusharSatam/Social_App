@@ -1,18 +1,37 @@
 import * as React from "react";
-import Svg, {SvgProps, Path} from "react-native-svg";
-/* SVGR has dropped some elements not supported by react-native-svg: title */
+import Svg, {
+    SvgProps,
+    Rect,
+    Path,
+    Defs,
+    LinearGradient,
+    Stop,
+} from "react-native-svg";
 const CircularPlusIcon = (props: SvgProps) => (
     <Svg
         xmlns="http://www.w3.org/2000/svg"
         width={24}
         height={24}
-        viewBox="0 0 32 32"
+        viewBox="0 0 60 60"
+        fill="none"
         {...props}>
+        <Rect width={60} height={60} fill="url(#a)" rx={30} />
         <Path
-            fill="#A7A7A7"
-            fillRule="evenodd"
-            d="M16 30C8.268 30 2 23.73 2 16S8.268 2 16 2s14 6.27 14 14-6.268 14-14 14Zm0-30C7.163 0 0 7.16 0 16s7.163 16 16 16 16-7.16 16-16S24.837 0 16 0Zm6 15h-5v-5a1.001 1.001 0 0 0-2 0v5h-5a1.001 1.001 0 0 0 0 2h5v5a1.001 1.001 0 0 0 2 0v-5h5a1.001 1.001 0 0 0 0-2Z"
+            fill="#F6F6F6"
+            d="M30 22a1 1 0 0 1 1 1v6h6a1 1 0 0 1 0 2h-6v6a1 1 0 0 1-2 0v-6h-6a1 1 0 0 1 0-2h6v-6a1 1 0 0 1 1-1Z"
         />
+        <Defs>
+            <LinearGradient
+                id="a"
+                x1={53.491}
+                x2={6.779}
+                y1={12.168}
+                y2={47.688}
+                gradientUnits="userSpaceOnUse">
+                <Stop stopColor="#FF4D67" />
+                <Stop offset={1} stopColor="#D9235D" />
+            </LinearGradient>
+        </Defs>
     </Svg>
 );
 export default CircularPlusIcon;
