@@ -1,0 +1,13 @@
+diff --git a/node_modules/@react-native-community/cli-platform-android/build/commands/runAndroid/tryLaunchEmulator.js b/node_modules/@react-native-community/cli-platform-android/build/commands/runAndroid/tryLaunchEmulator.js
+index ab9e8cb..a1d6aa5 100644
+--- a/node_modules/@react-native-community/cli-platform-android/build/commands/runAndroid/tryLaunchEmulator.js
++++ b/node_modules/@react-native-community/cli-platform-android/build/commands/runAndroid/tryLaunchEmulator.js
+@@ -25,7 +25,7 @@ const emulatorCommand = process.env.ANDROID_HOME ? `${process.env.ANDROID_HOME}/
+ const getEmulators = () => {
+   try {
+     const emulatorsOutput = _execa().default.sync(emulatorCommand, ['-list-avds']).stdout;
+-    return emulatorsOutput.split(_os().default.EOL).filter(name => name !== '');
++    return emulatorsOutput.split(_os().default.EOL).filter(name => name !== '' && !name.startsWith('INFO    | '));
+   } catch {
+     return [];
+   }

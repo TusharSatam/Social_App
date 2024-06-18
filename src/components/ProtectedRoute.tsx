@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View, ActivityIndicator } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useDispatch, useSelector } from "react-redux";
-import { useGetLoggedInUserDataMutation } from "../redux/services/auth/authApi";
+import {View, ActivityIndicator} from "react-native";
+import {NavigationContainer} from "@react-navigation/native";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {useDispatch, useSelector} from "react-redux";
+import {useGetLoggedInUserDataMutation} from "../redux/services/auth/authApi";
 import AuthStack from "@social/navigation/AuthStack";
 // import AuthStack from "@social/navigation/AuthStack";
 import OnBoardingStack from "@social/navigation/OnBoardingStack";
 import MainStack from "@social/navigation/MainStack";
-import { setAuthData } from "@social/redux/Slice/AuthSlice";
-import { navigationRef } from "@social/refs/refs";
+import {setAuthData} from "@social/redux/Slice/AuthSlice";
+import {navigationRef} from "@social/refs/refs";
 import TermsAndConditions from "@social/screens/SettingsScreens/TermsAndConditions";
 
 type RootStackParamList = {
@@ -29,11 +29,11 @@ type RootStackParamList = {
     Settings: undefined;
     ManageAccount: undefined;
     Saved: undefined;
-    PasswordManager: undefined
-    HelpCenter: undefined
+    PasswordManager: undefined;
+    HelpCenter: undefined;
     PrivacyPolicy: undefined;
     Logout: undefined;
-    TermsConditions:undefined;
+    TermsConditions: undefined;
 };
 interface GetUserDataType {
     token: string | null; // Adjust based on your actual response structure
@@ -42,7 +42,7 @@ interface GetUserDataType {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const ProtectedRoute: React.FC = () => {
-    const [getLoggedInUserData, { isLoading }] = useGetLoggedInUserDataMutation();
+    const [getLoggedInUserData, {isLoading}] = useGetLoggedInUserDataMutation();
     const dispatch = useDispatch();
     const [isContentLoading, setIsContentLoading] = useState<boolean>(true);
     const [token, setToken] = useState<string | null>(null);
@@ -56,7 +56,7 @@ const ProtectedRoute: React.FC = () => {
             try {
                 const storedToken = await AsyncStorage.getItem("token");
                 if (storedToken) {
-                    const tokenObj = { token: storedToken };
+                    const tokenObj = {token: storedToken};
                     const getUserDataResponse = await getLoggedInUserData(
                         tokenObj,
                     ).unwrap();
@@ -99,22 +99,25 @@ const ProtectedRoute: React.FC = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                initialRouteName={
-                    token
-                        ? hasCompletedOnboarding
-                            ? "MainStack"
-                            : "OnBoardingStack"
-                        : "AuthStack"
-                }
-                screenOptions={{ headerShown: false }}>
+                // initialRouteName={
+                //     token
+                //         ? hasCompletedOnboarding
+                //             ? "MainStack"
+                //             : "OnBoardingStack"
+                //         : "AuthStack"
+                // }
+                initialRouteName="MainStack"
+                screenOptions={{headerShown: false}}>
                 <Stack.Screen name="AuthStack" component={AuthStack} />
                 <Stack.Screen
                     name="OnBoardingStack"
                     component={OnBoardingStack}
                 />
                 <Stack.Screen name="MainStack" component={MainStack} />
-                <Stack.Screen name="TermsConditions" component={TermsAndConditions} />
-
+                <Stack.Screen
+                    name="TermsConditions"
+                    component={TermsAndConditions}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );

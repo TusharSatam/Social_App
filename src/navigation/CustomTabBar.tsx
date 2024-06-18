@@ -9,7 +9,7 @@ import { navigationRef } from "@social/refs/refs";
 import { colors } from "@social/utils/colors";
 import { helpers } from "@social/utils/helpers";
 import { typography } from "@social/utils/typography";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
     Pressable,
     StyleSheet,
@@ -33,31 +33,52 @@ const CustomTabBar = props => {
     const [routes, setRoutes] = useState(props.state.routeNames);
     const navigation = useNavigation();
     const loggedInProfileData = useSelector((state: any) => state.auth)
+    const [activeTab, setActiveTab] = useState(0);
+    useEffect(() => {
+        console.log("navigationRef", navigationRef.current.getState());
+    }, [])
 
     const tabs = [
         {
             label: "Home",
-            icon: <HomeIcon width={WIDTH} height={HEIGHT} />,
+            activeIcon: <HomeIcon width={WIDTH} height={HEIGHT} />,
+            inactiveIcon: (
+                <HomeIcon fill={"white"} width={WIDTH} height={HEIGHT} />
+            ),
             screenName: "HomeScreen",
         },
         {
             label: "Explore",
-            icon: <SearchIcon width={25} height={25} />,
+            inactiveIcon: <SearchIcon width={WIDTH} height={HEIGHT} />,
+            activeIcon: (
+                <SearchIcon
+                    fill={"black"}
+                    stroke={"white"}
+                    width={WIDTH}
+                    height={HEIGHT}
+                />
+            ),
             screenName: "ExploreStack",
         },
         {
             label: "Create-Post",
-            icon: <CircularPlusIcon width={45} height={45} />,
+            activeIcon: <CircularPlusIcon width={60} height={60} />,
             screenName: "PostCreationStack",
         },
         {
             label: "Shorts",
-            icon: <PlayIcon width={WIDTH} height={HEIGHT} />,
+            inactiveIcon: <PlayIcon width={WIDTH} height={HEIGHT} />,
+            activeIcon: (
+                <PlayIcon fill={"black"} width={WIDTH} height={HEIGHT} />
+            ),
             screenName: "ShortStack",
         },
         {
             label: "Profile",
-            icon: <ProfileIcon width={WIDTH} height={HEIGHT} />,
+            inactiveIcon: <ProfileIcon width={WIDTH} height={HEIGHT} />,
+            activeIcon: (
+                <ProfileIcon fill={"black"} width={WIDTH} height={HEIGHT} />
+            ),
             screenName: "ProfileStack",
             paramData: { userId: loggedInProfileData?.user?._id, loggedInUserId: loggedInProfileData?.user?._id }
         },
@@ -82,13 +103,9 @@ const CustomTabBar = props => {
                 })
             );
         }
-        else if (paramData) {
-            (navigation as any).navigate(screenName,paramData);
-        }
         else {
             (navigation as any).navigate(screenName);
         }
-
     };
 
     const init = async () => {
@@ -102,6 +119,13 @@ const CustomTabBar = props => {
         init();
     }, []);
 
+    useEffect(() => {
+        setActiveTab(props.state.index);
+    }, [props.state.index]);
+
+    // console.log(navigationRef?.current?.getCurrentRoute?.()?.name);
+    // console.log(JSON.stringify(props.state, undefined, 4));
+
     if (NO_TABBAR[navigationRef?.current?.getCurrentRoute?.()?.name]) {
         return null;
     }
@@ -109,17 +133,32 @@ const CustomTabBar = props => {
     return (
         <View style={styles.rootStyle}>
             {tabs.map((item, index) => {
+                if (item.label === "Create-Post") {
+                    return (
+                        <TouchableOpacity
+                            onPress={() => changeRoute(item.screenName)}
+                            style={[
+                                styles.container,
+                                { position: "relative", top: -30 },
+                            ]}
+                            key={index}>
+                            <View style={styles.iconStyle}>
+                                {item.activeIcon}
+                            </View>
+                        </TouchableOpacity>
+                    );
+                }
+
                 return (
                     <TouchableOpacity
                         onPress={() => changeRoute(item.screenName, item?.paramData)}
                         style={styles.container}
                         key={index}>
-                        <View style={styles.iconStyle}>{item.icon}</View>
-                        {item.label !== "Create-Post" && (
-                            <View style={styles.labelStyle}>
-                                <Text style={styles.label}>{item.label}</Text>
-                            </View>
-                        )}
+                        <View style={styles.iconStyle}>
+                            {activeTab === index
+                                ? item.activeIcon
+                                : item.inactiveIcon}
+                        </View>
                     </TouchableOpacity>
                 );
             })}
@@ -133,10 +172,19 @@ const styles = StyleSheet.create({
     rootStyle: {
         height: 65,
         width: "100%",
-        backgroundColor: colors.black,
+        backgroundColor: colors.white,
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+
+        elevation: 7,
     },
     label: {
         fontSize: 10,

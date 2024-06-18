@@ -94,7 +94,7 @@ const SharePost = () => {
                 formData.append("mediaFiles", {
                     uri: media.path,
                     type: media.mime,
-                    name: media.path.split("/").slice(-1),
+                    name: media.path.split("/").slice(-1)[0],
                 });
             }
             userPrompt.caption &&

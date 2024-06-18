@@ -2,6 +2,10 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "assets/fonts/Risque-Regular.ttf",
+      "sha1": "05b97bcedce9db7af6f5fd52f22d195b88d41e12"
+    },
+    {
       "path": "assets/fonts/SF-Pro-Display-Bold.otf",
       "sha1": "100e7b7fd24facbca4db38e6d4d7e01c73b82818"
     },

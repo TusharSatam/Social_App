@@ -19,6 +19,7 @@
 		89FA43C74D6546BDAAA84A84 /* SF-Pro-Display-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 509869DA661148EF85D98AF7 /* SF-Pro-Display-Light.otf */; };
 		5B00AA42B3964DA4BE860C3B /* SF-Pro-Display-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8F4781A533824EA38B6D1647 /* SF-Pro-Display-Medium.otf */; };
 		C7EADF0156A44102A21AE2B2 /* SF-Pro-Display-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D74FB2EF1EF7479E843A3058 /* SF-Pro-Display-Semibold.otf */; };
+		5D4C07FAFF7B409FABF57C11 /* Risque-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D85A7B0B3FC24B0D96DCA8C2 /* Risque-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		509869DA661148EF85D98AF7 /* SF-Pro-Display-Light.otf */ = {isa = PBXFileReference; name = "SF-Pro-Display-Light.otf"; path = "../assets/fonts/SF-Pro-Display-Light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		8F4781A533824EA38B6D1647 /* SF-Pro-Display-Medium.otf */ = {isa = PBXFileReference; name = "SF-Pro-Display-Medium.otf"; path = "../assets/fonts/SF-Pro-Display-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		D74FB2EF1EF7479E843A3058 /* SF-Pro-Display-Semibold.otf */ = {isa = PBXFileReference; name = "SF-Pro-Display-Semibold.otf"; path = "../assets/fonts/SF-Pro-Display-Semibold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D85A7B0B3FC24B0D96DCA8C2 /* Risque-Regular.ttf */ = {isa = PBXFileReference; name = "Risque-Regular.ttf"; path = "../assets/fonts/Risque-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +171,7 @@
 				509869DA661148EF85D98AF7 /* SF-Pro-Display-Light.otf */,
 				8F4781A533824EA38B6D1647 /* SF-Pro-Display-Medium.otf */,
 				D74FB2EF1EF7479E843A3058 /* SF-Pro-Display-Semibold.otf */,
+				D85A7B0B3FC24B0D96DCA8C2 /* Risque-Regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -274,6 +277,7 @@
 				89FA43C74D6546BDAAA84A84 /* SF-Pro-Display-Light.otf in Resources */,
 				5B00AA42B3964DA4BE860C3B /* SF-Pro-Display-Medium.otf in Resources */,
 				C7EADF0156A44102A21AE2B2 /* SF-Pro-Display-Semibold.otf in Resources */,
+				5D4C07FAFF7B409FABF57C11 /* Risque-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -499,7 +503,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "VoodleApp/Info.plist";
-             INFOPLIST_KEY_CFBundleDisplayName = "VoodleApp";
+				INFOPLIST_KEY_CFBundleDisplayName = "VoodleApp";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -526,7 +530,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = "VoodleApp/Info.plist";
-             INFOPLIST_KEY_CFBundleDisplayName = "VoodleApp";
+				INFOPLIST_KEY_CFBundleDisplayName = "VoodleApp";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

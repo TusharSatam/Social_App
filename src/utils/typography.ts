@@ -4,6 +4,7 @@ const typography = {
     sfLight: "SF-Pro-Display-Light",
     sfMedium: "SF-Pro-Display-Medium",
     sfSemiBold: "SF-Pro-Display-Semibold",
+    risqueRegular: "Risque-Regular",
 };
 
 export {typography};
