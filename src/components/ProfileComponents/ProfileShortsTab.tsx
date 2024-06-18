@@ -31,7 +31,6 @@ const ProfileShortsTab = () => {
   );
 
   return (
-    <ScrollView>
       <View style={styles.Reelscontainer}>
         <FlatList
           data={shortsData}
@@ -39,9 +38,9 @@ const ProfileShortsTab = () => {
           keyExtractor={(item) => item.id}
           numColumns={3}
           contentContainerStyle={styles.videoContainer}
+          style={{flex:1}}
         />
       </View>
-    </ScrollView>
   );
 };
 
@@ -56,11 +55,9 @@ const styles = StyleSheet.create({
   videoContainer: {
     paddingHorizontal: 5,
     width: '100%',
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // flexDirection: 'row',
-    // flexWrap: 'wrap',
     marginBottom: 20,
   },
   reelItem: {

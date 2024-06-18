@@ -33,6 +33,7 @@ const MainStack = () => (
         />
         <MainStackBottomTab.Screen name="ShortStack" component={ShortStack} />
         <MainStackBottomTab.Screen
+         options={{unmountOnBlur: true}}
             name="ProfileStack"
             component={ProfileStack}
         />

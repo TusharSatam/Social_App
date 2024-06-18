@@ -9,9 +9,10 @@ const UserListItem = ({ item, buttonType, buttonText, onPress }) => {
     const navigation = useNavigation()
     const loggedInProfileData = useSelector((state: any) => state.auth)
 
-    let paramData = { userId: "temporary_id", loggedInUserId: loggedInProfileData?.user?._id }
-    const handleProfileNavigation = () => {
-        (navigation as any).navigate("Profile", paramData)
+    // let paramData = { userId: "temporary_id", loggedInUserId: loggedInProfileData?.user?._id }
+    const handleProfileNavigation = (userId) => {
+        const isLoggedInUser=userId===loggedInProfileData?.user?._id;
+        (navigation as any).push("Profile", isLoggedInUser)
     }
     return (
         <View style={styles.userListItemContainer}>
@@ -20,7 +21,7 @@ const UserListItem = ({ item, buttonType, buttonText, onPress }) => {
                     style={styles.profileImg}
                     source={{ uri: item.source.uri || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png" }}
                 />
-                <TouchableOpacity onPress={handleProfileNavigation} style={styles.nameWrapper}>
+                <TouchableOpacity onPress={()=>handleProfileNavigation("temporary_id")} style={styles.nameWrapper}>
                     <CustomText style={styles.username}>{item.username || "Username N/A"}</CustomText>
                     <CustomText style={styles.name}>{item.Name || "Name N/A"}</CustomText>
                 </TouchableOpacity>

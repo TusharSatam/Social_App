@@ -22,10 +22,11 @@ import DefaultProfileIcon from '@social/components/SvgIcons/ProfileScreenIcons/D
 
 const Profile = ({ route }) => {
     const paramData = route.params;
+
     const navigation = useNavigation();
     const loggedInProfileData = useSelector((state: any) => state.auth);
 
-    const [isLoggedInUser, setIsLoggedInUser] = useState<boolean>(true);
+    const [isLoggedInUser, setIsLoggedInUser] = useState<boolean>(paramData ?? true);
     const [isContentLoading, setisContentLoading] = useState<boolean>(true);
     const [isFollow, setIsFollow] = useState<boolean>(true);
     const [profileData, setProfileData] = useState<any | null>(null);
@@ -48,18 +49,18 @@ const Profile = ({ route }) => {
         setIsFollow(!isFollow);
     }
 
-    useEffect(() => {
-        if (loggedInProfileData && paramData) {
-            setIsLoggedInUser(paramData.userId === loggedInProfileData?.user?.id ? true : false);
-        }
-    }, [paramData, loggedInProfileData]);
+    // useEffect(() => {
+    //     if (loggedInProfileData && paramData) {
+    //         setIsLoggedInUser(paramData.userId === loggedInProfileData?.user?.id ? true : false);
+    //     }
+    // }, [paramData, loggedInProfileData]);
 
     useEffect(() => {
         if (loggedInProfileData && isLoggedInUser) {
             setisContentLoading(false);
             setProfileData(loggedInProfileData?.user);
             console.log(loggedInProfileData);
-            
+
         } else {
             // Fetch the user profile data if needed
         }
@@ -96,7 +97,7 @@ const Profile = ({ route }) => {
                 </View>
                 <View style={styles.userImgName}>
                     <View style={styles.profileImageWrapper}>
-                        {profileData?.ProfilePicture !== ""
+                        {profileData?.ProfilePicture !== "" || profileData?.ProfilePicture !== null
                             ?
                             <Image source={{ uri: profileData?.ProfilePicture }} style={styles.profileImage} />
                             :
