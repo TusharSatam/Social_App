@@ -9,7 +9,6 @@ const UserListItem = ({ item, buttonType, buttonText, onPress }) => {
     const navigation = useNavigation()
     const loggedInProfileData = useSelector((state: any) => state.auth)
 
-    // let paramData = { userId: "temporary_id", loggedInUserId: loggedInProfileData?.user?._id }
     const handleProfileNavigation = (userId) => {
         const isLoggedInUser=userId===loggedInProfileData?.user?._id;
         (navigation as any).push("Profile", isLoggedInUser)

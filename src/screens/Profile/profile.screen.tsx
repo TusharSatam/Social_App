@@ -138,15 +138,15 @@ const Profile = ({ route }) => {
                 {/* Stats Container */}
                 <View style={styles.statsContainer}>
                     <View style={styles.statsItem}>
-                        <CustomText style={styles.statsNumber}>200</CustomText>
+                        <CustomText style={styles.statsNumber}>{profileData?.post?.length ? profileData?.post?.length : 0}</CustomText>
                         <CustomText style={styles.statsText}>Posts</CustomText>
                     </View>
                     <TouchableOpacity style={styles.statsItem} className='border-x-[.5px] border-[#F1F1F1]' onPress={() => handleNavigation(isLoggedInUser ? "MyFollowers" : "Followers")}>
-                        <CustomText style={styles.statsNumber}>975</CustomText>
-                        <CustomText style={styles.statsText}>{profileData?.followers} Followers</CustomText>
+                        <CustomText style={styles.statsNumber}>5</CustomText>
+                        <CustomText style={styles.statsText}>Followers</CustomText>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.statsItem} onPress={() => handleNavigation(isLoggedInUser ? "MyFollowing" : "Following")}>
-                        <CustomText style={styles.statsNumber}>121</CustomText>
+                        <CustomText style={styles.statsNumber}>5</CustomText>
                         <CustomText style={styles.statsText}>Following</CustomText>
                     </TouchableOpacity>
                 </View>
