@@ -1,11 +1,10 @@
-import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import CustomText from '../Text/CustomText'
-import { Image } from 'react-native';
 import Video from 'react-native-video';
 import { typography } from '@social/utils/typography';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 
 const ProfileSavedTab = () => {
   const navigation = useNavigation()
@@ -33,7 +32,7 @@ const ProfileSavedTab = () => {
         <TouchableOpacity onPress={() => handleNavigation("MySavedPosts")}>
           <View style={styles.postsGallery}>
             {postsData?.map((post, i) => (
-              <Image source={{ uri: post?.source?.uri }} style={styles.post} />
+              <FastImage source={{ uri: post?.source?.uri }} style={styles.post} />
             ))
             }
           </View>

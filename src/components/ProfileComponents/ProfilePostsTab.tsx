@@ -1,8 +1,7 @@
-import React from 'react'
-import { Image, StyleSheet, View } from 'react-native'
-import CustomText from '../Text/CustomText'
+import { StyleSheet, View } from 'react-native'
 import { useSelector } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
+import FastImage from 'react-native-fast-image';
 
 const ProfilePostsTab = () => {
     const profileData = useSelector((state: any) => state.auth?.user);
@@ -22,7 +21,7 @@ const ProfilePostsTab = () => {
         <ScrollView>
             <View style={styles.postContainer}>
                 {postsData?.map((post, index) => (
-                    <Image source={{ uri: post?.source?.uri }} style={styles.profileImage} key={post?.id}/>
+                    <FastImage source={{ uri: post?.source?.uri }} style={styles.profileImage} key={post?.id}/>
                 ))}
             </View>
         </ScrollView>

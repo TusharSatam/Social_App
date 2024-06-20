@@ -1,4 +1,4 @@
-import RecentLocationIcon from '@social/components/SvgIcons/ExploreScreenIcons/RecentlocationIcon'
+import LocationSearchIcon from '@social/components/SvgIcons/ExploreScreenIcons/LocationSearchIcon'
 import CustomText from '@social/components/Text/CustomText'
 import { typography } from '@social/utils/typography'
 import { TouchableOpacity } from 'react-native'
@@ -10,7 +10,7 @@ const PlaceItem = ({ item }) => {
         <TouchableOpacity style={styles.itemContainer}>
 
             <View style={styles.locationIcon}>
-                <RecentLocationIcon />
+                <LocationSearchIcon />
             </View>
 
             <View>

@@ -1,9 +1,9 @@
-import React from 'react';
-import { Image, StyleSheet, View, TouchableOpacity } from 'react-native';
+import {  StyleSheet, View, TouchableOpacity } from 'react-native';
 import CustomText from '../Text/CustomText';
 import { typography } from '@social/utils/typography';
-import { Link, useNavigation } from '@react-navigation/native';
+import {  useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import FastImage from 'react-native-fast-image';
 
 const UserListItem = ({ item, buttonType, buttonText, onPress }) => {
     const navigation = useNavigation()
@@ -16,7 +16,7 @@ const UserListItem = ({ item, buttonType, buttonText, onPress }) => {
     return (
         <View style={styles.userListItemContainer}>
             <View style={styles.userInfo}>
-                <Image
+                <FastImage
                     style={styles.profileImg}
                     source={{ uri: item.source.uri || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png" }}
                 />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import CustomText from '@social/components/Text/CustomText';
 import { useSelector } from 'react-redux';
@@ -16,9 +16,8 @@ import ProfilePostsTab from '@social/components/ProfileComponents/ProfilePostsTa
 import ProfileReelsTab from '@social/components/ProfileComponents/ProfileShortsTab';
 import ProfileSavedTab from '@social/components/ProfileComponents/ProfileSavedTab';
 import LocationPin from '@social/components/SvgIcons/ProfileScreenIcons/LocationPin';
-import UserIcon from '@social/components/SvgIcons/SettingScreenIcons/UserIcon';
-import ProfileIcon from '@social/components/SvgIcons/ProfileIcon';
 import DefaultProfileIcon from '@social/components/SvgIcons/ProfileScreenIcons/DefaultProfileIcon';
+import FastImage from 'react-native-fast-image';
 
 const Profile = ({ route }) => {
     const paramData = route.params;
@@ -99,7 +98,7 @@ const Profile = ({ route }) => {
                     <View style={styles.profileImageWrapper}>
                         {profileData?.ProfilePicture !== "" || profileData?.ProfilePicture !== null
                             ?
-                            <Image source={{ uri: profileData?.ProfilePicture }} style={styles.profileImage} />
+                            <FastImage source={{ uri: profileData?.ProfilePicture }} style={styles.profileImage} />
                             :
                             <View style={[styles.profileImage]} >
                                 <DefaultProfileIcon />

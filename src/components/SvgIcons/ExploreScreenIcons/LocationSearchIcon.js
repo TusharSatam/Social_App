@@ -1,10 +1,11 @@
 import Svg, { Path } from "react-native-svg"
-const RecentLocationIcon= (props) => (
+const LocationSearchIcon= (props) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={29}
     height={29}
     fill="none"
+    viewBox="0 0 29 29"
     {...props}
   >
     <Path
@@ -17,4 +18,4 @@ const RecentLocationIcon= (props) => (
     />
   </Svg>
 )
-export default RecentLocationIcon
+export default LocationSearchIcon

@@ -1,9 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader';
-import CustomText from '@social/components/Text/CustomText';
-import React from 'react';
 import { StyleSheet, View, FlatList, Image, Dimensions } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import FastImage from 'react-native-fast-image';
 
 const windowWidth = Dimensions.get('window').width;
 const numColumns = 3; // Number of columns
@@ -27,7 +25,7 @@ const MySavedPosts = () => {
 
     // Function to render each item in the FlatList
     const renderItem = ({ item }) => (
-        <Image
+        <FastImage
             source={item.source}
             style={{ width: itemWidth, height: itemWidth, margin: 2.5, borderRadius: 8 }}
         />

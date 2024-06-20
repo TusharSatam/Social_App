@@ -1,12 +1,9 @@
-import { useNavigation } from '@react-navigation/native'
-import RecentLocationIcon from '@social/components/SvgIcons/ExploreScreenIcons/RecentlocationIcon'
+import LocationSearchIcon from '@social/components/SvgIcons/ExploreScreenIcons/LocationSearchIcon'
 import CustomText from '@social/components/Text/CustomText'
 import { typography } from '@social/utils/typography'
-import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { useSelector } from 'react-redux'
 
 const RecentSearchItem = ({ item, handleProfileNavigation }) => {
     console.log(item);
@@ -21,7 +18,7 @@ const RecentSearchItem = ({ item, handleProfileNavigation }) => {
                     <FastImage source={item?.source} style={styles.itemImage} />
                     :
                     <View style={styles.locationIcon}>
-                        <RecentLocationIcon />
+                        <LocationSearchIcon />
                     </View>
             }
             {
