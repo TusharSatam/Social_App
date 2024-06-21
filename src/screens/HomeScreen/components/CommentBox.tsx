@@ -4,17 +4,68 @@ import {
     BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import Spacing from "@social/components/Spacing";
+import AmazedIcon from "@social/components/SvgIcons/AmazedIcon";
+import ClappingIcon from "@social/components/SvgIcons/ClappingIcon";
+import FaceWTongue from "@social/components/SvgIcons/FaceWTongue";
+import FireIcon from "@social/components/SvgIcons/FireIcon";
+import FrownIcon from "@social/components/SvgIcons/FrownIcon";
+import HandUpIcon from "@social/components/SvgIcons/HandUpIcon";
+import HeartIcon from "@social/components/SvgIcons/HeartIcon";
 import LikeHeartIcon from "@social/components/SvgIcons/LikeHeartIcon";
+import LolIcon from "@social/components/SvgIcons/LolIcon";
 import SendIcon from "@social/components/SvgIcons/SendIcon";
 import {colors} from "@social/utils/colors";
 import {images} from "@social/utils/images";
 import {typography} from "@social/utils/typography";
-import React, {useMemo} from "react";
-import {StyleSheet, Text, TextInput, View} from "react-native";
+import React, {useMemo, useState} from "react";
+import {
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import FastImage from "react-native-fast-image";
+
+const emojiData = [
+    {
+        element: HeartIcon,
+        value: "❤️",
+    },
+    {
+        element: HandUpIcon,
+        value: "🙌",
+    },
+    {
+        element: FireIcon,
+        value: "🔥",
+    },
+    {
+        element: ClappingIcon,
+        value: "👏",
+    },
+    {
+        element: AmazedIcon,
+        value: "😍",
+    },
+    {
+        element: FrownIcon,
+        value: "🙁",
+    },
+    {
+        element: LolIcon,
+        value: "😂",
+    },
+    {
+        element: FaceWTongue,
+        value: "😝",
+    },
+];
 
 const CommentBox = React.forwardRef<BottomSheetModal>(({}, ref) => {
     const snapPoints = useMemo(() => ["65%"], []);
+
+    const [comment, setComment] = useState("");
 
     const renderComment = ({index}) => {
         return (
@@ -91,45 +142,38 @@ const CommentBox = React.forwardRef<BottomSheetModal>(({}, ref) => {
                 ListFooterComponent={() => <Spacing size={50} />}
                 renderItem={renderComment}
             />
-            <View
-                style={{
-                    height: 60,
-                    borderColor: colors.lightText,
-                    paddingHorizontal: 23,
-                    justifyContent: "center",
-                    backgroundColor: colors.white,
-                    shadowColor: "#000",
-                    shadowOffset: {
-                        width: 0,
-                        height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-
-                    elevation: 5,
-                }}>
+            <View style={styles.textInputRoot}>
                 <View
                     style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "space-between",
-                        borderRadius: 10,
-                        backgroundColor: colors.f6Color,
-                        height: 42,
+                        justifyContent: "center",
+                        gap: 22,
                         paddingHorizontal: 12,
+                        paddingBottom: 16,
                     }}>
+                    {emojiData.map((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                onPress={() =>
+                                    setComment(prev => prev + item.value)
+                                }
+                                key={index}>
+                                {React.createElement(item.element, {
+                                    width: 20,
+                                    height: 20,
+                                })}
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
+                <View style={styles.textInputContainer}>
                     <TextInput
                         placeholder="Add a comment..."
+                        value={comment}
+                        onChangeText={e => setComment(e)}
                         placeholderTextColor={colors.lightText}
-                        style={{
-                            padding: 0,
-                            margin: 0,
-                            flex: 1,
-                            paddingHorizontal: 10,
-                            fontFamily: typography.sfRegular,
-                            fontSize: 14,
-                            color: colors["24Color"],
-                        }}
+                        style={styles.textInputStyle}
                     />
                     <SendIcon height={16} width={16} />
                 </View>
@@ -141,6 +185,41 @@ const CommentBox = React.forwardRef<BottomSheetModal>(({}, ref) => {
 export default CommentBox;
 
 const styles = StyleSheet.create({
+    textInputRoot: {
+        paddingTop: 18,
+        borderColor: colors.lightText,
+        paddingHorizontal: 23,
+        justifyContent: "flex-end",
+        backgroundColor: colors.white,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
+        paddingBottom: 22,
+    },
+    textInputContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        borderRadius: 10,
+        backgroundColor: colors.f6Color,
+        height: 42,
+        paddingHorizontal: 12,
+    },
+    textInputStyle: {
+        padding: 0,
+        margin: 0,
+        flex: 1,
+        paddingHorizontal: 10,
+        fontFamily: typography.sfRegular,
+        fontSize: 14,
+        color: colors["24Color"],
+    },
     container: {
         flex: 1,
         padding: 24,

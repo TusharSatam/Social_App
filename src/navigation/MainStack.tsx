@@ -7,6 +7,7 @@ import ShortStack from "./ShortStack";
 import ProfileStack from "./ProfileStack";
 import CustomTabBar from "./CustomTabBar";
 import HomeScreen from "@social/screens/HomeScreen/home.screen";
+import HomeStack from "./HomeStack";
 
 const MainStackBottomTab = createBottomTabNavigator();
 
@@ -18,8 +19,8 @@ const MainStack = () => (
         }}>
         <MainStackBottomTab.Screen
             options={{unmountOnBlur: true}}
-            name="HomeScreen"
-            component={HomeScreen}
+            name="HomeStack"
+            component={HomeStack}
         />
         <MainStackBottomTab.Screen
             options={{unmountOnBlur: true}}
@@ -33,7 +34,7 @@ const MainStack = () => (
         />
         <MainStackBottomTab.Screen name="ShortStack" component={ShortStack} />
         <MainStackBottomTab.Screen
-         options={{unmountOnBlur: true}}
+            options={{unmountOnBlur: true}}
             name="ProfileStack"
             component={ProfileStack}
         />

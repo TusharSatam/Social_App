@@ -7,13 +7,27 @@ import {
     FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
 import {logout} from "@social/redux/Slice/AuthSlice";
-import { ChangePassword, Credentials, FollowUser, GetAllFollowers, GetAllMyFollowing, GetAllMyPosts, GetUserDataType, RemoveFollower, SendForgotPassOTPRequest, SocialLoginProps, UnFollowUser, UpdateData, UpdateProfilePassword, VerifyForgotPassOTPRequest, VerifyRegisterCredentials } from "../../../../type/types";
+import {
+    ChangePassword,
+    Credentials,
+    FollowUser,
+    GetAllFollowers,
+    GetAllMyFollowing,
+    GetAllMyPosts,
+    GetUserDataType,
+    RemoveFollower,
+    SendForgotPassOTPRequest,
+    SocialLoginProps,
+    UnFollowUser,
+    UpdateData,
+    UpdateProfilePassword,
+    VerifyForgotPassOTPRequest,
+    VerifyRegisterCredentials,
+} from "../../../../type/types";
 
 const API_URL = "https://social-media-node-n6qc.onrender.com"; // Replace with your actual backend API URL
 
 // Define types for credentials and userData
-
-
 
 const baseQuery = fetchBaseQuery({
     baseUrl: API_URL,
@@ -211,11 +225,15 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
-        getUserDetailsById: builder.mutation<any, { userId: string }>({
-            query: ({ userId }) => ({
+        getUserDetailsById: builder.mutation<any, {userId: string}>({
+            query: ({userId}) => ({
                 url: `/auth/${userId}`,
                 method: "GET",
             }),
+        }),
+
+        getFeed: builder.query({
+            query: id => ({url: `/post/feed/${id}`}),
         }),
     }),
 });
@@ -242,4 +260,5 @@ export const {
     useGetAllMyPostsMutation,
     useRemoveFollowerMutation,
     useGetUserDetailsByIdMutation,
+    useGetFeedQuery,
 } = authApi;

@@ -63,7 +63,7 @@ const PostCard = (props: PostCardProps) => {
                 return (
                     <FastImage
                         source={{uri: item.media}}
-                        style={{flex: 1}}
+                        style={{flex: 1, backgroundColor: colors.black}}
                         resizeMode={FastImage.resizeMode.contain}
                     />
                 );
@@ -76,6 +76,7 @@ const PostCard = (props: PostCardProps) => {
                         repeat
                         style={{
                             flex: 1,
+                            backgroundColor: colors.black,
                         }}
                     />
                 );
@@ -87,13 +88,13 @@ const PostCard = (props: PostCardProps) => {
 
     return (
         <View style={styles.rootView}>
-            {/* <CommentBox ref={bottomSheetModalRef} />
+            <CommentBox ref={bottomSheetModalRef} />
 
             <LikeVariants
                 postIndex={postIndex}
                 showLikeVariant={showLikeVariant}
                 forScroll={forScroll}
-            /> */}
+            />
             <PostHeader />
             <View style={[styles.postMain]}>
                 <Carousel

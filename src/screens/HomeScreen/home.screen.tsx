@@ -45,6 +45,8 @@ const Home = () => {
             <FlashList
                 ref={postFlashListRef}
                 data={[1, 2, 3, 4]}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
                 nestedScrollEnabled
                 ListHeaderComponentStyle={styles.headerStyle}
                 contentContainerStyle={styles.containerStyle}
