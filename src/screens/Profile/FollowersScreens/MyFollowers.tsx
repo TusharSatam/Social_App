@@ -1,6 +1,6 @@
 import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader';
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, View, Modal, Text, TouchableOpacity } from 'react-native';
+import { FlatList, StyleSheet, View, Modal, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import UserListItem from '@social/components/ProfileComponents/UserListItem';
 import CustomText from '@social/components/Text/CustomText';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +11,6 @@ import FetchingLoader from '@social/components/Loader/FetchingLoader';
 import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 
 const MyFollowers = () => {
-
     const [removeFollower, { isLoading: isfollowerRemoving }] = useRemoveFollowerMutation();
     const [getAllFollowers, { isLoading: isAllFollowersLoading }] = useGetAllFollowersMutation();
     const dispatch = useDispatch();
@@ -19,50 +18,70 @@ const MyFollowers = () => {
     const loggedInProfileData = useSelector((state: any) => state.auth);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [followers, setFollowersList] = useState([]);
+    const [page, setPage] = useState(1);
+    const [isFetchingMore, setIsFetchingMore] = useState(false);
+    const [hasMoreData, setHasMoreData] = useState(true); // Track if there are more pages to fetch
 
-    const fetchAllFollowers = async () => {
-        const followersresponse = await getAllFollowers({ userId: loggedInProfileData?.user?._id }).unwrap()
+    const fetchAllFollowers = async (pageNumber = 1) => {
+        if (!hasMoreData) return; // Stop fetching if no more data is available
+        setIsFetchingMore(true);
         try {
+            
+            const followersresponse = await getAllFollowers({
+                userId: loggedInProfileData?.user?._id,
+                page: pageNumber,
+                limit:13,
+            }).unwrap();
+            console.log("followersresponse",pageNumber);
+            
             if (followersresponse?.data) {
-                console.log("followersresponse", followersresponse?.data);
-
-                dispatch(
-                    setFollowers(followersresponse?.data)
-                )
+                if (pageNumber === 1) {
+                    setFollowersList(followersresponse.data);
+                    dispatch(setFollowers(followersresponse.data));
+                } else {
+                    const newFollowersList = [...followers, ...followersresponse.data];
+                    setFollowersList(newFollowersList);
+                    dispatch(setFollowers(newFollowersList));
+                }
+                setPage(pageNumber);
+                // Check if there are more pages to fetch
+                if (followersresponse.data.length < 13) {
+                    setHasMoreData(false); // No more data available
+                }
+            } else {
+                setHasMoreData(false); // No more data available
             }
-        }
-        catch (error) {
+        } catch (error) {
             console.error("Failed to fetch follower users: ", error);
+        } finally {
+            setIsFetchingMore(false);
         }
-    }
+    };
+
     const handleRemoveFollower = async () => {
         if (selectedUser) {
-            console.log(selectedUser);
-
             const payload = {
                 myUserId: loggedInProfileData?.user?._id,
-                myFollowerUserId: selectedUser._id
-            }
-            console.log(payload);
+                myFollowerUserId: selectedUser._id,
+            };
             setModalVisible(false);
-            const removeResponse = await removeFollower(payload).unwrap()
-            console.log(removeResponse);
+            const removeResponse = await removeFollower(payload).unwrap();
             if (removeResponse.message === "Follower removed successfully") {
-                await fetchAllFollowers()
+                await fetchAllFollowers(1);
                 Dialog.show({
                     type: ALERT_TYPE.SUCCESS,
                     title: 'Success',
                     textBody: 'Follower removed successfully.',
                     button: 'close',
                 });
-
             }
         }
     };
 
     useEffect(() => {
-        fetchAllFollowers()
-    }, [])
+            fetchAllFollowers();
+    }, []);
 
     const renderItem = ({ item }) => (
         <UserListItem
@@ -75,21 +94,38 @@ const MyFollowers = () => {
             }}
         />
     );
-    if (isAllFollowersLoading) {
-        return <FetchingLoader />
+
+    const handleLoadMore = () => {
+        
+        if (!isFetchingMore && hasMoreData && followers.length >= 13) {
+            fetchAllFollowers(page + 1);
+        }
+    };
+
+    if (isAllFollowersLoading && page === 1 && followers?.length===0 ) {
+        console.log("page:",page);
+        
+        return <FetchingLoader />;
     }
+
     return (
-        <View style={styles.myFollowersContainer}>
+        <View style={styles.myFollowersContainer} >
             <ScreenHeader headerName='Followers' />
             <View>
-                {loggedInProfileActivityStats?.followers?.length === 0 ? <EmptyMessage header="Add Followers" description="You'll see all the people who follow you here" /> :
+                {followers.length === 0 ? (
+                    <EmptyMessage header="Add Followers" description="You'll see all the people who follow you here" />
+                ) : (
                     <FlatList
-                        data={loggedInProfileActivityStats?.followers}
+                        data={followers}
                         renderItem={renderItem}
                         keyExtractor={(item) => item._id}
                         numColumns={1}
                         contentContainerStyle={styles.videoContainer}
-                    />}
+                        onEndReached={handleLoadMore}
+                        onEndReachedThreshold={0.1}
+                        ListFooterComponent={isFetchingMore ? <ActivityIndicator size="large" color="#FF4D67" /> : null}
+                    />
+                )}
             </View>
             {selectedUser && (
                 <Modal
@@ -102,7 +138,9 @@ const MyFollowers = () => {
                 >
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
-                            <CustomText style={styles.modalText}>Are you sure you want to remove {selectedUser.username || selectedUser.Name} from followers?</CustomText>
+                            <CustomText style={styles.modalText}>
+                                Are you sure you want to remove {selectedUser.username || selectedUser.Name} from followers?
+                            </CustomText>
                             <View style={styles.buttonContainer}>
                                 <TouchableOpacity
                                     style={[styles.button, styles.buttonClose]}
@@ -150,7 +188,7 @@ const styles = StyleSheet.create({
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
-            height: 2
+            height: 2,
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
@@ -188,7 +226,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         textAlign: "center",
         fontSize: 16,
-    }
+    },
 });
 
 export default MyFollowers;

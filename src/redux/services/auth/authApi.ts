@@ -217,6 +217,20 @@ export const authApi = createApi({
                 method: "GET",
             }),
         }),
+        getProfileActivityStats: builder.query<any, string>({
+            query: (userId) => ({
+                url: `/auth/getProfileActivityStats`,
+                method: "GET", // Adjust method as per your API
+                params: { userId }, // Pass userId in the body or params as needed
+            }),
+        }),
+        getAllMyShorts: builder.query<any, { page: number; user: string }>({
+            query: ({ page, user }) => ({
+                url: "/post/getAllMyShorts",
+                method: "GET",
+                params: { page, user },
+            }),
+        }),
     }),
 });
 export const {
@@ -242,4 +256,6 @@ export const {
     useGetAllMyPostsMutation,
     useRemoveFollowerMutation,
     useGetUserDetailsByIdMutation,
+    useGetProfileActivityStatsQuery,
+    // useGetAllMyShortsMutation,
 } = authApi;

@@ -49,7 +49,7 @@ const ProfilePostsTab = ({ userId }) => {
     useEffect(() => {
         fetchAllMyPosts()
     }, [])
-
+ 
     const renderItem = ({ item }) => (
         <TouchableOpacity onPress={() => handlePostClick(item._id)}>
             <View style={styles.postItem}>
@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
     },
     multiPostIcon: {
         position: 'absolute',
-        top: 2,
-        right: 2,
+        top: 8,
+        right: 8,
         zIndex: 10,
     },
     createPostBtn: {

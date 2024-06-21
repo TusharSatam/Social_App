@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import CustomText from '@social/components/Text/CustomText';
 import { useDispatch, useSelector } from 'react-redux';
 import SecondaryBtn from '@social/components/Buttons/SecondaryBtn';
@@ -18,7 +18,7 @@ import ProfileSavedTab from '@social/components/ProfileComponents/ProfileSavedTa
 import LocationPin from '@social/components/SvgIcons/ProfileScreenIcons/LocationPin';
 import DefaultProfileIcon from '@social/components/SvgIcons/ProfileScreenIcons/DefaultProfileIcon';
 import FastImage from 'react-native-fast-image';
-import { useGetAllMyFollowingMutation, useGetUserDetailsByIdMutation } from '@social/redux/services/auth/authApi';
+import { useGetAllMyFollowingMutation, useGetProfileActivityStatsQuery, useGetUserDetailsByIdMutation } from '@social/redux/services/auth/authApi';
 import { setFollowings } from '@social/redux/Slice/UserProfileActivitySlice';
 import FetchingLoader from '@social/components/Loader/FetchingLoader';
 const Profile = ({ route }) => {
@@ -26,8 +26,10 @@ const Profile = ({ route }) => {
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
+
     const loggedInProfileData = useSelector((state: any) => state.auth);
     const loggedInProfileActivityStats = useSelector((state: any) => state.userProfileActivity);
+
     const [isLoggedInUser, setIsLoggedInUser] = useState<boolean | null>(paramData?.isLoggedInUser === false ? paramData?.isLoggedInUser : true);
     const [isContentLoading, setisContentLoading] = useState<boolean>(true);
     const [isFollow, setIsFollow] = useState<boolean>(true);
@@ -36,6 +38,7 @@ const Profile = ({ route }) => {
     const [activeTab, setActiveTab] = useState<'posts' | 'reels' | 'saved'>('posts');
 
     const [getAllMyFollowing, { isLoading: isAllFollowingLoading }] = useGetAllMyFollowingMutation();
+    const { data: profileActivityStats, isLoading, refetch } = useGetProfileActivityStatsQuery(isLoggedInUser ? loggedInProfileData?.user?._id : secondPersonUserId);
     const [getUserDetailsById, { isLoading: isUserDetailsLoading }] = useGetUserDetailsByIdMutation();
 
     const handleNavigation = (screenName: string) => {
@@ -86,11 +89,7 @@ const Profile = ({ route }) => {
 
         if (loggedInProfileActivityStats && !loggedInProfileActivityStats.followings) {
             fetchAllFollowings()
-            console.log("enter following");
-
         }
-
-
 
     }, [loggedInProfileActivityStats])
 
@@ -110,6 +109,12 @@ const Profile = ({ route }) => {
             setSecondPersonUserId(paramData?.userId)
         }
     }, [paramData, isLoggedInUser])
+
+    useFocusEffect(
+        useCallback(() => {
+            refetch();
+        }, [])
+    );
     // Function to render content based on active tab
     const renderContent = () => {
         switch (activeTab) {
@@ -130,7 +135,7 @@ const Profile = ({ route }) => {
     return (
         <View style={styles.container}>
 
-            <View style={{ paddingHorizontal: 16,backgroundColor:"white",minWidth:"100%" }}>
+            <View style={{ paddingHorizontal: 16, paddingTop:26, backgroundColor: "white", minWidth: "100%" }}>
 
                 <View style={styles.moreOptionBtn}>
                     {isLoggedInUser ?
@@ -186,15 +191,15 @@ const Profile = ({ route }) => {
                 {/* Stats Container */}
                 <View style={styles.statsContainer}>
                     <View style={styles.statsItem}>
-                        <CustomText style={styles.statsNumber}>{profileData?.post?.length ? profileData?.post?.length : 0}</CustomText>
+                        <CustomText style={styles.statsNumber}>{profileActivityStats?.totalPosts ? profileActivityStats?.totalPosts : 0}</CustomText>
                         <CustomText style={styles.statsText}>Posts</CustomText>
                     </View>
                     <TouchableOpacity style={styles.statsItem} className='border-x-[.5px] border-[#F1F1F1]' onPress={() => handleNavigation(isLoggedInUser ? "MyFollowers" : "Followers")}>
-                        <CustomText style={styles.statsNumber}>5</CustomText>
+                        <CustomText style={styles.statsNumber}>{profileActivityStats?.totalFollowers ? profileActivityStats?.totalFollowers : 0}</CustomText>
                         <CustomText style={styles.statsText}>Followers</CustomText>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.statsItem} onPress={() => handleNavigation(isLoggedInUser ? "MyFollowing" : "Following")}>
-                        <CustomText style={styles.statsNumber}>5</CustomText>
+                        <CustomText style={styles.statsNumber}>{profileActivityStats?.totalFollowing ? profileActivityStats?.totalFollowing : 0}</CustomText>
                         <CustomText style={styles.statsText}>Following</CustomText>
                     </TouchableOpacity>
                 </View>
@@ -221,8 +226,8 @@ const Profile = ({ route }) => {
                 </View>
             </View>
             {/* <View className='h-fit'> */}
-                {/* Content Based on Tab */}
-                {renderContent()}
+            {/* Content Based on Tab */}
+            {renderContent()}
             {/* </View> */}
         </View>
     );
@@ -232,7 +237,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        paddingTop: 26,
         width: "100%",
         position: "relative",
         // backgroundColor: "white",
@@ -242,7 +246,7 @@ const styles = StyleSheet.create({
     moreOptionBtn: {
         position: "absolute",
         right: 16,
-        top: 0,
+        top: 26,
     },
     userImgName: {
         display: "flex",

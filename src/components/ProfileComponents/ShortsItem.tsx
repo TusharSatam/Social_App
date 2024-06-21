@@ -22,7 +22,7 @@ const ShortsItem: React.FC<ShortsItemProps> = ({ item, paused, index, togglePaus
     return (
         <View style={[styles.reelItem, { width: itemWidth, height: 174 }]}>
             <Video
-                source={item.source}
+                source={item?.source}
                 style={styles.video}
                 muted
                 repeat
