@@ -4,11 +4,13 @@ import {authApi} from "./services/auth/authApi";
 import AuthSlice from "./Slice/AuthSlice";
 import {composeWithDevTools} from "@redux-devtools/extension";
 import PostSlice from "./Slice/PostSlice";
+import UserProfileActivitySlice from "./Slice/UserProfileActivitySlice";
 // import { composeWithDevTools } from 'redux-devtools-extension';
 const store = configureStore({
     reducer: {
         auth: AuthSlice,
         post: PostSlice,
+        userProfileActivity:UserProfileActivitySlice,
         [authApi.reducerPath]: authApi.reducer,
     },
     // Adding the api middleware enables caching, invalidation, polling, and other features of RTK Query

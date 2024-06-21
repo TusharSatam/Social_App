@@ -7,52 +7,13 @@ import {
     FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
 import {logout} from "@social/redux/Slice/AuthSlice";
+import { ChangePassword, Credentials, FollowUser, GetAllFollowers, GetAllMyFollowing, GetAllMyPosts, GetUserDataType, RemoveFollower, SendForgotPassOTPRequest, SocialLoginProps, UnFollowUser, UpdateData, UpdateProfilePassword, VerifyForgotPassOTPRequest, VerifyRegisterCredentials } from "../../../../type/types";
 
 const API_URL = "https://social-media-node-n6qc.onrender.com"; // Replace with your actual backend API URL
 
 // Define types for credentials and userData
 
-interface Credentials {
-    email: string;
-    password?: string;
-}
 
-interface VerifyRegisterCredentials {
-    otp: string;
-    email: string;
-    password: string;
-}
-// Define response types for each mutation endpoint
-interface GetUserDataType {
-    token: string; // Adjust based on your actual response structure
-}
-
-interface SendForgotPassOTPRequest {
-    email: string;
-}
-interface UpdateProfilePassword {
-    email: string;
-    currentPassword: string;
-    newPassword: string;
-}
-interface SocialLoginProps {
-    email: string;
-    name: string;
-    photo: string;
-}
-interface VerifyForgotPassOTPRequest {
-    email: string;
-}
-interface ChangePassword {
-    email: string;
-    newPassword: string;
-}
-interface UpdateData {
-    Name?: string;
-    phone?: string;
-    ProfilePicture?: string | null;
-    Interests?: string[];
-}
 
 const baseQuery = fetchBaseQuery({
     baseUrl: API_URL,
@@ -207,6 +168,55 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
+        //---Profile Activitys apis
+        followUser: builder.mutation<any, FollowUser>({
+            query: request => ({
+                url: "/auth/follow",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        unfollowUser: builder.mutation<any, UnFollowUser>({
+            query: request => ({
+                url: "/auth/unfollow",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        getAllMyPosts: builder.mutation<any, GetAllMyPosts>({
+            query: request => ({
+                url: "/post/getAllMyPosts",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        getAllMyFollowing: builder.mutation<any, GetAllMyFollowing>({
+            query: request => ({
+                url: "/auth/getAllMyFollowingList",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        getAllFollowers: builder.mutation<any, GetAllFollowers>({
+            query: request => ({
+                url: "/auth/getAllFollowers",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        removeFollower: builder.mutation<any, RemoveFollower>({
+            query: request => ({
+                url: "/auth/removeFollower",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        getUserDetailsById: builder.mutation<any, { userId: string }>({
+            query: ({ userId }) => ({
+                url: `/auth/${userId}`,
+                method: "GET",
+            }),
+        }),
     }),
 });
 export const {
@@ -225,4 +235,11 @@ export const {
     useResendForgotVerifyOTPMutation,
     useGoogleFirebaseLoginMutation,
     useFacebookFirebaseLoginMutation,
+    useFollowUserMutation,
+    useUnfollowUserMutation,
+    useGetAllFollowersMutation,
+    useGetAllMyFollowingMutation,
+    useGetAllMyPostsMutation,
+    useRemoveFollowerMutation,
+    useGetUserDetailsByIdMutation,
 } = authApi;

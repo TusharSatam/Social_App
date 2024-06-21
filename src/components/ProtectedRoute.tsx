@@ -62,7 +62,7 @@ const ProtectedRoute: React.FC = () => {
                     ).unwrap();
                     let userData = {
                         token: storedToken,
-                        data: getUserDataResponse,
+                        data: getUserDataResponse?.data,
                     };
                     dispatch(setAuthData(userData));
                 }
@@ -99,14 +99,14 @@ const ProtectedRoute: React.FC = () => {
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
-                // initialRouteName={
-                //     token
-                //         ? hasCompletedOnboarding
-                //             ? "MainStack"
-                //             : "OnBoardingStack"
-                //         : "AuthStack"
-                // }
-                initialRouteName="MainStack"
+                initialRouteName={
+                    token
+                        ? hasCompletedOnboarding
+                            ? "MainStack"
+                            : "OnBoardingStack"
+                        : "AuthStack"
+                }
+                // initialRouteName="MainStack"
                 screenOptions={{headerShown: false}}>
                 <Stack.Screen name="AuthStack" component={AuthStack} />
                 <Stack.Screen

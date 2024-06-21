@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import CustomText from '@social/components/Text/CustomText';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SecondaryBtn from '@social/components/Buttons/SecondaryBtn';
 import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 import PrimaryBtn from '@social/components/Buttons/PrimaryBtn';
@@ -18,18 +18,25 @@ import ProfileSavedTab from '@social/components/ProfileComponents/ProfileSavedTa
 import LocationPin from '@social/components/SvgIcons/ProfileScreenIcons/LocationPin';
 import DefaultProfileIcon from '@social/components/SvgIcons/ProfileScreenIcons/DefaultProfileIcon';
 import FastImage from 'react-native-fast-image';
-
+import { useGetAllMyFollowingMutation, useGetUserDetailsByIdMutation } from '@social/redux/services/auth/authApi';
+import { setFollowings } from '@social/redux/Slice/UserProfileActivitySlice';
+import FetchingLoader from '@social/components/Loader/FetchingLoader';
 const Profile = ({ route }) => {
     const paramData = route.params;
 
+    const dispatch = useDispatch();
     const navigation = useNavigation();
     const loggedInProfileData = useSelector((state: any) => state.auth);
-
-    const [isLoggedInUser, setIsLoggedInUser] = useState<boolean>(paramData ?? true);
+    const loggedInProfileActivityStats = useSelector((state: any) => state.userProfileActivity);
+    const [isLoggedInUser, setIsLoggedInUser] = useState<boolean | null>(paramData?.isLoggedInUser === false ? paramData?.isLoggedInUser : true);
     const [isContentLoading, setisContentLoading] = useState<boolean>(true);
     const [isFollow, setIsFollow] = useState<boolean>(true);
     const [profileData, setProfileData] = useState<any | null>(null);
+    const [secondPersonUserId, setSecondPersonUserId] = useState<string | null>(null)
     const [activeTab, setActiveTab] = useState<'posts' | 'reels' | 'saved'>('posts');
+
+    const [getAllMyFollowing, { isLoading: isAllFollowingLoading }] = useGetAllMyFollowingMutation();
+    const [getUserDetailsById, { isLoading: isUserDetailsLoading }] = useGetUserDetailsByIdMutation();
 
     const handleNavigation = (screenName: string) => {
         if (screenName === "MessageScreen") {
@@ -48,28 +55,66 @@ const Profile = ({ route }) => {
         setIsFollow(!isFollow);
     }
 
-    // useEffect(() => {
-    //     if (loggedInProfileData && paramData) {
-    //         setIsLoggedInUser(paramData.userId === loggedInProfileData?.user?.id ? true : false);
-    //     }
-    // }, [paramData, loggedInProfileData]);
+    const fetchAllFollowings = async () => {
+        const followingResponse = await getAllMyFollowing({ userId: loggedInProfileData?.user?._id }).unwrap()
+        try {
+            if (followingResponse?.data) {
+                dispatch(
+                    setFollowings(followingResponse?.data)
+                )
+            }
+
+        }
+        catch (error) {
+            console.error("Failed to fetch following users: ", error);
+        }
+    }
+
+    const fetchSecondPersonDetails = async () => {
+        try {
+            const response = await getUserDetailsById({ userId: secondPersonUserId }).unwrap();
+            console.log("secondPersonDetails--> ", response?.data);
+            setProfileData(response?.data);
+            setisContentLoading(false);
+        } catch (error) {
+            console.error("Failed to fetch user details: ", error);
+            setisContentLoading(false);
+        }
+    }
+
+    useEffect(() => {
+
+        if (loggedInProfileActivityStats && !loggedInProfileActivityStats.followings) {
+            fetchAllFollowings()
+            console.log("enter following");
+
+        }
+
+
+
+    }, [loggedInProfileActivityStats])
 
     useEffect(() => {
         if (loggedInProfileData && isLoggedInUser) {
             setisContentLoading(false);
             setProfileData(loggedInProfileData?.user);
-            console.log(loggedInProfileData);
 
-        } else {
+        } else if (loggedInProfileData && !isLoggedInUser && secondPersonUserId) {
             // Fetch the user profile data if needed
+            fetchSecondPersonDetails()
         }
-    }, [loggedInProfileData, isLoggedInUser])
+    }, [loggedInProfileData, isLoggedInUser, secondPersonUserId])
 
+    useEffect(() => {
+        if (!isLoggedInUser) {
+            setSecondPersonUserId(paramData?.userId)
+        }
+    }, [paramData, isLoggedInUser])
     // Function to render content based on active tab
     const renderContent = () => {
         switch (activeTab) {
             case 'posts':
-                return <ProfilePostsTab />;
+                return <ProfilePostsTab userId={isLoggedInUser ? loggedInProfileData?.user?._id : secondPersonUserId} />;
             case 'reels':
                 return <ProfileReelsTab />;
             case 'saved':
@@ -79,9 +124,13 @@ const Profile = ({ route }) => {
         }
     }
 
+    if (isUserDetailsLoading || isAllFollowingLoading) {
+        return <FetchingLoader />
+    }
     return (
         <View style={styles.container}>
-            <View style={{ paddingHorizontal: 16 }}>
+
+            <View style={{ paddingHorizontal: 16,backgroundColor:"white",minWidth:"100%" }}>
 
                 <View style={styles.moreOptionBtn}>
                     {isLoggedInUser ?
@@ -171,9 +220,10 @@ const Profile = ({ route }) => {
                     </TouchableOpacity>}
                 </View>
             </View>
-
-            {/* Content Based on Tab */}
-            {renderContent()}
+            {/* <View className='h-fit'> */}
+                {/* Content Based on Tab */}
+                {renderContent()}
+            {/* </View> */}
         </View>
     );
 };
@@ -185,7 +235,9 @@ const styles = StyleSheet.create({
         paddingTop: 26,
         width: "100%",
         position: "relative",
-        backgroundColor: "white"
+        // backgroundColor: "white",
+        backgroundColor: "#F6F6F6",
+
     },
     moreOptionBtn: {
         position: "absolute",

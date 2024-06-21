@@ -94,7 +94,7 @@ const CompleteProfile: React.FC = () => {
               ).unwrap();
               let userData = {
                 token: storedToken,
-                data: getUserDataResponse,
+                data: getUserDataResponse.data,
               };
               dispatch(setAuthData(userData));
             }

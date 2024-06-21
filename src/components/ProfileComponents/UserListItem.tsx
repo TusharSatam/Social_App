@@ -10,17 +10,19 @@ const UserListItem = ({ item, buttonType, buttonText, onPress }) => {
     const loggedInProfileData = useSelector((state: any) => state.auth)
 
     const handleProfileNavigation = (userId) => {
+        console.log("userId",userId);
+        
         const isLoggedInUser=userId===loggedInProfileData?.user?._id;
-        (navigation as any).push("Profile", isLoggedInUser)
+        (navigation as any).push("Profile", {isLoggedInUser,userId})
     }
     return (
-        <View style={styles.userListItemContainer}>
+        <View style={styles.userListItemContainer} key={item?._id}>
             <View style={styles.userInfo}>
                 <FastImage
                     style={styles.profileImg}
-                    source={{ uri: item.source.uri || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png" }}
+                    source={{ uri: item.ProfilePicture || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png" }}
                 />
-                <TouchableOpacity onPress={()=>handleProfileNavigation("temporary_id")} style={styles.nameWrapper}>
+                <TouchableOpacity onPress={()=>handleProfileNavigation(item?._id)} style={styles.nameWrapper}>
                     <CustomText style={styles.username}>{item.username || "Username N/A"}</CustomText>
                     <CustomText style={styles.name}>{item.Name || "Name N/A"}</CustomText>
                 </TouchableOpacity>
@@ -54,6 +56,8 @@ const styles = StyleSheet.create({
         height: 40,
         width: 40,
         borderRadius: 20,
+        borderWidth:.2,
+        borderColor:"#00000"
     },
     nameWrapper: {
         display: "flex",

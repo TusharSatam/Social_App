@@ -1,31 +1,68 @@
 import ScreenHeader from '@social/components/ScreenHeader/ScreenHeader';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, View, Modal, Text, TouchableOpacity } from 'react-native';
 import UserListItem from '@social/components/ProfileComponents/UserListItem';
 import CustomText from '@social/components/Text/CustomText';
+import { useDispatch, useSelector } from 'react-redux';
+import EmptyMessage from '@social/components/ProfileComponents/EmptyMessage';
+import { useGetAllFollowersMutation, useRemoveFollowerMutation } from '@social/redux/services/auth/authApi';
+import { setFollowers } from '@social/redux/Slice/UserProfileActivitySlice';
+import FetchingLoader from '@social/components/Loader/FetchingLoader';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 
 const MyFollowers = () => {
-    const [followersData, setFollowersData] = useState([
-        { id: '1', source: { uri: 'https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500' }, username: "test1", Name: "test user", isFollowing: true },
-        { id: '2', source: { uri: 'https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500' }, username: "test2", Name: "test user", isFollowing: true },
-        { id: '3', source: { uri: 'https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500' }, username: "test3", Name: "test user", isFollowing: true },
-        { id: '4', source: { uri: 'https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500' }, username: "test4", Name: "test user", isFollowing: true },
-        { id: '5', source: { uri: 'https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500' }, username: "test5", Name: "test user", isFollowing: true },
-    ]);
 
+    const [removeFollower, { isLoading: isfollowerRemoving }] = useRemoveFollowerMutation();
+    const [getAllFollowers, { isLoading: isAllFollowersLoading }] = useGetAllFollowersMutation();
+    const dispatch = useDispatch();
+    const loggedInProfileActivityStats = useSelector((state: any) => state.userProfileActivity);
+    const loggedInProfileData = useSelector((state: any) => state.auth);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
 
-    const handleRemoveFollows = () => {
-        if (selectedUser) {
-            setFollowersData(prevData =>
-                prevData.filter(user =>
-                    user.id !== selectedUser.id
+    const fetchAllFollowers = async () => {
+        const followersresponse = await getAllFollowers({ userId: loggedInProfileData?.user?._id }).unwrap()
+        try {
+            if (followersresponse?.data) {
+                console.log("followersresponse", followersresponse?.data);
+
+                dispatch(
+                    setFollowers(followersresponse?.data)
                 )
-            );
+            }
+        }
+        catch (error) {
+            console.error("Failed to fetch follower users: ", error);
+        }
+    }
+    const handleRemoveFollower = async () => {
+        if (selectedUser) {
+            console.log(selectedUser);
+
+            const payload = {
+                myUserId: loggedInProfileData?.user?._id,
+                myFollowerUserId: selectedUser._id
+            }
+            console.log(payload);
             setModalVisible(false);
+            const removeResponse = await removeFollower(payload).unwrap()
+            console.log(removeResponse);
+            if (removeResponse.message === "Follower removed successfully") {
+                await fetchAllFollowers()
+                Dialog.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: 'Success',
+                    textBody: 'Follower removed successfully.',
+                    button: 'close',
+                });
+
+            }
         }
     };
+
+    useEffect(() => {
+        fetchAllFollowers()
+    }, [])
 
     const renderItem = ({ item }) => (
         <UserListItem
@@ -38,18 +75,21 @@ const MyFollowers = () => {
             }}
         />
     );
-
+    if (isAllFollowersLoading) {
+        return <FetchingLoader />
+    }
     return (
         <View style={styles.myFollowersContainer}>
             <ScreenHeader headerName='Followers' />
             <View>
-                <FlatList
-                    data={followersData}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
-                    numColumns={1}
-                    contentContainerStyle={styles.videoContainer}
-                />
+                {loggedInProfileActivityStats?.followers?.length === 0 ? <EmptyMessage header="Add Followers" description="You'll see all the people who follow you here" /> :
+                    <FlatList
+                        data={loggedInProfileActivityStats?.followers}
+                        renderItem={renderItem}
+                        keyExtractor={(item) => item._id}
+                        numColumns={1}
+                        contentContainerStyle={styles.videoContainer}
+                    />}
             </View>
             {selectedUser && (
                 <Modal
@@ -62,7 +102,7 @@ const MyFollowers = () => {
                 >
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
-                            <CustomText style={styles.modalText}>Are you sure you want to remove {selectedUser.username} from followers?</CustomText>
+                            <CustomText style={styles.modalText}>Are you sure you want to remove {selectedUser.username || selectedUser.Name} from followers?</CustomText>
                             <View style={styles.buttonContainer}>
                                 <TouchableOpacity
                                     style={[styles.button, styles.buttonClose]}
@@ -72,7 +112,7 @@ const MyFollowers = () => {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={[styles.button, styles.buttonConfirm]}
-                                    onPress={handleRemoveFollows}
+                                    onPress={handleRemoveFollower}
                                 >
                                     <Text style={styles.textStyle}>Remove</Text>
                                 </TouchableOpacity>
@@ -139,7 +179,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
     },
-    cancelTextStyle:{
+    cancelTextStyle: {
         color: "#FF4D67",
         fontWeight: "bold",
         textAlign: "center",
@@ -147,7 +187,7 @@ const styles = StyleSheet.create({
     modalText: {
         marginBottom: 15,
         textAlign: "center",
-        fontSize:16,
+        fontSize: 16,
     }
 });
 

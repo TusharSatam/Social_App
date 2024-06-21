@@ -3,6 +3,7 @@ import Followers from "@social/screens/Profile/FollowersScreens/Followers";
 import MyFollowers from "@social/screens/Profile/FollowersScreens/MyFollowers";
 import Following from "@social/screens/Profile/FollowingScreens/Following";
 import MyFollowing from "@social/screens/Profile/FollowingScreens/MyFollowing";
+import PostDetailsScreen from "@social/screens/Profile/PostDetailsScreen/PostDetailsScreen";
 import MySavedPosts from "@social/screens/Profile/SavedScreens/MySavedPosts";
 import MySavedShorts from "@social/screens/Profile/SavedScreens/MySavedShorts";
 import Profile from "@social/screens/Profile/profile.screen";
@@ -26,6 +27,10 @@ const ProfileStack = () => {
             <ProfileStackNavigator.Screen
                 name={"MySavedPosts"}
                 component={MySavedPosts}
+            />
+            <ProfileStackNavigator.Screen
+                name={"PostDetailsScreen"}
+                component={PostDetailsScreen}
             />
             <ProfileStackNavigator.Screen
                 name={"MySavedShorts"}
