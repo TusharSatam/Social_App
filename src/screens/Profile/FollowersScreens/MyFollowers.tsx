@@ -23,8 +23,8 @@ const MyFollowers = () => {
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const [hasMoreData, setHasMoreData] = useState(true); // Track if there are more pages to fetch
 
-    const fetchAllFollowers = async (pageNumber = 1) => {
-        if (!hasMoreData) return; // Stop fetching if no more data is available
+    const fetchAllFollowers = async (pageNumber = 1,removeReFetch=false) => {
+        if (!hasMoreData && !removeReFetch) return; // Stop fetching if no more data is available
         setIsFetchingMore(true);
         try {
             
@@ -68,7 +68,11 @@ const MyFollowers = () => {
             setModalVisible(false);
             const removeResponse = await removeFollower(payload).unwrap();
             if (removeResponse.message === "Follower removed successfully") {
-                await fetchAllFollowers(1);
+                console.log("remove hasMoreData",hasMoreData);
+                
+                await fetchAllFollowers(1,true);
+                console.log("done removing");
+                
                 Dialog.show({
                     type: ALERT_TYPE.SUCCESS,
                     title: 'Success',
@@ -103,8 +107,6 @@ const MyFollowers = () => {
     };
 
     if (isAllFollowersLoading && page === 1 && followers?.length===0 ) {
-        console.log("page:",page);
-        
         return <FetchingLoader />;
     }
 
