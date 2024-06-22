@@ -183,13 +183,12 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
-        getAllMyPosts: builder.mutation<any, GetAllMyPosts>({
-            query: request => ({
-                url: "/post/getAllMyPosts",
-                method: "POST",
-                body: request,
+        getAllMyPosts: builder.query<any, GetAllMyPosts>({
+            query: ({ userId, page, limit }) => ({
+              url: `/post/getAllMyPosts?userId=${userId}&page=${page}&limit=${limit}`,
+              method: "GET",
             }),
-        }),
+          }),
         getAllMyFollowing: builder.mutation<any, GetAllMyFollowing>({
             query: request => ({
                 url: "/auth/getAllMyFollowingList",
@@ -275,7 +274,7 @@ export const {
     useUnfollowUserMutation,
     useGetAllFollowersMutation,
     useGetAllMyFollowingMutation,
-    useGetAllMyPostsMutation,
+    useGetAllMyPostsQuery,
     useRemoveFollowerMutation,
     useGetUserDetailsByIdMutation,
     useGetProfileActivityStatsQuery,

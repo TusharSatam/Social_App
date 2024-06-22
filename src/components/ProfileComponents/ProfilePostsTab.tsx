@@ -1,57 +1,72 @@
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { ScrollView } from 'react-native-gesture-handler';
 import FastImage from 'react-native-fast-image';
-import { setPosts } from '@social/redux/Slice/UserProfileActivitySlice';
-import { useGetAllMyPostsMutation } from '@social/redux/services/auth/authApi';
-import { useEffect, useState } from 'react';
-import FetchingLoader from '../Loader/FetchingLoader';
-import ExploreShortIcon from '../SvgIcons/ExploreScreenIcons/ExploreShortIcon';
-import LocationSearchIcon from '../SvgIcons/ExploreScreenIcons/LocationSearchIcon';
-import MultiPostIcon from "react-native-vector-icons/MaterialCommunityIcons"
-import EmptyMessage from './EmptyMessage';
-import { TouchableOpacity } from '@gorhom/bottom-sheet';
+import MultiPostIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import AddContentIcon from "react-native-vector-icons/Ionicons";
 import CustomText from '../Text/CustomText';
 import { typography } from '@social/utils/typography';
 import { colors } from '@social/utils/colors';
-import { useNavigation } from '@react-navigation/native';
-import AddContentIcon from "react-native-vector-icons/Ionicons"
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useGetAllMyPostsQuery } from '@social/redux/services/auth/authApi';
+import { setPosts } from '@social/redux/Slice/UserProfileActivitySlice';
+
 const ProfilePostsTab = ({ userId }) => {
-    const navigation = useNavigation()
+    const navigation = useNavigation();
     const dispatch = useDispatch();
     const loggedInProfileData = useSelector((state: any) => state.auth?.user);
-    const loggedInProfileActivityStats = useSelector((state: any) => state.userProfileActivity);
-
-    const [getAllMyPosts, { isLoading: isAllPostLoading }] = useGetAllMyPostsMutation();
-    const [allPosts, setallPosts] = useState<any[] | null>(null)
+    const [page, setPage] = useState(1);
+    const { data: postResponse, isLoading: isAllPostLoading, error: postError, refetch } = useGetAllMyPostsQuery({
+        userId,
+        page,
+        limit: 9, // Example limit value, adjust as needed
+    });
+    const [allPosts, setAllPosts] = useState<any[]>([]);
+    const [isFetchingMore, setIsFetchingMore] = useState(false);
+    const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
 
     const handlePostClick = (postId) => {
-        console.log("handlePostClick", userId);
-
         (navigation as any).navigate('PostDetailsScreen', { postId });
-
     };
-    const fetchAllMyPosts = async () => {
-        const postResponse = await getAllMyPosts({ userId }).unwrap()
-        try {
-            if (postResponse?.data) {
-                setallPosts(postResponse?.data)
-                dispatch(
-                    setPosts(postResponse?.data)
-                )
-            }
+
+    // Function to fetch more posts when end of list is reached
+    const loadMorePosts = () => {
+        if (!isFetchingMore && postResponse && page < postResponse.totalPages) {
+            setIsFetchingMore(true);
+            setPage(prevPage => prevPage + 1); // Increment page using previous state
         }
-        catch (error) {
-            console.error("Failed to fetch follower users: ", error);
-        }
-    }
+    };
 
     useEffect(() => {
-        fetchAllMyPosts()
+        if (postResponse?.data) {
+            if (page === 1) {
+                // Initialize allPosts with the fetched data when page is 1
+                setAllPosts(postResponse.data);
+            } else {
+                // Concatenate new posts to existing posts using callback in setAllPosts
+                setAllPosts(prevPosts => [...prevPosts, ...postResponse.data]);
+            }
+            setIsFetchingMore(false); // Reset fetching state
+            setHasFetchedPosts(true); // Indicate that posts have been fetched
+        }
+    }, [postResponse, page]);
+
+    useEffect(() => {
+        if (postResponse?.data) {
+            // Dispatch action to update Redux state
+            dispatch(setPosts([...allPosts, ...postResponse.data]));
+        }
+    }, [postResponse, dispatch, allPosts]);
+
+
+    // Fetch posts on initial render
+    useEffect(() => {
+        refetch();
     }, [])
- 
-    const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={() => handlePostClick(item._id)}>
+    //! when a new post created.not getting latest post  from useGetAllMyPostsQuery (assuming because it using cache value . if you restart the app you will get to see latest one)
+
+    const renderItem = ({ item, index }) => (
+        <TouchableOpacity onPress={() => handlePostClick(item._id)} key={`${item._id} ${index}`}>
             <View style={styles.postItem}>
                 {item?.Media?.length > 1 &&
                     <View style={styles.multiPostIcon}>
@@ -63,39 +78,60 @@ const ProfilePostsTab = ({ userId }) => {
         </TouchableOpacity>
     );
 
-    if (isAllPostLoading) {
-        return <View className='h-full min-w-full justify-center items-center flex flex-1'>
-            <ActivityIndicator size="large" color="#FF4D67" />
-        </View>;
+    if (isAllPostLoading && !hasFetchedPosts) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#FF4D67" />
+            </View>
+        );
     }
+
+    if (postError) {
+        // Handle error state
+        return (
+            <View style={styles.errorContainer}>
+                <CustomText>Error fetching posts. Please try again later.</CustomText>
+            </View>
+        );
+    }
+
+    // Determine whether to show the empty message
+    const shouldShowEmptyMessage = hasFetchedPosts && allPosts.length === 0;
+
     return (
         <FlatList
             data={allPosts}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item, index) => `${item._id} ${index}`}
             renderItem={renderItem}
             ListEmptyComponent={
-                <View style={styles.emptyListComponent}>
-                    {loggedInProfileData?._id === userId ? <TouchableOpacity onPress={() => (navigation as any).navigate("PostCreationStack")} style={styles.createPostBtn}>
-                        <AddContentIcon name='add-circle-outline' size={24} color={colors['24Color']} />
-                        <CustomText style={styles.emptyPostText}> Create your first post</CustomText>
-                    </TouchableOpacity> :
-                        <View>
-                            <CustomText style={styles.emptyPostText}>No Post Yet</CustomText>
-                        </View>}
-                </View>
+                shouldShowEmptyMessage ? (
+                    <View style={styles.emptyListComponent}>
+                        {loggedInProfileData?._id === userId ? (
+                            <TouchableOpacity onPress={() => (navigation as any).navigate("PostCreationStack")} style={styles.createPostBtn}>
+                                <AddContentIcon name='add-circle-outline' size={24} color={colors['24Color']} />
+                                <CustomText style={styles.emptyPostText}>Create your first post</CustomText>
+                            </TouchableOpacity>
+                        ) : (
+                            <CustomText style={styles.emptyPostText}>No Posts Yet</CustomText>
+                        )}
+                    </View>
+                ) : null
             }
             numColumns={3}
             contentContainerStyle={styles.postContainer}
+            onEndReached={loadMorePosts}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={() => (
+                isFetchingMore ? <ActivityIndicator size="large" color="#FF4D67" /> : null
+            )}
         />
+    );
+};
 
-    )
-}
 const styles = StyleSheet.create({
     postContainer: {
-        // backgroundColor: "#F6F6F6",
         paddingVertical: 11,
         paddingHorizontal: 16,
-        // flex:1,
         minWidth: "100%",
     },
     postItem: {
@@ -103,7 +139,7 @@ const styles = StyleSheet.create({
     },
     profileImage: {
         height: 106,
-        aspectRatio: 1, // To maintain aspect ratio (1:1 square images)
+        aspectRatio: 1,
         borderRadius: 5,
     },
     emptyListComponent: {
@@ -112,7 +148,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: 30,
     },
-
     emptyPostText: {
         fontFamily: typography.sfSemiBold,
         fontSize: 16,
@@ -128,6 +163,17 @@ const styles = StyleSheet.create({
         display: "flex",
         justifyContent: "center",
         alignItems: "center"
-    }
-})
-export default ProfilePostsTab
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});
+
+export default ProfilePostsTab;
