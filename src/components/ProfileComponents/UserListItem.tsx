@@ -15,6 +15,7 @@ const UserListItem = ({ item, buttonType, buttonText, onPress }) => {
         const isLoggedInUser = userId === loggedInProfileData?.user?._id;
         (navigation as any).push("Profile", { isLoggedInUser, userId })
     }
+
     return (
         <View style={styles.userListItemContainer} key={item?._id || item?.userId}>
             <View style={styles.userInfo}>
@@ -27,9 +28,9 @@ const UserListItem = ({ item, buttonType, buttonText, onPress }) => {
                     <CustomText style={styles.name}>{item.Name || "Name N/A"}</CustomText>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={[styles.buttonClass, buttonType === "primary" ? styles.primaryButton : styles.secondaryButton]} onPress={onPress}>
+            {(item?._id || item?.userId) !== loggedInProfileData?.user?._id && <TouchableOpacity style={[styles.buttonClass, buttonType === "primary" ? styles.primaryButton : styles.secondaryButton]} onPress={onPress}>
                 <CustomText style={[styles.btnText, buttonType === "primary" ? styles.primaryButtonText : styles.secondaryButtonText]}>{buttonText}</CustomText>
-            </TouchableOpacity>
+            </TouchableOpacity>}
         </View>
     );
 };

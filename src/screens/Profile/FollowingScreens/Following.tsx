@@ -119,7 +119,7 @@ if (isAllFollowingLoading && page === 1 && followings?.length===0 ) {
     return <FetchingLoader />;
 }
   return (
-    <View style={styles.myFollowersContainer}>
+    <View style={styles.myFollowingContainer}>
       <ScreenHeader headerName='Following' />
       <View>
       {followings.length === 0 ? (
@@ -141,7 +141,7 @@ if (isAllFollowingLoading && page === 1 && followings?.length===0 ) {
 };
 
 const styles = StyleSheet.create({
-  myFollowersContainer: {
+  myFollowingContainer: {
     paddingHorizontal: 16,
     flex: 1,
     backgroundColor: '#fff',
