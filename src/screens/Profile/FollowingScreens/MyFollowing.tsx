@@ -20,7 +20,6 @@ const MyFollowing = () => {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true);
   const handleFollowUnFollow = async (id) => {
-    console.log("userid:", id);
     const user = followings.find(user => user._id === id);
     if (user && user.isFollowing) {
       setFollowingList(prevData =>
@@ -47,10 +46,7 @@ const MyFollowing = () => {
       }
     }
   };
-  useEffect(() => {
-   console.log("followings : ",followings);
-   
-  }, [followings])
+
   
 
   const fetchAllFollowings = async (pageNumber = 1) => {
@@ -120,7 +116,6 @@ const MyFollowing = () => {
 };
 
 if (isAllFollowingLoading && page === 1 && followings?.length===0 ) {
-    console.log("page:",page);
     
     return <FetchingLoader />;
 }

@@ -7,7 +7,7 @@ import {
     FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
 import {logout} from "@social/redux/Slice/AuthSlice";
-import { ChangePassword, Credentials, FollowUser, GetAllFollowers, GetAllMyFollowing, GetAllMyPosts, GetUserDataType, RemoveFollower, SendForgotPassOTPRequest, SocialLoginProps, UnFollowUser, UpdateData, UpdateProfilePassword, VerifyForgotPassOTPRequest, VerifyRegisterCredentials } from "../../../../type/types";
+import { ChangePassword, Credentials, FollowUser, GetAllFollowers, GetAllMyFollowing, GetAllMyPosts, GetAllOtherPersonFollowers, GetAllOtherPersonFollowing, GetUserDataType, RemoveFollower, SendForgotPassOTPRequest, SocialLoginProps, UnFollowUser, UpdateData, UpdateProfilePassword, VerifyForgotPassOTPRequest, VerifyRegisterCredentials } from "../../../../type/types";
 
 const API_URL = "https://social-media-node-n6qc.onrender.com"; // Replace with your actual backend API URL
 
@@ -197,6 +197,20 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
+        getOtherPersonFollowingList: builder.mutation<any, GetAllOtherPersonFollowing>({
+            query: request => ({
+                url: "/auth/getOtherPersonFollowingList",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        getOtherPersonFollowersList: builder.mutation<any, GetAllOtherPersonFollowers>({
+            query: request => ({
+                url: "/auth/getOtherPersonFollowersList",
+                method: "POST",
+                body: request,
+            }),
+        }),
         getAllFollowers: builder.mutation<any, GetAllFollowers>({
             query: request => ({
                 url: "/auth/getAllFollowers",
@@ -204,6 +218,7 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
+        
         removeFollower: builder.mutation<any, RemoveFollower>({
             query: request => ({
                 url: "/auth/removeFollower",
@@ -257,5 +272,7 @@ export const {
     useRemoveFollowerMutation,
     useGetUserDetailsByIdMutation,
     useGetProfileActivityStatsQuery,
+    useGetOtherPersonFollowingListMutation,
+    useGetOtherPersonFollowersListMutation,
     // useGetAllMyShortsMutation,
 } = authApi;

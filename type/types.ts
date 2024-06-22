@@ -57,8 +57,19 @@ export interface UserRequest {
     userId: string;
     page?: number;
     limit?: number;
+    otherPersonId?:string;
+}
+
+export interface fetchOthersActivityStats {
+    myUserId: string;
+    page?: number;
+    limit?: number;
+    otherPersonId?:string;
 }
 
 export interface GetAllMyPosts extends UserRequest {}
 export interface GetAllFollowers extends UserRequest {}
 export interface GetAllMyFollowing extends UserRequest {}
+export interface GetAllOtherPersonFollowing extends fetchOthersActivityStats {}
+export interface GetAllOtherPersonFollowers extends fetchOthersActivityStats {}
+

@@ -18,8 +18,7 @@ import ProfileSavedTab from '@social/components/ProfileComponents/ProfileSavedTa
 import LocationPin from '@social/components/SvgIcons/ProfileScreenIcons/LocationPin';
 import DefaultProfileIcon from '@social/components/SvgIcons/ProfileScreenIcons/DefaultProfileIcon';
 import FastImage from 'react-native-fast-image';
-import { useGetAllMyFollowingMutation, useGetProfileActivityStatsQuery, useGetUserDetailsByIdMutation } from '@social/redux/services/auth/authApi';
-import { setFollowings } from '@social/redux/Slice/UserProfileActivitySlice';
+import { useGetProfileActivityStatsQuery, useGetUserDetailsByIdMutation } from '@social/redux/services/auth/authApi';
 import FetchingLoader from '@social/components/Loader/FetchingLoader';
 const Profile = ({ route }) => {
     const paramData = route.params;
@@ -37,11 +36,10 @@ const Profile = ({ route }) => {
     const [secondPersonUserId, setSecondPersonUserId] = useState<string | null>(null)
     const [activeTab, setActiveTab] = useState<'posts' | 'reels' | 'saved'>('posts');
 
-    const [getAllMyFollowing, { isLoading: isAllFollowingLoading }] = useGetAllMyFollowingMutation();
     const { data: profileActivityStats, isLoading, refetch } = useGetProfileActivityStatsQuery(isLoggedInUser ? loggedInProfileData?.user?._id : secondPersonUserId);
     const [getUserDetailsById, { isLoading: isUserDetailsLoading }] = useGetUserDetailsByIdMutation();
 
-    const handleNavigation = (screenName: string) => {
+    const handleNavigation = (screenName: string, userId = null) => {
         if (screenName === "MessageScreen") {
             Dialog.show({
                 type: ALERT_TYPE.INFO,
@@ -49,7 +47,10 @@ const Profile = ({ route }) => {
                 textBody: 'Message feature coming soon.',
                 button: 'close',
             });
-        } else {
+        } else if (userId) {
+            (navigation as any).push(screenName, userId);
+        }
+        else {
             (navigation as any).navigate(screenName);
         }
     }
@@ -58,20 +59,6 @@ const Profile = ({ route }) => {
         setIsFollow(!isFollow);
     }
 
-    const fetchAllFollowings = async () => {
-        const followingResponse = await getAllMyFollowing({ userId: loggedInProfileData?.user?._id }).unwrap()
-        try {
-            if (followingResponse?.data) {
-                dispatch(
-                    setFollowings(followingResponse?.data)
-                )
-            }
-
-        }
-        catch (error) {
-            console.error("Failed to fetch following users: ", error);
-        }
-    }
 
     const fetchSecondPersonDetails = async () => {
         try {
@@ -85,13 +72,7 @@ const Profile = ({ route }) => {
         }
     }
 
-    useEffect(() => {
 
-        if (loggedInProfileActivityStats && !loggedInProfileActivityStats.followings) {
-            fetchAllFollowings()
-        }
-
-    }, [loggedInProfileActivityStats])
 
     useEffect(() => {
         if (loggedInProfileData && isLoggedInUser) {
@@ -129,13 +110,13 @@ const Profile = ({ route }) => {
         }
     }
 
-    if (isUserDetailsLoading || isAllFollowingLoading) {
+    if (isUserDetailsLoading) {
         return <FetchingLoader />
     }
     return (
         <View style={styles.container}>
 
-            <View style={{ paddingHorizontal: 16, paddingTop:26, backgroundColor: "white", minWidth: "100%" }}>
+            <View style={{ paddingHorizontal: 16, paddingTop: 26, backgroundColor: "white", minWidth: "100%" }}>
 
                 <View style={styles.moreOptionBtn}>
                     {isLoggedInUser ?
@@ -194,11 +175,11 @@ const Profile = ({ route }) => {
                         <CustomText style={styles.statsNumber}>{profileActivityStats?.totalPosts ? profileActivityStats?.totalPosts : 0}</CustomText>
                         <CustomText style={styles.statsText}>Posts</CustomText>
                     </View>
-                    <TouchableOpacity style={styles.statsItem} className='border-x-[.5px] border-[#F1F1F1]' onPress={() => handleNavigation(isLoggedInUser ? "MyFollowers" : "Followers")}>
+                    <TouchableOpacity style={styles.statsItem} className='border-x-[.5px] border-[#F1F1F1]' onPress={() => handleNavigation(isLoggedInUser ? "MyFollowers" : "Followers", isLoggedInUser ? null : paramData?.userId)}>
                         <CustomText style={styles.statsNumber}>{profileActivityStats?.totalFollowers ? profileActivityStats?.totalFollowers : 0}</CustomText>
                         <CustomText style={styles.statsText}>Followers</CustomText>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.statsItem} onPress={() => handleNavigation(isLoggedInUser ? "MyFollowing" : "Following")}>
+                    <TouchableOpacity style={styles.statsItem} onPress={() => handleNavigation(isLoggedInUser ? "MyFollowing" : "Following", isLoggedInUser ? null : paramData?.userId)}>
                         <CustomText style={styles.statsNumber}>{profileActivityStats?.totalFollowing ? profileActivityStats?.totalFollowing : 0}</CustomText>
                         <CustomText style={styles.statsText}>Following</CustomText>
                     </TouchableOpacity>
