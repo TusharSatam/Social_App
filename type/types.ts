@@ -52,7 +52,10 @@ export interface UnFollowUser {
     myUserId: string;
     myFollowingUserId: string;
 }
-
+export interface isFollowing {
+    myuserId: string;
+    otherPersonId: string;
+}
 export interface UserRequest {
     userId: string;
     page?: number;

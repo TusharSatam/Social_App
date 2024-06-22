@@ -7,7 +7,7 @@ import {
     FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
 import {logout} from "@social/redux/Slice/AuthSlice";
-import { ChangePassword, Credentials, FollowUser, GetAllFollowers, GetAllMyFollowing, GetAllMyPosts, GetAllOtherPersonFollowers, GetAllOtherPersonFollowing, GetUserDataType, RemoveFollower, SendForgotPassOTPRequest, SocialLoginProps, UnFollowUser, UpdateData, UpdateProfilePassword, VerifyForgotPassOTPRequest, VerifyRegisterCredentials } from "../../../../type/types";
+import { ChangePassword, Credentials, fetchOthersFollowActivityStats, FollowUser, GetAllFollowers, GetAllMyFollowing, GetAllMyPosts, GetAllOtherPersonFollowers, GetAllOtherPersonFollowing, GetUserDataType, isFollowing, RemoveFollower, SendForgotPassOTPRequest, SocialLoginProps, UnFollowUser, UpdateData, UpdateProfilePassword, VerifyForgotPassOTPRequest, VerifyRegisterCredentials } from "../../../../type/types";
 
 const API_URL = "https://social-media-node-n6qc.onrender.com"; // Replace with your actual backend API URL
 
@@ -246,6 +246,13 @@ export const authApi = createApi({
                 params: { page, user },
             }),
         }),
+        checkIsFollowing: builder.mutation<any, isFollowing>({
+            query: request => ({
+                url: "/auth/isFollowing",
+                method: "POST",
+                body: request,
+            }),
+        }),
     }),
 });
 export const {
@@ -274,5 +281,6 @@ export const {
     useGetProfileActivityStatsQuery,
     useGetOtherPersonFollowingListMutation,
     useGetOtherPersonFollowersListMutation,
+    useCheckIsFollowingMutation,
     // useGetAllMyShortsMutation,
 } = authApi;

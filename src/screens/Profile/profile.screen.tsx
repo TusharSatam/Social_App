@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import CustomText from '@social/components/Text/CustomText';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,27 +18,31 @@ import ProfileSavedTab from '@social/components/ProfileComponents/ProfileSavedTa
 import LocationPin from '@social/components/SvgIcons/ProfileScreenIcons/LocationPin';
 import DefaultProfileIcon from '@social/components/SvgIcons/ProfileScreenIcons/DefaultProfileIcon';
 import FastImage from 'react-native-fast-image';
-import { useGetProfileActivityStatsQuery, useGetUserDetailsByIdMutation } from '@social/redux/services/auth/authApi';
+import { useCheckIsFollowingMutation, useFollowUserMutation, useGetProfileActivityStatsQuery, useGetUserDetailsByIdMutation, useUnfollowUserMutation } from '@social/redux/services/auth/authApi';
 import FetchingLoader from '@social/components/Loader/FetchingLoader';
 const Profile = ({ route }) => {
     const paramData = route.params;
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
-
+    // Accessing the logged-in user's profile data and activity stats from the Redux store
     const loggedInProfileData = useSelector((state: any) => state.auth);
     const loggedInProfileActivityStats = useSelector((state: any) => state.userProfileActivity);
-
+    // Initializing state variables
     const [isLoggedInUser, setIsLoggedInUser] = useState<boolean | null>(paramData?.isLoggedInUser === false ? paramData?.isLoggedInUser : true);
     const [isContentLoading, setisContentLoading] = useState<boolean>(true);
     const [isFollow, setIsFollow] = useState<boolean>(true);
     const [profileData, setProfileData] = useState<any | null>(null);
     const [secondPersonUserId, setSecondPersonUserId] = useState<string | null>(null)
     const [activeTab, setActiveTab] = useState<'posts' | 'reels' | 'saved'>('posts');
-
+    // API queries and mutations
     const { data: profileActivityStats, isLoading, refetch } = useGetProfileActivityStatsQuery(isLoggedInUser ? loggedInProfileData?.user?._id : secondPersonUserId);
     const [getUserDetailsById, { isLoading: isUserDetailsLoading }] = useGetUserDetailsByIdMutation();
+    const [checkIsFollowing, { isLoading: isCheckingFollowing }] = useCheckIsFollowingMutation();
+    const [unfollowUser, { isLoading: isUnFollowingLoading }] = useUnfollowUserMutation();
+    const [followUser, { isLoading: isFollowingLoading }] = useFollowUserMutation();
 
+    // Function to handle navigation to different screens
     const handleNavigation = (screenName: string, userId = null) => {
         if (screenName === "MessageScreen") {
             Dialog.show({
@@ -55,15 +59,24 @@ const Profile = ({ route }) => {
         }
     }
 
-    const toggleFollow = () => {
+    // Function to toggle follow/unfollow status
+    const toggleFollow = async () => {
         setIsFollow(!isFollow);
-    }
+        try {
+            if (isFollow) {
+                await unfollowUser({ myUserId: loggedInProfileData?.user?._id, myFollowingUserId: secondPersonUserId }).unwrap();
+            } else {
+                await followUser({ myUserId: loggedInProfileData?.user?._id, followUserId: secondPersonUserId }).unwrap();
+            }
+        } catch (error) {
+            console.error("Failed to toggle follow status: ", error);
+        }
+    };
 
-
+    // Function to fetch the details of the second person's profile
     const fetchSecondPersonDetails = async () => {
         try {
             const response = await getUserDetailsById({ userId: secondPersonUserId }).unwrap();
-            console.log("secondPersonDetails--> ", response?.data);
             setProfileData(response?.data);
             setisContentLoading(false);
         } catch (error) {
@@ -72,30 +85,43 @@ const Profile = ({ route }) => {
         }
     }
 
+    // Function to check if the logged-in user is following the second person
+    const checkAmIFollowingThisPerson = async () => {
+        try {
+            const checkResponse = await checkIsFollowing({ myuserId: loggedInProfileData?.user?._id, otherPersonId: paramData?.userId }).unwrap();
+            setIsFollow(checkResponse?.data);
+        } catch (error) {
+            console.error("Failed to check following status: ", error);
+        }
+    }
 
-
+    // useEffect to handle fetching profile data and setting loading state
     useEffect(() => {
-        if (loggedInProfileData && isLoggedInUser) {
-            setisContentLoading(false);
-            setProfileData(loggedInProfileData?.user);
-
-        } else if (loggedInProfileData && !isLoggedInUser && secondPersonUserId) {
-            // Fetch the user profile data if needed
-            fetchSecondPersonDetails()
+        if (loggedInProfileData) {
+            if (isLoggedInUser) {
+                setProfileData(loggedInProfileData?.user);
+                setisContentLoading(false);
+            } else if (secondPersonUserId) {
+                fetchSecondPersonDetails();
+            }
         }
     }, [loggedInProfileData, isLoggedInUser, secondPersonUserId])
 
+
+    // useEffect to check follow status and set second person user ID
     useEffect(() => {
         if (!isLoggedInUser) {
+            checkAmIFollowingThisPerson()
             setSecondPersonUserId(paramData?.userId)
         }
     }, [paramData, isLoggedInUser])
-
+    // Refetch profile activity stats when the screen is focused
     useFocusEffect(
         useCallback(() => {
             refetch();
         }, [])
     );
+
     // Function to render content based on active tab
     const renderContent = () => {
         switch (activeTab) {
@@ -148,10 +174,12 @@ const Profile = ({ route }) => {
                 {/* Bio and Location sections */}
                 <View style={styles.userLocBio}>
                     <CustomText style={styles.bio}>{profileData?.bio ? profileData?.bio : "bio N/A"}</CustomText>
-                    <View style={styles.locationWrapper}>
+
+                    {/*//? comments out Client Request */}
+                    {/* <View style={styles.locationWrapper}>
                         <LocationPin />
                         <CustomText style={styles.location}>{profileData?.location ? profileData?.location : "location N/A"}</CustomText>
-                    </View>
+                    </View> */}
                 </View>
                 {/* Button Container */}
                 <View style={styles.buttonContainer}>
@@ -160,10 +188,16 @@ const Profile = ({ route }) => {
                     ) : (
                         <>
                             <SecondaryBtn btnText='Message' onPress={() => handleNavigation("MessageScreen")} btnClass={styles.messageBtn} />
-                            {isFollow ?
-                                <SecondaryBtn btnText='Following' onPress={toggleFollow} btnClass={styles.FollowingBtn} textColor='#FF4D67' />
-                                :
-                                <PrimaryBtn btnText='Follow' onPress={toggleFollow} btnClass={"h-[32px] py-0 px-0 w-[100px] !text-[14px]"} btnstyle={styles.followBtnText} />
+                            {
+                                // isFollowingLoading || isUnFollowingLoading ?
+                                //     <View style={styles.followLoader}>
+                                //         <ActivityIndicator size="small" color="#FF4D67" />
+                                //     </View>
+                                //     :
+                                isFollow ?
+                                    <SecondaryBtn btnText='Following' onPress={toggleFollow} btnClass={styles.FollowingBtn} textColor='#FF4D67' />
+                                    :
+                                    <PrimaryBtn btnText='Follow' onPress={toggleFollow} btnClass={"h-[32px] py-0 px-0 w-[100px] !text-[14px]"} btnstyle={styles.followBtnText} />
                             }
                         </>
                     )}
@@ -256,6 +290,12 @@ const styles = StyleSheet.create({
     followBtn: {
         height: 32,
         width: 100,
+    },
+    followLoader: {
+        height: 32,
+        width: 100,
+        display: "flex",
+        justifyContent: "center"
     },
     followBtnText: {
         fontSize: 14,
