@@ -43,6 +43,7 @@ const baseQueryWrapper: BaseQueryFn<
 export const authApi = createApi({
     reducerPath: "authApi",
     baseQuery: baseQueryWrapper,
+    tagTypes:["profileActivity"],
     endpoints: builder => ({
         // signin apis
 
@@ -167,6 +168,7 @@ export const authApi = createApi({
                 method: "POST",
                 body: request,
             }),
+            invalidatesTags:["profileActivity"],
         }),
         //---Profile Activitys apis
         followUser: builder.mutation<any, FollowUser>({
@@ -188,6 +190,7 @@ export const authApi = createApi({
               url: `/post/getAllMyPosts?userId=${userId}&page=${page}&limit=${limit}`,
               method: "GET",
             }),
+            providesTags:["profileActivity"],
           }),
         getAllMyFollowing: builder.mutation<any, GetAllMyFollowing>({
             query: request => ({
@@ -238,12 +241,13 @@ export const authApi = createApi({
                 params: { userId }, // Pass userId in the body or params as needed
             }),
         }),
-        getAllMyShorts: builder.query<any, { page: number; user: string }>({
+        getAllMyShorts: builder.query<any, { page: number; user: string,limit:number }>({
             query: ({ page, user }) => ({
-                url: "/post/getAllMyShorts",
+                url: "/shorts/getAllMyShorts",
                 method: "GET",
                 params: { page, user },
             }),
+            providesTags:["profileActivity"],
         }),
         checkIsFollowing: builder.mutation<any, isFollowing>({
             query: request => ({
@@ -281,5 +285,6 @@ export const {
     useGetOtherPersonFollowingListMutation,
     useGetOtherPersonFollowersListMutation,
     useCheckIsFollowingMutation,
+    useGetAllMyShortsQuery,
     // useGetAllMyShortsMutation,
 } = authApi;

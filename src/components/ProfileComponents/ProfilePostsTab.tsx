@@ -63,7 +63,6 @@ const ProfilePostsTab = ({ userId }) => {
     useEffect(() => {
         refetch();
     }, [])
-    //! when a new post created.not getting latest post  from useGetAllMyPostsQuery (assuming because it using cache value . if you restart the app you will get to see latest one)
 
     const renderItem = ({ item, index }) => (
         <TouchableOpacity onPress={() => handlePostClick(item._id)} key={`${item._id} ${index}`}>

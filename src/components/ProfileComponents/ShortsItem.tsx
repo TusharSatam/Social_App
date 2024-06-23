@@ -10,7 +10,7 @@ interface ReelItem {
 }
 
 interface ShortsItemProps {
-    item: ReelItem;
+    item: any;
     paused?: boolean[];
     index?: number;
     togglePause?: (index: number) => void;
@@ -19,10 +19,15 @@ const windowWidth = Dimensions.get('window').width;
 const numColumns = 3;
 const itemWidth = (windowWidth - 32 - (numColumns - 1) * 10) / numColumns;
 const ShortsItem: React.FC<ShortsItemProps> = ({ item, paused, index, togglePause }) => {
+    console.log("item",index,item?.shorts[0]?.url);
+    const videoUrl = item?.shorts?.[0]?.url 
+    ? item.shorts[0].url 
+    : 'https://v6.cdnpk.net/videvo_files/video/premium/partners0547/large_watermarked/2557898_preview.mp4';
+    
     return (
         <View style={[styles.reelItem, { width: itemWidth, height: 174 }]}>
             <Video
-                source={item?.source}
+                source={{ uri: videoUrl }}
                 style={styles.video}
                 muted
                 repeat
@@ -32,7 +37,7 @@ const ShortsItem: React.FC<ShortsItemProps> = ({ item, paused, index, togglePaus
             />
             <View style={styles.overlay}>
                 <ReelPlayIcon />
-                <Text style={styles.viewsText}>{item.views}</Text>
+                <Text style={styles.viewsText}>{item?.views?item.views:"N/A"}</Text>
             </View>
             {/* Enable play/pause button if needed */}
             {/* <TouchableOpacity style={styles.button} onPress={() => togglePause(index)}>
@@ -65,6 +70,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         gap: 3,
+        backgroundColor: '#f0f0f0',
+        padding:2,
+        paddingHorizontal:4,
+        borderRadius:5,
     },
     viewsText: {
         color: '#fff',

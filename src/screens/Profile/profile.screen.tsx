@@ -128,7 +128,7 @@ const Profile = ({ route }) => {
             case 'posts':
                 return <ProfilePostsTab userId={isLoggedInUser ? loggedInProfileData?.user?._id : secondPersonUserId} />;
             case 'reels':
-                return <ProfileReelsTab />;
+                return <ProfileReelsTab userId={isLoggedInUser ? loggedInProfileData?.user?._id : secondPersonUserId}/>;
             case 'saved':
                 return <ProfileSavedTab />;
             default:
