@@ -22,78 +22,78 @@ const shortsData = [
   { id: '6', source: { uri: 'https://videocdn.cdnpk.net/excite/content/video/premium/partners0764/large_watermarked/2856991_preview.mp4' }, views: '56K' },
 ];
 
-const ProfileShortsTab = ({userId}) => {
-  const [paused, setPaused] = useState(Array(shortsData.length).fill(true));
+const ProfileShortsTab = ({ userId }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const loggedInProfileData = useSelector((state: any) => state.auth?.user);
   const [page, setPage] = useState(1);
   const { data: shortsResponse, isLoading: isAllShortsLoading, error: shortsError, refetch } = useGetAllMyShortsQuery({
-      user:userId,
-      page,
-      limit: 9, // Example limit value, adjust as needed
+    user: userId,
+    page,
+    limit: 9, // Example limit value, adjust as needed
   });
-  console.log(shortsResponse,userId,page);
-  
+  const [paused, setPaused] = useState(Array(shortsResponse?.length).fill(true));
+  console.log(shortsResponse, userId, page);
+
   const [allShorts, setAllShorts] = useState<any[]>([]);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [hasFetchedShorts, setHasFetchedShorts] = useState(false);
 
-  const handlePostClick = (postId) => {
-      (navigation as any).navigate('PostDetailsScreen', { postId });
+  const handleShortClick = (postId) => {
+    (navigation as any).navigate('PostDetailsScreen', { postId });
   };
 
   // Function to fetch more posts when end of list is reached
   const loadMorePosts = () => {
-      if (!isFetchingMore && shortsResponse && page < shortsResponse.totalPages) {
-          setIsFetchingMore(true);
-          setPage(prevPage => prevPage + 1); // Increment page using previous state
-      }
+    if (!isFetchingMore && shortsResponse && page < shortsResponse.totalPages) {
+      setIsFetchingMore(true);
+      setPage(prevPage => prevPage + 1); // Increment page using previous state
+    }
   };
 
   useEffect(() => {
-      if (shortsResponse?.shorts) {
-          if (page === 1) {
-              // Initialize allShorts with the fetched data when page is 1
-              setAllShorts(shortsResponse.shorts);
-          } else {
-              // Concatenate new posts to existing posts using callback in setAllShorts
-              setAllShorts(prevPosts => [...prevPosts, ...shortsResponse.shorts]);
-          }
-          setIsFetchingMore(false); // Reset fetching state
-          setHasFetchedShorts(true); // Indicate that posts have been fetched
+    if (shortsResponse?.shorts) {
+      if (page === 1) {
+        // Initialize allShorts with the fetched data when page is 1
+        setAllShorts(shortsResponse.shorts);
+      } else {
+        // Concatenate new posts to existing posts using callback in setAllShorts
+        setAllShorts(prevPosts => [...prevPosts, ...shortsResponse.shorts]);
       }
+      setIsFetchingMore(false); // Reset fetching state
+      setHasFetchedShorts(true); // Indicate that posts have been fetched
+    }
   }, [shortsResponse, page]);
 
   useEffect(() => {
-      if (shortsResponse?.shorts) {
-          // Dispatch action to update Redux state
-          dispatch(setShorts([...allShorts, ...shortsResponse.shorts]));
-      }
+    if (shortsResponse?.shorts) {
+      // Dispatch action to update Redux state
+      dispatch(setShorts([...allShorts, ...shortsResponse.shorts]));
+    }
   }, [shortsResponse, dispatch, allShorts]);
 
 
   // Fetch posts on initial render
   useEffect(() => {
-      refetch();
+    refetch();
   }, [])
 
 
   if (isAllShortsLoading && !hasFetchedShorts) {
-      return (
-          <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#FF4D67" />
-          </View>
-      );
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FF4D67" />
+      </View>
+    );
   }
 
   if (shortsError) {
-      // Handle error state
-      return (
-          <View style={styles.errorContainer}>
-              <CustomText>Error fetching Shorts. Please try again later.</CustomText>
-          </View>
-      );
+    // Handle error state
+    return (
+      <View style={styles.errorContainer}>
+        <CustomText>Error fetching Shorts. Please try again later.</CustomText>
+      </View>
+    );
   }
 
   // Determine whether to show the empty message
@@ -107,39 +107,39 @@ const ProfileShortsTab = ({userId}) => {
   };
 
   const renderItem = ({ item, index }) => (
-    <ShortsItem item={item} paused={paused} index={index} togglePause={togglePause} key={`myshorts${index}`} />
+    <ShortsItem item={item} paused={paused} index={index} togglePause={togglePause} key={`myshorts${index}`} handleShortClick={handleShortClick} />
   );
 
   return (
-      <View style={styles.Reelscontainer}>
-        <FlatList
-          data={allShorts}
-          renderItem={renderItem}
-          keyExtractor={(item,index) =>`myshorts${index}`}
-          numColumns={3}
-          contentContainerStyle={styles.videoContainer}
-          ListEmptyComponent={
-            shouldShowEmptyMessage ? (
-                <View style={styles.emptyListComponent}>
-                    {loggedInProfileData?._id === userId ? (
-                        <TouchableOpacity onPress={() => (navigation as any).navigate("PostCreationStack")} style={styles.createPostBtn}>
-                            <AddContentIcon name='add-circle-outline' size={24} color={colors['24Color']} />
-                            <CustomText style={styles.emptyPostText}>Create your first Shorts</CustomText>
-                        </TouchableOpacity>
-                    ) : (
-                        <CustomText style={styles.emptyPostText}>No Shorts Yet</CustomText>
-                    )}
-                </View>
-            ) : null
+    <View style={styles.Reelscontainer}>
+      <FlatList
+        data={allShorts}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => `myshorts${index}`}
+        numColumns={3}
+        contentContainerStyle={styles.videoContainer}
+        ListEmptyComponent={
+          shouldShowEmptyMessage ? (
+            <View style={styles.emptyListComponent}>
+              {loggedInProfileData?._id === userId ? (
+                <TouchableOpacity onPress={() => (navigation as any).navigate("PostCreationStack")} style={styles.createPostBtn}>
+                  <AddContentIcon name='add-circle-outline' size={24} color={colors['24Color']} />
+                  <CustomText style={styles.emptyPostText}>Create your first Shorts</CustomText>
+                </TouchableOpacity>
+              ) : (
+                <CustomText style={styles.emptyPostText}>No Shorts Yet</CustomText>
+              )}
+            </View>
+          ) : null
         }
-          style={{flex:1}}
-          onEndReached={loadMorePosts}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={() => (
-              isFetchingMore ? <ActivityIndicator size="large" color="#FF4D67" /> : null
-          )}
-        />
-      </View>
+        style={{ flex: 1 }}
+        onEndReached={loadMorePosts}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={() => (
+          isFetchingMore ? <ActivityIndicator size="large" color="#FF4D67" /> : null
+        )}
+      />
+    </View>
   );
 };
 
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     paddingHorizontal: 16,
     backgroundColor: "#F6F6F6",
-    flex:1,
+    flex: 1,
   },
   videoContainer: {
     paddingHorizontal: 5,
@@ -206,33 +206,33 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
   },
-   errorContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyListComponent: {
-    width:"100%",
+    width: "100%",
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginVertical: 30,
-},
-emptyPostText: {
+  },
+  emptyPostText: {
     fontFamily: typography.sfSemiBold,
     fontSize: 16,
     color: colors['24Color'],
-},
-createPostBtn: {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center"
-},
+  },
+  createPostBtn: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  },
 });
 
 export default ProfileShortsTab;

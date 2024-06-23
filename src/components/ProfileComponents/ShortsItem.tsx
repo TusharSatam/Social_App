@@ -14,18 +14,19 @@ interface ShortsItemProps {
     paused?: boolean[];
     index?: number;
     togglePause?: (index: number) => void;
+    handleShortClick?: any
 }
 const windowWidth = Dimensions.get('window').width;
 const numColumns = 3;
 const itemWidth = (windowWidth - 32 - (numColumns - 1) * 10) / numColumns;
-const ShortsItem: React.FC<ShortsItemProps> = ({ item, paused, index, togglePause }) => {
-    console.log("item",index,item?.shorts[0]?.url);
-    const videoUrl = item?.shorts?.[0]?.url 
-    ? item.shorts[0].url 
-    : 'https://v6.cdnpk.net/videvo_files/video/premium/partners0547/large_watermarked/2557898_preview.mp4';
-    
+const ShortsItem: React.FC<ShortsItemProps> = ({ item, paused, index, togglePause, handleShortClick }) => {
+    console.log("item", index, item?.shorts[0]?.url);
+    const videoUrl = item?.shorts[0]?.url
+        ? item.shorts[0].url
+        : 'https://v6.cdnpk.net/videvo_files/video/premium/partners0547/large_watermarked/2557898_preview.mp4';
+
     return (
-        <View style={[styles.reelItem, { width: itemWidth, height: 174 }]}>
+        <TouchableOpacity style={[styles.reelItem, { width: itemWidth, height: 174 }]} onPress={() => handleShortClick(item?.shortsId || item?._id)}>
             <Video
                 source={{ uri: videoUrl }}
                 style={styles.video}
@@ -33,17 +34,17 @@ const ShortsItem: React.FC<ShortsItemProps> = ({ item, paused, index, togglePaus
                 repeat
                 resizeMode="cover"
                 paused
-                // paused={paused[index]}
+            // paused={paused[index]}
             />
             <View style={styles.overlay}>
                 <ReelPlayIcon />
-                <Text style={styles.viewsText}>{item?.views?item.views:"N/A"}</Text>
+                <Text style={styles.viewsText}>{item?.views ? item.views : "N/A"}</Text>
             </View>
             {/* Enable play/pause button if needed */}
             {/* <TouchableOpacity style={styles.button} onPress={() => togglePause(index)}>
                 <Text style={styles.buttonText}>{paused[index] ? 'Play' : 'Pause'}</Text>
             </TouchableOpacity> */}
-        </View>
+        </TouchableOpacity>
     );
 };
 
@@ -71,9 +72,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         gap: 3,
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        padding:2,
-        paddingHorizontal:4,
-        borderRadius:5,
+        padding: 2,
+        paddingHorizontal: 4,
+        borderRadius: 5,
     },
     viewsText: {
         color: '#fff',

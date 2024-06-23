@@ -256,10 +256,18 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
-         getAllMySavedPosts: builder.query<any, { id: string }>({
-            query: ({ id }) => ({
-                url: `/savepost/${id}`,
+        getAllMySavedPosts: builder.query<any, { page: number; userId: string;limit:number }>({
+            query: ({ page, userId,limit }) => ({
+                url:`/savepost/${userId}`,
                 method: "GET",
+                params: { page, limit },
+            }),
+        }),
+        getAllMySavedShorts: builder.query<any, { page: number; userId: string;limit:number }>({
+            query: ({ page, userId,limit }) => ({
+                url: `/saveshorts/${userId}`,
+                method: "GET",
+                params: { page, limit },
             }),
         }),
     }),
@@ -293,4 +301,5 @@ export const {
     useCheckIsFollowingMutation,
     useGetAllMyShortsQuery,
     useGetAllMySavedPostsQuery,
+    useGetAllMySavedShortsQuery
 } = authApi;

@@ -17,24 +17,25 @@ const MySavedPosts = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const loggedInProfileData = useSelector((state: any) => state.auth?.user);
-    const { data: savedPosts, error: postError, isLoading: isAllPostLoading, refetch } = useGetAllMySavedPostsQuery({ id: loggedInProfileData?._id });
-
     const [page, setPage] = useState(1);
+    const { data: savedPosts, isLoading: isAllPostLoading, error: postError, refetch } = useGetAllMySavedPostsQuery({
+        userId: loggedInProfileData?._id,
+        page,
+        limit: 18, // Example limit value, adjust as needed
+      });
     const [allPosts, setAllPosts] = useState<any[]>([]);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
 
-    useEffect(() => {
-        console.log("savedPosts", savedPosts);
-        console.log("allPosts", allPosts);
-    }, [savedPosts, allPosts]);
 
     const handlePostClick = (postId) => {
         (navigation as any).navigate('PostDetailsScreen', { postId });
     };
 
     const loadMorePosts = () => {
+        console.log("fetch more 1");
         if (!isFetchingMore && savedPosts && page < savedPosts.pagination.totalPages) {
+            console.log("fetch more 2");
             setIsFetchingMore(true);
             setPage(prevPage => prevPage + 1); // Increment page using previous state
         }
@@ -60,7 +61,7 @@ const MySavedPosts = () => {
 
     useEffect(() => {
         refetch();
-    }, []);
+    }, [loggedInProfileData]);
 
     if (isAllPostLoading && !hasFetchedPosts) {
         return (
@@ -82,11 +83,11 @@ const MySavedPosts = () => {
     const itemWidth = (windowWidth - 32 - (numColumns - 1) * 10) / numColumns;
 
     const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={() => handlePostClick(item.postId)}>
+        <TouchableOpacity onPress={() => handlePostClick(item.postId)} key={item.postId}>
             <FastImage
                 key={item?.postId}
                 source={{ uri: item?.media[0]?.url }}
-                style={{ width: itemWidth, height: itemWidth, margin: 2.5, borderRadius: 8 }}
+                style={{ width: itemWidth, height: itemWidth, margin: 2.5, borderRadius: 8,backgroundColor:"#797979" }}
             />
         </TouchableOpacity>
     );
@@ -97,7 +98,7 @@ const MySavedPosts = () => {
              <FlatList
                 data={allPosts}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.postId}
+                keyExtractor={(item) => item.postId.toString()}
                 numColumns={numColumns}
                 ListEmptyComponent={
                     shouldShowEmptyMessage ? (
@@ -108,7 +109,7 @@ const MySavedPosts = () => {
                 }
                 contentContainerStyle={styles.savedPosts}
                 onEndReached={loadMorePosts}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={0.1}
                 ListFooterComponent={() => (
                     isFetchingMore ? <ActivityIndicator size="large" color="#FF4D67" /> : null
                 )}
@@ -120,9 +121,9 @@ const MySavedPosts = () => {
 const styles = StyleSheet.create({
     savedContainer: {
         paddingHorizontal: 16,
+        paddingBottom:60,
     },
     savedPosts: {
-        // paddingTop: 16,
     },
     loadingContainer: {
         flex: 1,
