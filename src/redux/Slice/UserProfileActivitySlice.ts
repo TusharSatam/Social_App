@@ -2,10 +2,12 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 // Define types for state and action payloads
 interface UserProfileActivityState {
-    followers: any[] | null; // Replace 'any[]' with the actual type of followers
-    followings: any[] | null; // Replace 'any[]' with the actual type of followings
-    posts: any[] | null; // Replace 'any[]' with the actual type of posts
-    shorts: any[] | null; // Replace 'any[]' with the actual type of shorts
+    followers: any[] | null; 
+    followings: any[] | null; 
+    posts: any[] | null; 
+    shorts: any[] | null; 
+    savedPosts: any[] | null;
+    savedShorts: any[] | null;
 }
 
 // Define initial state
@@ -14,6 +16,8 @@ const initialState: UserProfileActivityState = {
     followings: null,
     posts: null,
     shorts: null,
+    savedPosts: null,
+    savedShorts: null,
 };
 
 const UserProfileActivitySlice = createSlice({
@@ -32,11 +36,17 @@ const UserProfileActivitySlice = createSlice({
         setShorts(state, action: PayloadAction<any[]>) {
             state.shorts = action.payload;
         },
+        setSavedPosts(state, action: PayloadAction<any[]>) {
+            state.savedPosts = action.payload;
+        },
+        setSavedShorts(state, action: PayloadAction<any[]>) {
+            state.savedShorts = action.payload;
+        },
     },
 });
 
 // Export action creators with explicit types
-export const {setFollowers, setFollowings, setPosts, setShorts} =
+export const {setFollowers, setFollowings, setPosts, setShorts,setSavedPosts,setSavedShorts} =
     UserProfileActivitySlice.actions;
 
 // Export reducer with inferred type based on initialState

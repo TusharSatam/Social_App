@@ -256,6 +256,12 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
+         getAllMySavedPosts: builder.query<any, { id: string }>({
+            query: ({ id }) => ({
+                url: `/savepost/${id}`,
+                method: "GET",
+            }),
+        }),
     }),
 });
 export const {
@@ -286,5 +292,5 @@ export const {
     useGetOtherPersonFollowersListMutation,
     useCheckIsFollowingMutation,
     useGetAllMyShortsQuery,
-    // useGetAllMyShortsMutation,
+    useGetAllMySavedPostsQuery,
 } = authApi;
