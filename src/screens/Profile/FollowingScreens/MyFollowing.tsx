@@ -103,9 +103,10 @@ const MyFollowing = () => {
   const renderItem = ({ item }) => (
     <UserListItem
       item={item}
-      buttonType={item.isFollowing ? "secondary" : "primary"}
-      buttonText={item.isFollowing ? "Following" : "Follow"}
-      onPress={() => handleFollowUnFollow(item._id)}
+      buttonType={item?.isFollowing ? "secondary" : "primary"}
+      buttonText={item?.isFollowing ? "Following" : "Follow"}
+      onPress={() => handleFollowUnFollow(item?._id)}
+      key={item?._id}
     />
   );
   const handleLoadMore = () => {

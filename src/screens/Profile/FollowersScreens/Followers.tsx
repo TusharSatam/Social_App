@@ -104,6 +104,7 @@ const MyFollowing = ({ route }) => {
       buttonType={item.isFollowedByMe ? "secondary" : "primary"}
       buttonText={item.isFollowedByMe ? "Following" : "Follow"}
       onPress={() => handleFollowUnFollow(item.userId)}
+      key={item?.userId}
     />
   );
   const handleLoadMore = () => {

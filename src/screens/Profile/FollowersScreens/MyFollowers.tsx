@@ -87,7 +87,7 @@ const MyFollowers = () => {
             fetchAllFollowers();
     }, []);
 
-    const renderItem = ({ item }) => (
+    const renderItem = ({ item,index }) => (
         <UserListItem
             item={item}
             buttonType={"secondary"}
@@ -96,6 +96,7 @@ const MyFollowers = () => {
                 setSelectedUser(item);
                 setModalVisible(true);
             }}
+            key={item?._id}
         />
     );
 

@@ -30,27 +30,27 @@ const MyFollowing = ({ route }) => {
         )
       );
       try {
-        await unfollowUser({ myUserId: loggedInProfileData?.user?._id,myFollowingUserId:id }).unwrap();
+        await unfollowUser({ myUserId: loggedInProfileData?.user?._id, myFollowingUserId: id }).unwrap();
       } catch (error) {
         console.error("Failed to unfollow user: ", error);
       }
     }
-     else {
+    else {
       setFollowingList(prevData =>
         prevData.map(user =>
           user.userId === id ? { ...user, isFollowedByMe: !user.isFollowedByMe } : user
         )
       );
       try {
-        await followUser({ myUserId: loggedInProfileData?.user?._id,followUserId:id }).unwrap();
+        await followUser({ myUserId: loggedInProfileData?.user?._id, followUserId: id }).unwrap();
       } catch (error) {
         console.error("Failed to follow user: ", error);
       }
     }
   };
 
-  
-  
+
+
 
   const fetchAllFollowings = async (pageNumber = 1) => {
     if (!hasMoreData) return; // Stop fetching if no more data is available
@@ -61,17 +61,17 @@ const MyFollowing = ({ route }) => {
         myUserId: loggedInProfileData?.user?._id,
         page: pageNumber,
         limit: 13,
-        otherPersonId:paramUserId,
+        otherPersonId: paramUserId,
       }).unwrap();
 
       if (followingResponse?.data) {
 
         if (pageNumber === 1) {
-         
+
           setFollowingList(followingResponse.data);
           dispatch(setFollowings(followingResponse.data));
         } else {
-         
+
           const newFollowingList = [...followings, ...followingResponse.data];
           setFollowingList(newFollowingList);
           dispatch(setFollowings(newFollowingList));
@@ -104,37 +104,38 @@ const MyFollowing = ({ route }) => {
       buttonType={item.isFollowedByMe ? "secondary" : "primary"}
       buttonText={item.isFollowedByMe ? "Following" : "Follow"}
       onPress={() => handleFollowUnFollow(item.userId)}
+      key={item?.userId}
     />
   );
   const handleLoadMore = () => {
-        
+
     if (!isFetchingMore && hasMoreData && followings.length >= 13) {
       fetchAllFollowings(page + 1);
     }
-};
+  };
 
-if (isAllFollowingLoading && page === 1 && followings?.length===0 ) {
-    console.log("page:",page);
-    
+  if (isAllFollowingLoading && page === 1 && followings?.length === 0) {
+    console.log("page:", page);
+
     return <FetchingLoader />;
-}
+  }
   return (
     <View style={styles.myFollowingContainer}>
       <ScreenHeader headerName='Following' />
       <View>
-      {followings.length === 0 ? (
-                    <EmptyMessage header="No users found" />
-                ) : (
-        <FlatList
-          data={followings}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-          numColumns={1}
-          contentContainerStyle={styles.videoContainer}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.1}
-          ListFooterComponent={isFetchingMore ? <ActivityIndicator size="large" color="#FF4D67" /> : null}
-        />  )}
+        {followings.length === 0 ? (
+          <EmptyMessage header="No users found" />
+        ) : (
+          <FlatList
+            data={followings}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            numColumns={1}
+            contentContainerStyle={styles.videoContainer}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.1}
+            ListFooterComponent={isFetchingMore ? <ActivityIndicator size="large" color="#FF4D67" /> : null}
+          />)}
       </View>
     </View>
   );
