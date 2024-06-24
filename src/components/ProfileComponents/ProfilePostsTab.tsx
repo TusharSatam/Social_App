@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     },
     postItem: {
         margin: 2.5,
+        borderRadius:5,
     },
     profileImage: {
         height: 106,

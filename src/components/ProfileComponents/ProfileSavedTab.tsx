@@ -5,56 +5,118 @@ import { typography } from '@social/utils/typography';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useGetAllMySavedPostsQuery, useGetAllMySavedShortsQuery } from '@social/redux/services/auth/authApi';
 
 const ProfileSavedTab = () => {
   const navigation = useNavigation()
   const handleNavigation = (screenName: string) => {
     (navigation as any).navigate(screenName)
   }
-  // Sample data to represent the posts
-  const postsData = [
-    { id: '1', source: { uri: 'https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500' } },
-    { id: '2', source: { uri: 'https://cdn.pixabay.com/photo/2017/08/24/11/04/brain-2676370_640.jpg' } },
-    { id: '3', source: { uri: 'https://media.istockphoto.com/id/1277730699/photo/industrial-technology-concept-communication-network-industry-4-0-factory-automation.jpg?s=1024x1024&w=is&k=20&c=tj0FhN8XQDnjolxJAeTYySVCU-Hxh1POEzE3ALK5eVU=' } },
-    { id: '4', source: { uri: 'https://media.istockphoto.com/id/811745564/photo/night-view-of-hakodateyama-in-hokkaido-japan.jpg?s=1024x1024&w=is&k=20&c=7K8CPG7BGf6NaDcUExLzTFL5YWZLKO7ptMqoPnkXyXo=' } },
-  ];
-  // Sample data to represent the shorts
-  const shortsData = [
-    { id: '1', source: { uri: 'https://v6.cdnpk.net/videvo_files/video/premium/partners0547/large_watermarked/2557898_preview.mp4' }, views: '56K' },
-    { id: '2', source: { uri: 'https://videocdn.cdnpk.net/cdn/content/video/partners0316/large_watermarked/h7975e5ac_MotionFlow6307_preview.mp4' }, views: '56K' },
-    { id: '3', source: { uri: 'https://v3.cdnpk.net/videvo_files/video/premium/partners0485/large_watermarked/BB_572945f2-0abd-4d23-84f1-76146cd7422d_preview.mp4' }, views: '56K' },
-    { id: '4', source: { uri: 'https://videocdn.cdnpk.net/euphony/content/video/happy/premium/partners0067/large_watermarked/BB_fb7a63cf-7bea-46c5-ac09-36fe1f101b89_preview.mp4' }, views: '56K' },
-  ];
+  const loggedInProfileData = useSelector((state: any) => state.auth?.user);
+  const [page, setPage] = useState(1);
+  const [allPosts, setAllPosts] = useState<any[]>([]);
+  const [allShorts, setAllShorts] = useState<any[]>([]);
+  const [hasFetchedShorts, setHasFetchedShorts] = useState(false);
+  const [displayPostNone, setdisplayPostNone] = useState(false);
+  const [displayShortNone, setdisplayShortNone] = useState(false)
+
+  const { data: savedPosts, isLoading: isAllPostLoading, error: postError, refetch: refetchPosts } = useGetAllMySavedPostsQuery({
+    userId: loggedInProfileData?._id,
+    page,
+    limit: 8,
+  });
+  const { data: shortsResponse, isLoading: isAllShortsLoading, error: shortsError, refetch: refetchShorts } = useGetAllMySavedShortsQuery({
+    userId: loggedInProfileData?._id,
+    page,
+    limit: 8,
+  });
+
+  useEffect(() => {
+    if (savedPosts?.data) {
+      if (savedPosts?.data?.length === 0) {
+        setdisplayPostNone(true);
+      }
+      else {
+        let posts = savedPosts.data.slice(0, 4);
+        while (posts.length < 4) {
+          posts.push({});
+        }
+        if (page === 1) {
+          setAllPosts(posts);
+        }
+        setHasFetchedShorts(true); // Indicate that posts have been fetched
+      }
+    }
+  }, [savedPosts, page]);
+
+  useEffect(() => {
+    if (shortsResponse?.data) {
+      if (shortsResponse?.data?.length === 0) {
+        setdisplayShortNone(true);
+      }
+      else {
+        let shorts = shortsResponse.data.slice(0, 4);
+        while (shorts.length < 4) {
+          shorts.push({});
+        }
+        if (page === 1) {
+          setAllShorts(shorts);
+        }
+        setHasFetchedShorts(true);
+      }
+    }
+  }, [shortsResponse, page]);
+
+  useEffect(() => {
+    console.log("allPosts", allPosts);
+    console.log("allShorts", allShorts);
+  }, [allPosts, allShorts])
 
   return (
     <View style={styles.savedContainer}>
       <View style={styles.galleryWrapper}>
-        <TouchableOpacity onPress={() => handleNavigation("MySavedPosts")}>
+        {!displayPostNone ? <TouchableOpacity onPress={() => handleNavigation("MySavedPosts")} style={{ overflow: "hidden" }}>
           <View style={styles.postsGallery}>
-            {postsData?.map((post, i) => (
-              <FastImage source={{ uri: post?.source?.uri }} style={styles.post} />
+            {allPosts?.map((post, index) => (
+              <>
+                {post?.media ? <FastImage source={{ uri: post?.media[0]?.url }} style={styles.post} key={`savedPost${index}`} /> : <View style={styles.post} key={`savedPost${index}`} ></View>}
+              </>
             ))
             }
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> :
+          <View style={styles.none}>
+            <CustomText className='text-white'>None</CustomText>
+          </View>
+        }
         <CustomText style={styles.text}>Posts</CustomText>
       </View>
       <View style={styles.galleryWrapper}>
-        <TouchableOpacity onPress={() => handleNavigation("MySavedShorts")}>
+        {!displayShortNone ? <TouchableOpacity onPress={() => handleNavigation("MySavedShorts")}>
           <View style={styles.ShortsGallery}>
-            {shortsData?.map((short, i) => (
-              <Video
-                source={short.source}
-                style={styles.short}
-                muted
-                repeat
-                resizeMode="cover"
-                paused
-              />
+            {allShorts?.map((short, index) => (
+              <>
+                {short?.shorts ? <Video
+                  source={{ uri: short?.shorts[0]?.url ? short?.shorts[0]?.url : "" }}
+                  style={styles.short}
+                  muted
+                  repeat
+                  resizeMode="cover"
+                  paused
+                  key={`savedShort${index}`}
+                /> : <View style={styles.short} key={`savedShort${index}`}></View>}
+              </>
             ))
             }
           </View>
         </TouchableOpacity>
+          :
+          <View style={styles.none}>
+            <CustomText className='text-white'>None</CustomText>
+          </View>
+        }
         <CustomText style={styles.text}>Shorts</CustomText>
       </View>
     </View>
@@ -83,14 +145,27 @@ const styles = StyleSheet.create({
     // backgroundColor:"yellow",
     // borderRadius: 10,
   },
+  none: {
+    borderRadius: 20,
+    height: 180,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+    backgroundColor: "#797979"
+  },
   postsGallery: {
     borderRadius: 10,
     width: "100%",
     height: 180,
     display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     flexDirection: "row",
     flexWrap: "wrap",
     overflow: "hidden",
+    backgroundColor: "#797979"
   },
   ShortsGallery: {
     borderRadius: 10,
@@ -100,6 +175,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     overflow: "hidden",
+    backgroundColor: "#797979"
   },
   post: {
     height: 90,

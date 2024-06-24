@@ -107,7 +107,7 @@ const ProfileShortsTab = ({ userId }) => {
   };
 
   const renderItem = ({ item, index }) => (
-    <ShortsItem item={item} paused={paused} index={index} togglePause={togglePause} key={`myshorts${index}`} handleShortClick={handleShortClick} />
+    <ShortsItem item={item} paused={paused} index={index} togglePause={togglePause} key={`myshorts${index}`} />
   );
 
   return (

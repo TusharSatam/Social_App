@@ -96,7 +96,7 @@ const MySavedPosts = () => {
   };
 
   const renderItem = ({ item, index }) => (
-    <ShortsItem item={item} paused={paused} index={index} togglePause={togglePause} key={item.shortsId} handleShortClick={handleShortClick}/>
+    <ShortsItem item={item} paused={paused} index={index} togglePause={togglePause} key={item.shortsId}/>
   );
   useEffect(() => {
     console.log(shortsResponse);

@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
 import Video from 'react-native-video';
 import ReelPlayIcon from '../SvgIcons/ProfileScreenIcons/ReelPlayIcon';
+import { useNavigation } from '@react-navigation/native';
 
 interface ReelItem {
     id: string;
@@ -14,19 +15,21 @@ interface ShortsItemProps {
     paused?: boolean[];
     index?: number;
     togglePause?: (index: number) => void;
-    handleShortClick?: any
 }
 const windowWidth = Dimensions.get('window').width;
 const numColumns = 3;
 const itemWidth = (windowWidth - 32 - (numColumns - 1) * 10) / numColumns;
-const ShortsItem: React.FC<ShortsItemProps> = ({ item, paused, index, togglePause, handleShortClick }) => {
+const ShortsItem: React.FC<ShortsItemProps> = ({ item, paused, index, togglePause }) => {
+    const navigation = useNavigation()
     console.log("item", index, item?.shorts[0]?.url);
     const videoUrl = item?.shorts[0]?.url
         ? item.shorts[0].url
         : 'https://v6.cdnpk.net/videvo_files/video/premium/partners0547/large_watermarked/2557898_preview.mp4';
 
     return (
-        <TouchableOpacity style={[styles.reelItem, { width: itemWidth, height: 174 }]} onPress={() => handleShortClick(item?.shortsId || item?._id)}>
+        <TouchableOpacity style={[styles.reelItem, { width: itemWidth, height: 174 }]}
+            onPress={() => (navigation as any).navigate('PostDetailsScreen',{postId:item?.shortsId ? item.shortsId : item._id})}
+        >
             <Video
                 source={{ uri: videoUrl }}
                 style={styles.video}
@@ -38,7 +41,7 @@ const ShortsItem: React.FC<ShortsItemProps> = ({ item, paused, index, togglePaus
             />
             <View style={styles.overlay}>
                 <ReelPlayIcon />
-                <Text style={styles.viewsText}>{item?.views ? item.views : "N/A"}</Text>
+                <Text style={styles.viewsText}>{item?.viewersCount ? item.viewersCount : "N/A"}</Text>
             </View>
             {/* Enable play/pause button if needed */}
             {/* <TouchableOpacity style={styles.button} onPress={() => togglePause(index)}>
@@ -56,11 +59,12 @@ const styles = StyleSheet.create({
         position: 'relative',
         borderRadius: 5,
         overflow: 'hidden',
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#797979',
     },
     video: {
         height: '100%',
         width: '100%',
+        backgroundColor: '#797979',
     },
     overlay: {
         position: 'absolute',
