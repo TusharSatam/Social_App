@@ -96,12 +96,8 @@ const MySavedPosts = () => {
   };
 
   const renderItem = ({ item, index }) => (
-    <ShortsItem item={item} paused={paused} index={index} togglePause={togglePause} key={item.shortsId}/>
+    <ShortsItem item={item} index={index} key={item?.shortsId}/>
   );
-  useEffect(() => {
-    console.log(shortsResponse);
-
-  }, [shortsResponse])
 
   return (
     <View style={styles.savedContainer}>
@@ -109,7 +105,7 @@ const MySavedPosts = () => {
       <FlatList
         data={allShorts}
         renderItem={renderItem}
-        keyExtractor={(item) => item.shortsId}
+        keyExtractor={(item) => item?.shortsId}
         numColumns={numColumns} // Render 3 columns
         contentContainerStyle={styles.savedPosts}
         ListEmptyComponent={

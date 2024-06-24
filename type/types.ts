@@ -60,20 +60,24 @@ export interface UserRequest {
     userId: string;
     page?: number;
     limit?: number;
-    otherPersonId?:string;
+    otherPersonId?: string;
 }
 
 export interface fetchOthersFollowActivityStats {
     myUserId: string;
     page?: number;
     limit?: number;
-    otherPersonId?:string;
+    otherPersonId?: string;
 }
-
+export interface SavedFCMToken {
+    userId: string;
+    fcmToken: string;
+}
 
 export interface GetAllMyPosts extends UserRequest {}
 export interface GetAllFollowers extends UserRequest {}
 export interface GetAllMyFollowing extends UserRequest {}
-export interface GetAllOtherPersonFollowing extends fetchOthersFollowActivityStats {}
-export interface GetAllOtherPersonFollowers extends fetchOthersFollowActivityStats {}
-
+export interface GetAllOtherPersonFollowing
+    extends fetchOthersFollowActivityStats {}
+export interface GetAllOtherPersonFollowers
+    extends fetchOthersFollowActivityStats {}

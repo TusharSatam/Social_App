@@ -12,33 +12,33 @@ interface ReelItem {
 
 interface ShortsItemProps {
     item: any;
-    paused?: boolean[];
     index?: number;
-    togglePause?: (index: number) => void;
+    // paused?: boolean[];
+    // togglePause?: (index: number) => void;
 }
 const windowWidth = Dimensions.get('window').width;
 const numColumns = 3;
 const itemWidth = (windowWidth - 32 - (numColumns - 1) * 10) / numColumns;
-const ShortsItem: React.FC<ShortsItemProps> = ({ item, paused, index, togglePause }) => {
+const ShortsItem: React.FC<ShortsItemProps> = ({ item, index }) => {
     const navigation = useNavigation()
     console.log("item", index, item?.shorts[0]?.url);
     const videoUrl = item?.shorts[0]?.url
-        ? item.shorts[0].url
+        ? item?.shorts[0]?.url
         : 'https://v6.cdnpk.net/videvo_files/video/premium/partners0547/large_watermarked/2557898_preview.mp4';
 
     return (
         <TouchableOpacity style={[styles.reelItem, { width: itemWidth, height: 174 }]}
-            onPress={() => (navigation as any).navigate('PostDetailsScreen',{postId:item?.shortsId ? item.shortsId : item._id})}
+            onPress={() => (navigation as any).navigate('PostDetailsScreen', { postId: item?.shortsId ? item.shortsId : item._id })}
         >
-            <Video
-                source={{ uri: videoUrl }}
+            {videoUrl && <Video
+                source={{ uri: item?.shorts[0]?.url ? item?.shorts[0]?.url : 'https://v6.cdnpk.net/videvo_files/video/premium/partners0547/large_watermarked/2557898_preview.mp4' }}
                 style={styles.video}
                 muted
                 repeat
                 resizeMode="cover"
                 paused
             // paused={paused[index]}
-            />
+            />}
             <View style={styles.overlay}>
                 <ReelPlayIcon />
                 <Text style={styles.viewsText}>{item?.viewersCount ? item.viewersCount : "N/A"}</Text>
