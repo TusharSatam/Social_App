@@ -41,6 +41,30 @@ const helpers = {
 
         return responses;
     },
+    timeDifference: (current, previous) => {
+        const msPerSecond = 1000;
+        const msPerMinute = msPerSecond * 60;
+        const msPerHour = msPerMinute * 60;
+        const msPerDay = msPerHour * 24;
+
+        const elapsed = current - previous;
+
+        if (elapsed < msPerMinute) {
+            return Math.round(elapsed / msPerSecond) + " seconds ago";
+        } else if (elapsed < msPerHour) {
+            return Math.round(elapsed / msPerMinute) + " minutes ago";
+        } else if (elapsed < msPerDay) {
+            return Math.round(elapsed / msPerHour) + " hours ago";
+        } else {
+            return Math.round(elapsed / msPerDay) + " days ago";
+        }
+    },
+    formatNumber: num => {
+        if (num >= 1000) {
+            return (num / 1000).toFixed(num >= 10000 ? 0 : 1) + "k";
+        }
+        return num.toString();
+    },
 };
 
 export {helpers};

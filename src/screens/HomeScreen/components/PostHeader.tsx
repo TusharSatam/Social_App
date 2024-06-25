@@ -1,12 +1,34 @@
 import {StyleSheet, Text, View} from "react-native";
-import React from "react";
+import React, {useEffect} from "react";
 import FastImage from "react-native-fast-image";
 import {images} from "@social/utils/images";
 import ThreeDot from "@social/components/SvgIcons/ThreeDot";
 import {typography} from "@social/utils/typography";
 import {colors} from "@social/utils/colors";
+import dayjs from "dayjs";
 
-const PostHeader = () => {
+const PostHeader = props => {
+    const {profileImg, userName, location, time} = props;
+
+    const timeDifference = (current, previous) => {
+        const msPerSecond = 1000;
+        const msPerMinute = msPerSecond * 60;
+        const msPerHour = msPerMinute * 60;
+        const msPerDay = msPerHour * 24;
+
+        const elapsed = current - previous;
+
+        if (elapsed < msPerMinute) {
+            return Math.round(elapsed / msPerSecond) + " seconds ago";
+        } else if (elapsed < msPerHour) {
+            return Math.round(elapsed / msPerMinute) + " minutes ago";
+        } else if (elapsed < msPerDay) {
+            return Math.round(elapsed / msPerHour) + " hours ago";
+        } else {
+            return Math.round(elapsed / msPerDay) + " days ago";
+        }
+    };
+
     return (
         <View style={styles.postHeader}>
             <View
@@ -16,14 +38,15 @@ const PostHeader = () => {
                     gap: 10,
                 }}>
                 <FastImage
-                    source={images.user1}
-                    resizeMode={FastImage.resizeMode.contain}
-                    style={{aspectRatio: 1, height: 40}}
+                    source={{uri: profileImg}}
+                    resizeMode={FastImage.resizeMode.cover}
+                    style={{aspectRatio: 1, height: 40, borderRadius: 40 / 2}}
                 />
                 <View>
-                    <Text style={styles.userName}>joshua_l</Text>
+                    <Text style={styles.userName}>{userName}</Text>
                     <Text style={styles.userInfo}>
-                        Tokyo, Japan - 1 mins. ago
+                        {location} {!!location && " - "}
+                        {timeDifference(dayjs(), dayjs(time))}
                     </Text>
                 </View>
             </View>

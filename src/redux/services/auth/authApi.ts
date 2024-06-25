@@ -24,6 +24,8 @@ import {
     VerifyForgotPassOTPRequest,
     VerifyRegisterCredentials,
 } from "../../../../type/types";
+import store from "@social/redux/store";
+import {toggle} from "@social/redux/Slice/FeedSlice";
 
 const API_URL = "https://social-media-node-n6qc.onrender.com"; // Replace with your actual backend API URL
 
@@ -57,6 +59,7 @@ const baseQueryWrapper: BaseQueryFn<
 export const authApi = createApi({
     reducerPath: "authApi",
     baseQuery: baseQueryWrapper,
+    tagTypes: ["Feed-Comments", "Test"],
     endpoints: builder => ({
         // signin apis
 
@@ -233,7 +236,147 @@ export const authApi = createApi({
         }),
 
         getFeed: builder.query({
-            query: id => ({url: `/post/feed/${id}`}),
+            query: request => {
+                return {
+                    url: `/post/feed/${request.id}?page=${request.pageNo}&limit=5`,
+                };
+            },
+            serializeQueryArgs: ({queryArgs, endpointName}) => {
+                return endpointName;
+            },
+            merge(currentCacheData, responseData, otherArgs) {
+                const {
+                    arg: {pageNo},
+                } = otherArgs;
+
+                if (pageNo === 1) {
+                    return currentCacheData;
+                }
+
+                const updateData = [
+                    ...currentCacheData.data,
+                    ...responseData.data,
+                ];
+
+                return {
+                    data: updateData,
+                    pagination: responseData.pagination,
+                };
+            },
+            forceRefetch({currentArg, previousArg}) {
+                return currentArg?.pageNo !== previousArg?.pageNo;
+            },
+        }),
+
+        getAllCommentByPostId: builder.query({
+            query: request => {
+                return {
+                    url: `/post/getAllComments/${request.postId}?page=${request.pageNo}&limit=10&user=${request.userId}`,
+                };
+            },
+            serializeQueryArgs: ({queryArgs, endpointName}) => {
+                return queryArgs?.postId;
+            },
+            providesTags: (result, error, arg) => {
+                if (result) {
+                    return [{type: "Feed-Comments" as const, id: arg?.postId}];
+                } else {
+                    return ["Feed-Comments"];
+                }
+            },
+            keepUnusedDataFor: 0,
+            merge(currentCacheData, responseData, otherArgs) {
+                const {
+                    arg: {pageNo},
+                } = otherArgs;
+
+                if (pageNo === 1) {
+                    return currentCacheData;
+                }
+
+                const updateData = [
+                    ...currentCacheData.data,
+                    ...responseData.data,
+                ];
+
+                return {
+                    success: responseData.success,
+                    data: updateData,
+                    pagination: responseData.pagination,
+                };
+            },
+            forceRefetch({currentArg, previousArg}) {
+                return currentArg?.pageNo !== previousArg?.pageNo;
+            },
+        }),
+
+        addComment: builder.mutation({
+            query: request => {
+                return {
+                    url: "/post/comment",
+                    method: "POST",
+                    body: request,
+                };
+            },
+            invalidatesTags: (result, error, arg) => {
+                // console.log(arg?.postId, "IT");
+                if (result) {
+                    return [{id: arg?.postId, type: "Feed-Comments"}];
+                } else {
+                    return ["Feed-Comments"];
+                }
+            },
+        }),
+
+        savePost: builder.mutation({
+            query: request => {
+                return {
+                    url: "/savepost",
+                    method: "POST",
+                    body: request,
+                };
+            },
+        }),
+
+        deletePost: builder.mutation({
+            query: postId => {
+                return {
+                    url: `/savepost/delete/${postId}`,
+                    method: "DELETE",
+                };
+            },
+        }),
+        likePost: builder.mutation<
+            any,
+            {postId: string; userId: string; likeType: string}
+        >({
+            query: request => {
+                return {
+                    url: "/post/like",
+                    method: "POST",
+                    body: request,
+                };
+            },
+        }),
+
+        likeComment: builder.mutation({
+            query: request => {
+                return {
+                    url: "/post/likeComment",
+                    method: "POST",
+                    body: request,
+                };
+            },
+        }),
+
+        replyToComment: builder.mutation({
+            query: request => {
+                return {
+                    url: "/post/replyToComment",
+                    method: "POST",
+                    body: request,
+                };
+            },
         }),
     }),
 });
@@ -261,4 +404,12 @@ export const {
     useRemoveFollowerMutation,
     useGetUserDetailsByIdMutation,
     useGetFeedQuery,
+    useLikePostMutation,
+    useSavePostMutation,
+    useGetAllCommentByPostIdQuery,
+    useLazyGetAllCommentByPostIdQuery,
+    useDeletePostMutation,
+    useAddCommentMutation,
+    useLikeCommentMutation,
+    useReplyToCommentMutation,
 } = authApi;

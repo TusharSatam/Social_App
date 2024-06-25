@@ -113,19 +113,17 @@ const SharePost = () => {
                     setTimeout(() => {
                         navigation.reset({
                             index: 0,
-                            routes: [{name: "HomeScreen"}],
+                            routes: [{name: "HomeStack"}],
                         });
                     }, 1400);
                 },
             });
         } catch (error) {
-            console.log(error, "HI");
             Toast.show({
                 type: "error",
-                text1: error?.data?.message,
+                text1: error?.data?.error,
                 visibilityTime: 1400,
             });
-            console.log(error);
         }
     };
 

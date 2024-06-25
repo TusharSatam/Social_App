@@ -6,20 +6,21 @@ import BellIcon from "@social/components/SvgIcons/BellIcon";
 import ChatIcon from "@social/components/SvgIcons/ChatIcon";
 import {commonStyles} from "@social/utils/common-styles";
 import {useNavigation} from "@react-navigation/native";
+import AppLogoIcon from "@social/components/SvgIcons/AppLogoIcon";
 
 const HomeHeader = () => {
     const navigation = useNavigation();
 
     return (
         <View style={styles.headerView}>
-            <View>
+            <View style={{flexDirection: "row", alignItems: "center", gap: 6}}>
+                <AppLogoIcon width={30} height={30} />
                 <Text style={styles.headerText}>Voodle</Text>
             </View>
             <View style={styles.iconView}>
                 <TouchableOpacity
-                    onPress={
-                        () => {}
-                        // (navigation as any).navigate("Notification")
+                    onPress={() =>
+                        (navigation as any).navigate("Notification")
                     }>
                     <BellIcon width={25} height={25} />
                 </TouchableOpacity>

@@ -4,7 +4,7 @@ import HeartIcon from "@social/components/SvgIcons/HeartIcon";
 import {colors} from "@social/utils/colors";
 import {commonStyles} from "@social/utils/common-styles";
 import {typography} from "@social/utils/typography";
-import {StyleSheet, Text, View} from "react-native";
+import {Keyboard, StyleSheet, Text, View} from "react-native";
 import PostFooter from "./PostFooter";
 import PostHeader from "./PostHeader";
 import Carousel, {ICarouselInstance} from "react-native-reanimated-carousel";
@@ -20,6 +20,12 @@ import {
 } from "react-native-reanimated";
 import LikeVariants from "./LikeVariants";
 import CommentBox from "./CommentBox";
+import {useLikePostMutation} from "@social/redux/services/auth/authApi";
+import LikeThumb from "@social/components/SvgIcons/LikeThumb";
+import LolIcon from "@social/components/SvgIcons/LolIcon";
+import CryingIcon from "@social/components/SvgIcons/CryingIcon";
+import WinkIcon from "@social/components/SvgIcons/WinkIcon";
+import HighlightLike from "@social/components/SvgIcons/HighlightLike";
 
 const VIDEO =
     "https://videos.pexels.com/video-files/24821519/11898319_1280_720_30fps.mp4";
@@ -36,14 +42,19 @@ const IMAGE2 =
 interface PostCardProps {
     viewIndex: null | number;
     postIndex: number;
+    item: any;
     forScroll: SharedValue<boolean | number>;
 }
 
 const PostCard = (props: PostCardProps) => {
-    const {viewIndex, postIndex, forScroll} = props;
+    const {viewIndex, postIndex, forScroll, item} = props;
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [activeDotIndex, setActiveDotIndex] = useState(0);
     const [activePoint, setActivePoint] = useState(-1);
+
+    const [like, setLike] = useState(null);
+    const [likePostFn, {isLoading, isSuccess, isError}] = useLikePostMutation();
+    const [localCommentCount, setLocalCommentCount] = useState(0);
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -52,27 +63,66 @@ const PostCard = (props: PostCardProps) => {
     });
 
     const showComment = () => {
-        bottomSheetModalRef.current.present();
+        setActivePoint(0);
+        bottomSheetModalRef?.current?.present();
+    };
+
+    const closeCommentBox = () => {
+        Keyboard.dismiss();
+        setTimeout(() => {
+            bottomSheetModalRef?.current?.close();
+        }, 500);
+    };
+
+    const renderLikeBased = likeType => {
+        switch (likeType) {
+            case "like":
+                return <HighlightLike height={15} width={15} />;
+
+            case "heart":
+                return <HeartIcon height={15} width={15} />;
+
+            case "amazed":
+                return <AmazedIcon height={15} width={15} />;
+
+            case "halo":
+                return <HaloEmojiIcon height={15} width={15} />;
+
+            case "lol":
+                return <LolIcon height={15} width={15} />;
+
+            case "crying":
+                return <CryingIcon height={15} width={15} />;
+
+            case "wink":
+                return <WinkIcon height={15} width={15} />;
+
+            default:
+                return null;
+        }
     };
 
     const carouselRef = useRef<ICarouselInstance | null>(null);
 
     const renderMedia = useCallback(
         ({item, index}) => {
-            if (item.type === "image") {
+            if (item.mimetype.split("/")[0] === "image") {
                 return (
                     <FastImage
-                        source={{uri: item.media}}
+                        source={{uri: item.url}}
                         style={{flex: 1, backgroundColor: colors.black}}
                         resizeMode={FastImage.resizeMode.contain}
                     />
                 );
             }
-            if (item.type === "video" && index === carouselIndex) {
+            if (
+                item.mimetype.split("/")[0] === "video" &&
+                index === carouselIndex
+            ) {
                 return (
                     <Video
                         paused={viewIndex !== postIndex}
-                        source={{uri: item.media}}
+                        source={{uri: item.url}}
                         repeat
                         style={{
                             flex: 1,
@@ -88,23 +138,34 @@ const PostCard = (props: PostCardProps) => {
 
     return (
         <View style={styles.rootView}>
-            <CommentBox ref={bottomSheetModalRef} />
+            <CommentBox
+                ref={bottomSheetModalRef}
+                id={item._id}
+                setLocalCommentCount={setLocalCommentCount}
+                closeCommentBox={closeCommentBox}
+                activePoint={activePoint}
+                setActivePoint={setActivePoint}
+            />
 
             <LikeVariants
                 postIndex={postIndex}
+                id={item._id}
+                like={like}
+                setLike={setLike}
                 showLikeVariant={showLikeVariant}
                 forScroll={forScroll}
             />
-            <PostHeader />
+            <PostHeader
+                profileImg={item?.user?.ProfilePicture}
+                userName={item?.user?.username}
+                location={item?.location}
+                time={item?.user?.updatedAt}
+            />
             <View style={[styles.postMain]}>
                 <Carousel
                     ref={carouselRef}
                     style={{flex: 1}}
-                    data={[
-                        {type: "image", media: IMAGE1},
-                        {type: "image", media: IMAGE2},
-                        {type: "video", media: VIDEO2},
-                    ]}
+                    data={item?.Media}
                     renderItem={renderMedia}
                     width={WINDOW_WIDTH - 24}
                     pagingEnabled
@@ -119,55 +180,82 @@ const PostCard = (props: PostCardProps) => {
                         setActiveDotIndex(Math.round(absoluteProgress));
                     }}
                 />
-                <Pagination length={3} activeDotIndex={activeDotIndex} />
+                {item?.Media?.length > 1 && (
+                    <Pagination
+                        length={item?.Media?.length}
+                        activeDotIndex={activeDotIndex}
+                    />
+                )}
             </View>
             <View style={styles.postCaption}>
-                <View style={[styles.likedBy]}>
-                    <View
-                        style={[
-                            commonStyles.rowAlignJustifyBetween,
-                            {
-                                gap: 2,
-                            },
-                        ]}>
-                        <HeartIcon width={13} height={13} />
-                        <AmazedIcon width={13} height={13} />
-                        <HaloEmojiIcon width={13} height={13} />
+                {!!item?.likesCount && (
+                    <View style={[styles.likedBy]}>
+                        <View
+                            style={[
+                                commonStyles.rowAlignJustifyBetween,
+                                {
+                                    gap: 2,
+                                },
+                            ]}>
+                            {renderLikeBased(item.likes?.[0]?.type)}
+                            {renderLikeBased(item.likes?.[1]?.type)}
+                            {renderLikeBased(item.likes?.[2]?.type)}
+                        </View>
+
+                        <View>
+                            <Text
+                                style={{
+                                    fontFamily: typography.sfRegular,
+                                    fontSize: 13,
+                                    color: colors["26Color"],
+                                }}>
+                                by{" "}
+                                <Text
+                                    style={{fontFamily: typography.sfSemiBold}}>
+                                    {item.likeAs
+                                        ? "You"
+                                        : item.likes?.[0]?.likedBy?.username}
+                                </Text>{" "}
+                                {item.likeAs && item.likesCount === 1 ? null : (
+                                    <Text
+                                        style={{
+                                            fontFamily: typography.sfSemiBold,
+                                        }}>
+                                        {item.likesCount > 1
+                                            ? `and ${item.likesCount - 1}`
+                                            : null}
+                                    </Text>
+                                )}
+                            </Text>
+                        </View>
                     </View>
-                    <View>
-                        <Text
-                            style={{
-                                fontFamily: typography.sfRegular,
-                                fontSize: 13,
-                                color: colors["26Color"],
-                            }}>
-                            by{" "}
-                            <Text style={{fontFamily: typography.sfSemiBold}}>
-                                craig_love
-                            </Text>{" "}
-                            and{" "}
-                            <Text style={{fontFamily: typography.sfSemiBold}}>
-                                44,86 others
+                )}
+
+                {!!item?.caption && (
+                    <View style={styles.captionWritten}>
+                        <Text style={styles.captionWrittenBy}>
+                            {item?.user?.username}{" "}
+                            <Text style={styles.captionText}>
+                                {item?.caption}
                             </Text>
                         </Text>
                     </View>
-                </View>
-
-                <View style={styles.captionWritten}>
-                    <Text style={styles.captionWrittenBy}>
-                        joshua_l{" "}
-                        <Text style={styles.captionText}>
-                            The game in Japan was amazing and I want to share
-                            some photos
-                        </Text>
-                    </Text>
-                </View>
+                )}
             </View>
             <View style={styles.line}></View>
             <PostFooter
+                id={item._id}
                 forScroll={forScroll}
+                isPostSaved={item?.isPostSaved}
                 postIndex={postIndex}
+                likeCount={item?.likesCount ?? 0}
+                commentsCount={item?.commentsCount ?? 0}
                 showComment={showComment}
+                localCommentCount={localCommentCount}
+                likePostFn={likePostFn}
+                like={like}
+                setLike={setLike}
+                likeAs={item.likeAs}
                 setActivePoint={setActivePoint}
                 showLikeVariant={showLikeVariant}
             />
