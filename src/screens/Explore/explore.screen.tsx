@@ -14,7 +14,9 @@ const Explore = () => {
     const [searchQuery, setSearchQuery] = useState(''); // Track the search input value
 
     const handleFocus = () => {
-        setView('RecentSearch');
+        if (searchQuery.length === 0) {
+            setView('RecentSearch');
+        }
     };
 
     const handleChangeText = (text) => {
@@ -37,7 +39,7 @@ const Explore = () => {
             case 'RecentSearch':
                 return <RecentSearch />;
             case 'SearchResults':
-                return <SearchResults />;
+                return <SearchResults searchQuery={searchQuery} setSearchQuery={setSearchQuery} />;
             default:
                 return null;
         }

@@ -119,7 +119,7 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
-        //save user fcmToken 
+        //save user fcmToken
         saveUserFcmToken: builder.mutation<any, SavedFCMToken>({
             query: request => ({
                 url: "/auth/saveUserFCM",
@@ -318,6 +318,23 @@ export const authApi = createApi({
                 params: {page, size},
             }),
         }),
+        getSearchLocations: builder.query<any, {searchText: string}>({
+            query: ({searchText}) => ({
+                url: "/post/search-location",
+                method: "GET",
+                params: {searchText},
+            }),
+        }),
+        getLocationBasedExplores: builder.query<
+            any,
+            {location: string; limit: number; page: number}
+        >({
+            query: ({location, limit, page}) => ({
+                url: "/post/getLocationBasedContent",
+                method: "GET",
+                params: {location, limit, page},
+            }),
+        }),
     }),
 });
 export const {
@@ -352,4 +369,6 @@ export const {
     useGetAllMySavedShortsQuery,
     useGetAllExplorePostsQuery,
     useSaveUserFcmTokenMutation,
+    useGetSearchLocationsQuery,
+    useGetLocationBasedExploresQuery,
 } = authApi;

@@ -6,7 +6,6 @@ import FastImage from 'react-native-fast-image'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const RecentSearchItem = ({ item, handleProfileNavigation }) => {
-    console.log(item);
     
     return (
         <TouchableOpacity
