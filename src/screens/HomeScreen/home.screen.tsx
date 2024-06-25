@@ -1,7 +1,9 @@
 import {colors} from "@social/utils/colors";
 import {
     ActivityIndicator,
+    ScrollView,
     StyleSheet,
+    Text,
     TouchableWithoutFeedback,
     View,
 } from "react-native";
@@ -15,6 +17,8 @@ import CommentBox from "./components/CommentBox";
 import {useGetFeedQuery} from "@social/redux/services/auth/authApi";
 import {useSelector} from "react-redux";
 import dayjs from "dayjs";
+import {typography} from "@social/utils/typography";
+import {WINDOW_HEIGHT} from "@social/constants/screenSize";
 
 const AnimatedTouchableWithoutFeedback = Animated.createAnimatedComponent(
     TouchableWithoutFeedback,
@@ -39,6 +43,45 @@ const Home = () => {
     } = useGetFeedQuery({id: loggedInProfileData?.user?._id, pageNo: pageNo});
 
     const renderPost = ({item, index: postIndex}) => {
+        if (feedData?.data.length < 1) {
+            return (
+                <View
+                    style={{
+                        backgroundColor: colors.white,
+                        flex: 1,
+                        height: WINDOW_HEIGHT - 300,
+                        paddingHorizontal: 12,
+                        alignItems: "center",
+                    }}>
+                    <View
+                        style={{
+                            flex: 1,
+                            height: "100%",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}>
+                        <Text
+                            style={{
+                                fontFamily: typography.sfSemiBold,
+                                fontSize: 15,
+                                color: colors["24Color"],
+                                textAlignVertical: "center",
+                            }}>
+                            Your feed is empty
+                        </Text>
+                        <Text
+                            style={{
+                                fontFamily: typography.sfRegular,
+                                fontSize: 13,
+                                color: colors["24Color"],
+                                textAlignVertical: "center",
+                            }}>
+                            You have to follow someone to see post
+                        </Text>
+                    </View>
+                </View>
+            );
+        }
         return (
             <PostCard
                 forScroll={forScroll}
@@ -50,7 +93,11 @@ const Home = () => {
     };
 
     const handlePagination = () => {
-        if (feedData?.pagination?.totalPages === pageNo) {
+        if (
+            feedData?.pagination?.totalPages === pageNo ||
+            feedData?.pagination?.totalPosts === 0 ||
+            feedData?.data.length < 1
+        ) {
             setFooterLoader(false);
             return;
         }
@@ -81,17 +128,45 @@ const Home = () => {
             <HomeHeader />
             <FlashList
                 ref={postFlashListRef}
-                data={feedData?.data}
+                data={feedData?.data?.length > 0 ? feedData?.data : [1]}
                 showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}
                 nestedScrollEnabled
                 onEndReachedThreshold={0.7}
                 onEndReached={handlePagination}
-                ListHeaderComponentStyle={styles.headerStyle}
+                ListHeaderComponentStyle={[
+                    styles.headerStyle,
+                    {
+                        marginBottom: feedData?.data?.length ? 12 : undefined,
+                    },
+                ]}
                 contentContainerStyle={styles.containerStyle}
                 ItemSeparatorComponent={() => (
                     <View style={{marginVertical: 6}} />
                 )}
+                // ListEmptyComponent={() => {
+                //     return (
+                //         <View
+                //             style={{
+                //                 backgroundColor: colors.primary,
+                //                 flex: 1,
+                //                 justifyContent: "center",
+                //                 alignItems: "center",
+                //                 borderWidth: 1,
+                //                 height: "100%",
+                //             }}>
+                //             <Text
+                //                 style={{
+                //                     fontFamily: typography.sfRegular,
+                //                     fontSize: 13,
+                //                     color: colors["24Color"],
+                //                     flex: 1,
+                //                 }}>
+                //                 HJIO
+                //             </Text>
+                //         </View>
+                //     );
+                // }}
                 viewabilityConfig={{
                     minimumViewTime: 400,
                     viewAreaCoveragePercentThreshold: 60,
@@ -103,17 +178,22 @@ const Home = () => {
                 }}
                 extraData={viewIndex}
                 onViewableItemsChanged={postViewableItem}
-                ListFooterComponent={() => (
-                    <View style={{marginBottom: 40}}>
-                        {footerLoader && (
-                            <ActivityIndicator
-                                style={{marginTop: 20}}
-                                size={"large"}
-                                color={colors.primary}
-                            />
-                        )}
-                    </View>
-                )}
+                ListFooterComponent={() => {
+                    if (feedData?.data?.length) {
+                        return (
+                            <View style={{marginBottom: 40}}>
+                                {footerLoader && (
+                                    <ActivityIndicator
+                                        style={{marginTop: 20}}
+                                        size={"large"}
+                                        color={colors.primary}
+                                    />
+                                )}
+                            </View>
+                        );
+                    }
+                    return null;
+                }}
                 renderItem={renderPost}
                 ListHeaderComponent={FollowerStatus}
                 estimatedItemSize={400}
@@ -132,7 +212,6 @@ const styles = StyleSheet.create({
     headerStyle: {
         backgroundColor: colors.white,
         paddingBottom: 20,
-        marginBottom: 12,
     },
     containerStyle: {backgroundColor: colors.f6Color},
 });

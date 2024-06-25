@@ -244,6 +244,7 @@ export const authApi = createApi({
             serializeQueryArgs: ({queryArgs, endpointName}) => {
                 return endpointName;
             },
+            keepUnusedDataFor: 0,
             merge(currentCacheData, responseData, otherArgs) {
                 const {
                     arg: {pageNo},
