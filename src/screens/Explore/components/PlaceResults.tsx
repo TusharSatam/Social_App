@@ -16,11 +16,6 @@ const PlaceResults = ({ searchQuery }) => {
     }, [searchedLocations]);
 
     useEffect(() => {
-        console.log(locations);
-
-    }, [locations])
-
-    useEffect(() => {
         refetch();
     }, [searchQuery]);
 
@@ -33,7 +28,7 @@ const PlaceResults = ({ searchQuery }) => {
     }
 
     if (error) {
-        return <Text>Error loading data</Text>;
+        return <CustomText>Error loading data</CustomText>;
     }
 
     return (

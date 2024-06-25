@@ -39,9 +39,9 @@ const Explore = ({ route }) => {
             case 'ExploreFeeds':
                 return <ExploreFeeds paramLocation={paramData?.location ? paramData?.location : null} />;
             case 'RecentSearch':
-                return <RecentSearch />;
+                return <RecentSearch  />;
             case 'SearchResults':
-                return <SearchResults searchQuery={searchQuery} setSearchQuery={setSearchQuery} />;
+                return <SearchResults searchQuery={searchQuery} />;
             default:
                 return null;
         }

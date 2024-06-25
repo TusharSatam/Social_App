@@ -13,15 +13,15 @@ const RecentSearchItem = ({ item, handleProfileNavigation }) => {
             onPress={() => handleProfileNavigation(item)}
         >
             {
-                item.type === "userAccount" ?
-                    <FastImage source={item?.source} style={styles.itemImage} />
+                item.itemType === "userAccount" ?
+                    <FastImage source={{ uri: item?.profileImage ? item?.profileImage : "https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500" }} style={styles.itemImage} />
                     :
                     <View style={styles.locationIcon}>
                         <LocationSearchIcon />
                     </View>
             }
             {
-                item.type === "userAccount" ?
+                item.itemType === "userAccount" ?
                     <View style={styles.userAccount}>
                         <CustomText className="truncate" style={styles.primaryText}>{item?.username ? item?.username : "username N/A"}</CustomText>
                         <CustomText className="truncate" style={styles.SecondaryText}>{item?.name ? item?.name : "name N/A"}</CustomText>

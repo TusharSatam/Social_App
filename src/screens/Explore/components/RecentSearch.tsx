@@ -9,7 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const RecentSearch = () => {
     const dummyRecentSearchData = [
-        { id: "rs1", type: "userAccount", source: { uri: "https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500" }, username: "Kelly_Scott", name: "Scott Kelly", description: "Followed by Irjvr and 62M others" }, { id: "rs2", type: "location", locationName: "Mumbai", totalPosts: "19.3M" }
+        { id: "rs1", type: "userAccount", 
+            source: { uri: "https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500" }, username: "Kelly_Scott", name: "Scott Kelly", description: "Followed by Irjvr and 62M others" }, { id: "rs2", type: "location", locationName: "Mumbai", totalPosts: "19.3M" }
     ]
     const navigation = useNavigation()
     const loggedInProfileData = useSelector((state: any) => state.auth)
@@ -28,7 +29,7 @@ const RecentSearch = () => {
                                 routes: [
                                     {
                                         name: 'Profile',
-                                        params: isLoggedInUser
+                                        params: { isLoggedInUser, userId: item?.userId }
                                     }
                                 ]
                             }

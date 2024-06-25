@@ -6,16 +6,17 @@ import { StyleSheet, View } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import { useSelector } from 'react-redux'
 
-const AccountItem = ({ item,handleProfileNavigation }) => {
+const AccountItem = ({ item, handleProfileNavigation }) => {
+    console.log("inside", item);
 
     return (
-        <TouchableOpacity style={styles.itemContainer} onPress={() => handleProfileNavigation("tempory_id")}>
-            <FastImage source={item?.source} style={styles.itemImage} />
+        <TouchableOpacity style={styles.itemContainer} onPress={() => handleProfileNavigation(item)}>
+            <FastImage source={{ uri: item?.profileImage ? item?.profileImage : "https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500" }} style={styles.itemImage} />
 
             <View style={styles.userAccount}>
                 <CustomText className="truncate" style={styles.primaryText}>{item?.username ? item?.username : "username N/A"}</CustomText>
                 <CustomText className="truncate" style={styles.SecondaryText}>{item?.name ? item?.name : "name N/A"}</CustomText>
-                {item.description && <CustomText className="truncate" style={styles.SecondaryText}>{item.description}</CustomText>
+                {item.description && <CustomText className="truncate" style={styles.SecondaryText}>{item?.followers === "No followers in your list" ? "" : item?.followers}</CustomText>
                 }
             </View>
 

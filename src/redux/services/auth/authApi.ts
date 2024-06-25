@@ -325,6 +325,13 @@ export const authApi = createApi({
                 params: {searchText},
             }),
         }),
+        getSearchUsers: builder.query<any, {loggedInUserId:string,searchText: string}>({
+            query: ({loggedInUserId,searchText}) => ({
+                url: "/auth/search-user",
+                method: "GET",
+                params: {loggedInUserId,searchText},
+            }),
+        }),
         getLocationBasedExplores: builder.query<
             any,
             {location: string; limit: number; page: number}
@@ -371,4 +378,5 @@ export const {
     useSaveUserFcmTokenMutation,
     useGetSearchLocationsQuery,
     useGetLocationBasedExploresQuery,
+    useGetSearchUsersQuery,
 } = authApi;

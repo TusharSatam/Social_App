@@ -174,7 +174,7 @@ const ManageAccount: React.FC = () => {
                         token: storedToken,
                         data: getUserDataResponse,
                     };
-                    dispatch(setAuthData(userData));
+                    await dispatch(setAuthData(userData));
                 }
                 console.log(updateResponse);
                 Dialog.show({
@@ -193,7 +193,12 @@ const ManageAccount: React.FC = () => {
                 });
             }
         } else {
-            Alert.alert("Please fill out all required fields correctly.");
+            Dialog.show({
+                type: ALERT_TYPE.WARNING,
+                title: 'Warning',
+                textBody: 'Please fill out all required fields correctly.',
+                button: 'close',
+            });
         }
     };
 
