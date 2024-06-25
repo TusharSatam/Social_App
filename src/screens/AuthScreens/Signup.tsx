@@ -1,15 +1,14 @@
 import { Link, useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View, Alert, ActivityIndicator, StyleSheet } from 'react-native';
+import { ScrollView, TouchableOpacity, View, Alert, ActivityIndicator, StyleSheet } from 'react-native';
 import AuthHeader from '../../components/AuthComponents/AuthHeader';
 import AuthInput from '../../components/Inputs/AuthInput';
 import PrimaryBtn from '../../components/Buttons/PrimaryBtn';
 import CheckBox from 'react-native-check-box';
 import CustomText from '../../components/Text/CustomText';
 import SocialMediaSignin from '../../components/AuthComponents/SocialMediaSignin';
-import { ALERT_TYPE, AlertNotificationRoot, Dialog } from 'react-native-alert-notification';
+import {  AlertNotificationRoot} from 'react-native-alert-notification';
 import { useFacebookFirebaseLoginMutation, useGoogleFirebaseLoginMutation, useRegisterMutation } from '../../redux/services/auth/authApi';
-import { setAuthData } from '../../redux/Slice/AuthSlice';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { typography } from '@social/utils/typography';

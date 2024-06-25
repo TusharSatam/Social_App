@@ -9,8 +9,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const RecentSearch = () => {
     const dummyRecentSearchData = [
-        { id: "rs1", type: "userAccount", 
-            source: { uri: "https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500" }, username: "Kelly_Scott", name: "Scott Kelly", description: "Followed by Irjvr and 62M others" }, { id: "rs2", type: "location", locationName: "Mumbai", totalPosts: "19.3M" }
+        {
+            id: "rs1", type: "userAccount",
+            source: { uri: "https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500" }, username: "Kelly_Scott", name: "Scott Kelly", description: "Followed by Irjvr and 62M others"
+        }, { id: "rs2", type: "location", locationName: "Mumbai", totalPosts: "19.3M" }
     ]
     const navigation = useNavigation()
     const loggedInProfileData = useSelector((state: any) => state.auth)
@@ -39,7 +41,7 @@ const RecentSearch = () => {
             );
             // (navigation as any).navigate("Profile",isLoggedInUser)
         }
-        else{
+        else {
             (navigation as any).push("Explore", { location: item?.location })
         }
     }
@@ -49,7 +51,7 @@ const RecentSearch = () => {
             try {
                 const searches = await AsyncStorage.getItem('RecentSearch');
                 const parsedSearches = searches ? JSON.parse(searches) : [];
-                
+
                 setRecentSearches(parsedSearches);
             } catch (error) {
                 console.error('Error fetching recent searches:', error);
@@ -67,7 +69,9 @@ const RecentSearch = () => {
                         item={item}
                         handleProfileNavigation={handleProfileNavigation}
                     />
-                )} data={recentSearches} />
+                )} data={recentSearches}
+                    contentContainerStyle={styles.listContainer}
+                />
             </View>
         </View>
     )
@@ -87,8 +91,10 @@ const styles = StyleSheet.create({
     },
     searchResults: {
         display: "flex",
-        // gap: 14,
         width: "100%",
+    },
+    listContainer: {
+        paddingBottom: 100,
     }
 })
 export default RecentSearch

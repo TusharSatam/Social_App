@@ -57,7 +57,6 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
                     >
                         <CustomText style={{ color: value ? '#242424' : '#797979' }}>
                             {value ? formatDate(new Date(value)) : placeholderText}
-
                         </CustomText>
                     </TouchableOpacity>
                     <Modal
@@ -73,6 +72,7 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
                                     onDateChange={handleDateChange}
                                     mode="date"
                                     maximumDate={new Date()} 
+                                    theme='light'
                                 />
                                 <TouchableOpacity
                                     onPress={() => setOpen(false)}
@@ -179,9 +179,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
-        backgroundColor: 'black',
+        backgroundColor: 'white',
         padding: 20,
-        paddingRight:40,
         borderRadius: 10,
         display:"flex",
         justifyContent:"center",

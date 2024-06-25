@@ -29,10 +29,6 @@ const AccountResults = ({ searchQuery }) => {
     }, [searchedUsers]);
 
     useEffect(() => {
-        console.log(users);
-    }, [users])
-
-    useEffect(() => {
         refetch();
     }, [searchQuery]);
 
@@ -43,11 +39,9 @@ const AccountResults = ({ searchQuery }) => {
 
             // Add new item and filter out duplicates
             const updatedSearches = [newItem, ...searches.filter(search => search?.userId !== newItem?.userId)];
-            console.log("updatedSearches", updatedSearches);
 
             // Ensure only the latest 15 items are stored
             const limitedSearches = updatedSearches.slice(0, 8);
-            console.log("limitedSearches", limitedSearches);
 
             await AsyncStorage.setItem('RecentSearch', JSON.stringify(limitedSearches));
         } catch (error) {

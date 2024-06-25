@@ -164,25 +164,26 @@ const ManageAccount: React.FC = () => {
 
             try {
                 const updateResponse = await updateUserData(formData).unwrap();
-                const storedToken = await AsyncStorage.getItem("token");
-                if (storedToken) {
-                    const tokenObj = { token: storedToken };
-                    const getUserDataResponse = await getLoggedInUserData(
-                        tokenObj,
-                    ).unwrap();
-                    let userData = {
-                        token: storedToken,
-                        data: getUserDataResponse,
-                    };
-                    await dispatch(setAuthData(userData));
-                }
-                console.log(updateResponse);
+                
+                const storedToken = await AsyncStorage.getItem("token");  
                 Dialog.show({
                     type: ALERT_TYPE.SUCCESS,
                     title: 'Success',
                     textBody: 'Your Profile has been updated successfully!',
                     button: 'close',
                 });
+                if (storedToken) {
+                    const tokenObj = { token: storedToken };
+                    const getUserDataResponse = await getLoggedInUserData(
+                        tokenObj,
+                    ).unwrap();
+
+                    let userData = {
+                        token: storedToken,
+                        data: getUserDataResponse?.data,
+                    };
+                    await dispatch(setAuthData(userData));
+                }
             } catch (error) {
                 console.error('Failed to update user data:', error);
                 Dialog.show({

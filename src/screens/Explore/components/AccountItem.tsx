@@ -7,7 +7,6 @@ import FastImage from 'react-native-fast-image'
 import { useSelector } from 'react-redux'
 
 const AccountItem = ({ item, handleProfileNavigation }) => {
-    console.log("inside", item);
 
     return (
         <TouchableOpacity style={styles.itemContainer} onPress={() => handleProfileNavigation(item)}>
