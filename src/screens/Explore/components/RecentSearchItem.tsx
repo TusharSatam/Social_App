@@ -6,11 +6,11 @@ import FastImage from 'react-native-fast-image'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const RecentSearchItem = ({ item, handleProfileNavigation }) => {
-    
+
     return (
         <TouchableOpacity
             style={styles.itemContainer}
-            onPress={() => handleProfileNavigation(item.id, item.type)}
+            onPress={() => handleProfileNavigation(item)}
         >
             {
                 item.type === "userAccount" ?
@@ -29,8 +29,8 @@ const RecentSearchItem = ({ item, handleProfileNavigation }) => {
                         }
                     </View>
                     : <View>
-                        <CustomText className="truncate" style={styles.primaryText}>{item?.locationName ? item?.locationName : "locationName N/A"}</CustomText>
-                        <CustomText className="truncate" style={styles.SecondaryText}>{item?.totalPosts ? item?.totalPosts : "totalPosts N/A"}</CustomText>
+                        <CustomText className="truncate" style={styles.primaryText}>{item?.location ? item?.location : "location N/A"}</CustomText>
+                        <CustomText className="truncate" style={styles.SecondaryText}>{item?.totalCount ? `${item?.totalCount} posts` : "0 posts"}</CustomText>
                     </View>
             }
         </TouchableOpacity>

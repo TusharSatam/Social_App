@@ -4,6 +4,8 @@ import { FlatList, StyleSheet, View } from 'react-native'
 import RecentSearchItem from './RecentSearchItem'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const RecentSearch = () => {
     const dummyRecentSearchData = [
@@ -11,10 +13,11 @@ const RecentSearch = () => {
     ]
     const navigation = useNavigation()
     const loggedInProfileData = useSelector((state: any) => state.auth)
+    const [recentSearches, setRecentSearches] = useState([]);
 
-    const handleProfileNavigation = (userId, itemType) => {
-        if (itemType === "userAccount") {
-            const isLoggedInUser = userId === loggedInProfileData?.user?._id;
+    const handleProfileNavigation = (item) => {
+        if (item?.itemType === "userAccount") {
+            const isLoggedInUser = item?.userId === loggedInProfileData?.user?._id;
             navigation.dispatch(
                 CommonActions.reset({
                     index: 0,
@@ -25,7 +28,7 @@ const RecentSearch = () => {
                                 routes: [
                                     {
                                         name: 'Profile',
-                                        params: isLoggedInUser 
+                                        params: isLoggedInUser
                                     }
                                 ]
                             }
@@ -35,7 +38,25 @@ const RecentSearch = () => {
             );
             // (navigation as any).navigate("Profile",isLoggedInUser)
         }
+        else{
+            (navigation as any).push("Explore", { location: item?.location })
+        }
     }
+
+    useEffect(() => {
+        const fetchRecentSearches = async () => {
+            try {
+                const searches = await AsyncStorage.getItem('RecentSearch');
+                const parsedSearches = searches ? JSON.parse(searches) : [];
+                
+                setRecentSearches(parsedSearches);
+            } catch (error) {
+                console.error('Error fetching recent searches:', error);
+            }
+        };
+
+        fetchRecentSearches();
+    }, []);
     return (
         <View style={styles.recentSearchContainer}>
             <CustomText style={styles.recentSearchText}>Recent Searches</CustomText>
@@ -45,7 +66,7 @@ const RecentSearch = () => {
                         item={item}
                         handleProfileNavigation={handleProfileNavigation}
                     />
-                )} data={dummyRecentSearchData} />
+                )} data={recentSearches} />
             </View>
         </View>
     )

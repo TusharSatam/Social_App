@@ -9,7 +9,9 @@ import RecentSearch from "./components/RecentSearch";
 import SearchResults from "./components/SearchResults";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const Explore = () => {
+const Explore = ({ route }) => {
+    const paramData = route.params;
+
     const [view, setView] = useState('ExploreFeeds'); // Track the current view
     const [searchQuery, setSearchQuery] = useState(''); // Track the search input value
 
@@ -35,7 +37,7 @@ const Explore = () => {
     const renderContent = () => {
         switch (view) {
             case 'ExploreFeeds':
-                return <ExploreFeeds />;
+                return <ExploreFeeds paramLocation={paramData?.location ? paramData?.location : null} />;
             case 'RecentSearch':
                 return <RecentSearch />;
             case 'SearchResults':

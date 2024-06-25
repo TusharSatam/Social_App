@@ -2,23 +2,22 @@ import CustomText from '@social/components/Text/CustomText'
 import { ActivityIndicator, StyleSheet, View } from 'react-native'
 import { FlashList, MasonryFlashList } from "@shopify/flash-list";
 import Feed from './Feed';
-import { useGetAllExplorePostsQuery } from '@social/redux/services/auth/authApi';
+import { useGetAllExplorePostsQuery, useGetLocationBasedExploresQuery } from '@social/redux/services/auth/authApi';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { setAllExplores } from '@social/redux/Slice/ExploreSlice';
 import { typography } from '@social/utils/typography';
 import { colors } from '@social/utils/colors';
-const ExploreFeeds = () => {
+const ExploreFeeds = ({ paramLocation }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const loggedInProfileData = useSelector((state: any) => state.auth?.user);
 
     const [page, setPage] = useState(1);
-    const { data: explorePosts, isLoading: isAllPostLoading, error: postError, refetch } = useGetAllExplorePostsQuery({
-        page,
-        size: 18, // Example limit value, adjust as needed
-    });
+    const { data: explorePosts, isLoading: isAllPostLoading, error: postError, refetch } = paramLocation
+        ? useGetLocationBasedExploresQuery({ page, limit: 18, location: paramLocation })
+        : useGetAllExplorePostsQuery({ page, size: 18 });
     const [allExplorePosts, setAllExplorePosts] = useState<any[]>([]);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
