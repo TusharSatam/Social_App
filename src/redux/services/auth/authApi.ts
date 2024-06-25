@@ -10,12 +10,17 @@ import {logout} from "@social/redux/Slice/AuthSlice";
 import {
     ChangePassword,
     Credentials,
+    fetchOthersFollowActivityStats,
     FollowUser,
     GetAllFollowers,
     GetAllMyFollowing,
     GetAllMyPosts,
+    GetAllOtherPersonFollowers,
+    GetAllOtherPersonFollowing,
     GetUserDataType,
+    isFollowing,
     RemoveFollower,
+    SavedFCMToken,
     SendForgotPassOTPRequest,
     SocialLoginProps,
     UnFollowUser,
@@ -24,8 +29,6 @@ import {
     VerifyForgotPassOTPRequest,
     VerifyRegisterCredentials,
 } from "../../../../type/types";
-import store from "@social/redux/store";
-import {toggle} from "@social/redux/Slice/FeedSlice";
 
 const API_URL = "https://social-media-node-n6qc.onrender.com"; // Replace with your actual backend API URL
 
@@ -59,7 +62,8 @@ const baseQueryWrapper: BaseQueryFn<
 export const authApi = createApi({
     reducerPath: "authApi",
     baseQuery: baseQueryWrapper,
-    tagTypes: ["Feed-Comments", "Test"],
+    keepUnusedDataFor: 0,
+    tagTypes: ["Feed-Comments", "profileActivity"],
     endpoints: builder => ({
         // signin apis
 
@@ -116,6 +120,14 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
+        //save user fcmToken
+        saveUserFcmToken: builder.mutation<any, SavedFCMToken>({
+            query: request => ({
+                url: "/auth/saveUserFCM",
+                method: "POST",
+                body: request,
+            }),
+        }),
         //onBoarding apis
         updateUserData: builder.mutation<any, UpdateData>({
             query: request => ({
@@ -130,7 +142,6 @@ export const authApi = createApi({
                 url: "/auth/allUsers",
             }),
         }),
-
         //resend-otp
         resendVerifyOTP: builder.mutation<any, SendForgotPassOTPRequest>({
             query: request => ({
@@ -184,6 +195,7 @@ export const authApi = createApi({
                 method: "POST",
                 body: request,
             }),
+            invalidatesTags: ["profileActivity"],
         }),
         //---Profile Activitys apis
         followUser: builder.mutation<any, FollowUser>({
@@ -200,16 +212,36 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
-        getAllMyPosts: builder.mutation<any, GetAllMyPosts>({
-            query: request => ({
-                url: "/post/getAllMyPosts",
-                method: "POST",
-                body: request,
+        getAllMyPosts: builder.query<any, GetAllMyPosts>({
+            query: ({userId, page, limit}) => ({
+                url: `/post/getAllMyPosts?userId=${userId}&page=${page}&limit=${limit}`,
+                method: "GET",
             }),
+            providesTags: ["profileActivity"],
         }),
         getAllMyFollowing: builder.mutation<any, GetAllMyFollowing>({
             query: request => ({
                 url: "/auth/getAllMyFollowingList",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        getOtherPersonFollowingList: builder.mutation<
+            any,
+            GetAllOtherPersonFollowing
+        >({
+            query: request => ({
+                url: "/auth/getOtherPersonFollowingList",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        getOtherPersonFollowersList: builder.mutation<
+            any,
+            GetAllOtherPersonFollowers
+        >({
+            query: request => ({
+                url: "/auth/getOtherPersonFollowersList",
                 method: "POST",
                 body: request,
             }),
@@ -221,6 +253,7 @@ export const authApi = createApi({
                 body: request,
             }),
         }),
+
         removeFollower: builder.mutation<any, RemoveFollower>({
             query: request => ({
                 url: "/auth/removeFollower",
@@ -379,6 +412,58 @@ export const authApi = createApi({
                 };
             },
         }),
+        getProfileActivityStats: builder.query<any, string>({
+            query: userId => ({
+                url: `/auth/getProfileActivityStats`,
+                method: "GET", // Adjust method as per your API
+                params: {userId}, // Pass userId in the body or params as needed
+            }),
+        }),
+        getAllMyShorts: builder.query<
+            any,
+            {page: number; user: string; limit: number}
+        >({
+            query: ({page, user}) => ({
+                url: "/shorts/getAllMyShorts",
+                method: "GET",
+                params: {page, user},
+            }),
+            providesTags: ["profileActivity"],
+        }),
+        checkIsFollowing: builder.mutation<any, isFollowing>({
+            query: request => ({
+                url: "/auth/isFollowing",
+                method: "POST",
+                body: request,
+            }),
+        }),
+        getAllMySavedPosts: builder.query<
+            any,
+            {page: number; userId: string; limit: number}
+        >({
+            query: ({page, userId, limit}) => ({
+                url: `/savepost/${userId}`,
+                method: "GET",
+                params: {page, limit},
+            }),
+        }),
+        getAllMySavedShorts: builder.query<
+            any,
+            {page: number; userId: string; limit: number}
+        >({
+            query: ({page, userId, limit}) => ({
+                url: `/saveshorts/${userId}`,
+                method: "GET",
+                params: {page, limit},
+            }),
+        }),
+        getAllExplorePosts: builder.query<any, {page: number; size: number}>({
+            query: ({page, size}) => ({
+                url: "/post/random-posts",
+                method: "GET",
+                params: {page, size},
+            }),
+        }),
     }),
 });
 export const {
@@ -401,7 +486,7 @@ export const {
     useUnfollowUserMutation,
     useGetAllFollowersMutation,
     useGetAllMyFollowingMutation,
-    useGetAllMyPostsMutation,
+    useGetAllMyPostsQuery,
     useRemoveFollowerMutation,
     useGetUserDetailsByIdMutation,
     useGetFeedQuery,
@@ -413,4 +498,13 @@ export const {
     useAddCommentMutation,
     useLikeCommentMutation,
     useReplyToCommentMutation,
+    useGetProfileActivityStatsQuery,
+    useGetOtherPersonFollowingListMutation,
+    useGetOtherPersonFollowersListMutation,
+    useCheckIsFollowingMutation,
+    useGetAllMyShortsQuery,
+    useGetAllMySavedPostsQuery,
+    useGetAllMySavedShortsQuery,
+    useGetAllExplorePostsQuery,
+    useSaveUserFcmTokenMutation,
 } = authApi;

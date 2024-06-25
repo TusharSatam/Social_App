@@ -1,46 +1,46 @@
- export interface Credentials {
+export interface Credentials {
     email: string;
     password?: string;
 }
 
- export interface VerifyRegisterCredentials {
+export interface VerifyRegisterCredentials {
     otp: string;
     email: string;
     password: string;
 }
 // Define response types for each mutation endpoint
- export interface GetUserDataType {
+export interface GetUserDataType {
     token: string; // Adjust based on your actual response structure
 }
 
- export interface SendForgotPassOTPRequest {
+export interface SendForgotPassOTPRequest {
     email: string;
 }
- export interface UpdateProfilePassword {
+export interface UpdateProfilePassword {
     email: string;
     currentPassword: string;
     newPassword: string;
 }
- export interface SocialLoginProps {
+export interface SocialLoginProps {
     email: string;
     name: string;
     photo: string;
 }
- export interface VerifyForgotPassOTPRequest {
+export interface VerifyForgotPassOTPRequest {
     email: string;
 }
- export interface ChangePassword {
+export interface ChangePassword {
     email: string;
     newPassword: string;
 }
- export interface UpdateData {
+export interface UpdateData {
     Name?: string;
     phone?: string;
     ProfilePicture?: string | null;
     Interests?: string[];
 }
 
- export interface FollowUser {
+export interface FollowUser {
     myUserId: string;
     followUserId: string;
 }
@@ -48,15 +48,36 @@ export interface RemoveFollower {
     myUserId: string;
     myFollowerUserId: string;
 }
- export interface UnFollowUser {
+export interface UnFollowUser {
     myUserId: string;
     myFollowingUserId: string;
 }
-
+export interface isFollowing {
+    myuserId: string;
+    otherPersonId: string;
+}
 export interface UserRequest {
     userId: string;
+    page?: number;
+    limit?: number;
+    otherPersonId?: string;
+}
+
+export interface fetchOthersFollowActivityStats {
+    myUserId: string;
+    page?: number;
+    limit?: number;
+    otherPersonId?: string;
+}
+export interface SavedFCMToken {
+    userId: string;
+    fcmToken: string;
 }
 
 export interface GetAllMyPosts extends UserRequest {}
 export interface GetAllFollowers extends UserRequest {}
 export interface GetAllMyFollowing extends UserRequest {}
+export interface GetAllOtherPersonFollowing
+    extends fetchOthersFollowActivityStats {}
+export interface GetAllOtherPersonFollowers
+    extends fetchOthersFollowActivityStats {}

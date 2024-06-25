@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
 import Video from 'react-native-video';
 import ReelPlayIcon from '../SvgIcons/ProfileScreenIcons/ReelPlayIcon';
+import { useNavigation } from '@react-navigation/native';
 
 interface ReelItem {
     id: string;
@@ -10,35 +11,43 @@ interface ReelItem {
 }
 
 interface ShortsItemProps {
-    item: ReelItem;
-    paused?: boolean[];
+    item: any;
     index?: number;
-    togglePause?: (index: number) => void;
+    // paused?: boolean[];
+    // togglePause?: (index: number) => void;
 }
 const windowWidth = Dimensions.get('window').width;
 const numColumns = 3;
 const itemWidth = (windowWidth - 32 - (numColumns - 1) * 10) / numColumns;
-const ShortsItem: React.FC<ShortsItemProps> = ({ item, paused, index, togglePause }) => {
+const ShortsItem: React.FC<ShortsItemProps> = ({ item, index }) => {
+    const navigation = useNavigation()
+    console.log("item", index, item?.shorts[0]?.url);
+    const videoUrl = item?.shorts[0]?.url
+        ? item?.shorts[0]?.url
+        : 'https://v6.cdnpk.net/videvo_files/video/premium/partners0547/large_watermarked/2557898_preview.mp4';
+
     return (
-        <View style={[styles.reelItem, { width: itemWidth, height: 174 }]}>
-            <Video
-                source={item.source}
+        <TouchableOpacity style={[styles.reelItem, { width: itemWidth, height: 174 }]}
+            onPress={() => (navigation as any).navigate('PostDetailsScreen', { postId: item?.shortsId ? item.shortsId : item._id })}
+        >
+            {videoUrl && <Video
+                source={{ uri: item?.shorts[0]?.url ? item?.shorts[0]?.url : 'https://v6.cdnpk.net/videvo_files/video/premium/partners0547/large_watermarked/2557898_preview.mp4' }}
                 style={styles.video}
                 muted
                 repeat
                 resizeMode="cover"
                 paused
-                // paused={paused[index]}
-            />
+            // paused={paused[index]}
+            />}
             <View style={styles.overlay}>
                 <ReelPlayIcon />
-                <Text style={styles.viewsText}>{item.views}</Text>
+                <Text style={styles.viewsText}>{item?.viewersCount ? item.viewersCount : "N/A"}</Text>
             </View>
             {/* Enable play/pause button if needed */}
             {/* <TouchableOpacity style={styles.button} onPress={() => togglePause(index)}>
                 <Text style={styles.buttonText}>{paused[index] ? 'Play' : 'Pause'}</Text>
             </TouchableOpacity> */}
-        </View>
+        </TouchableOpacity>
     );
 };
 
@@ -50,11 +59,12 @@ const styles = StyleSheet.create({
         position: 'relative',
         borderRadius: 5,
         overflow: 'hidden',
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#797979',
     },
     video: {
         height: '100%',
         width: '100%',
+        backgroundColor: '#797979',
     },
     overlay: {
         position: 'absolute',
@@ -65,6 +75,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         gap: 3,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        padding: 2,
+        paddingHorizontal: 4,
+        borderRadius: 5,
     },
     viewsText: {
         color: '#fff',

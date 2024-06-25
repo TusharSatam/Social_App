@@ -1,35 +1,101 @@
 import CustomText from '@social/components/Text/CustomText'
-import { StyleSheet, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, View } from 'react-native'
 import { FlashList, MasonryFlashList } from "@shopify/flash-list";
 import Feed from './Feed';
+import { useGetAllExplorePostsQuery } from '@social/redux/services/auth/authApi';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { setAllExplores } from '@social/redux/Slice/ExploreSlice';
+import { typography } from '@social/utils/typography';
+import { colors } from '@social/utils/colors';
 const ExploreFeeds = () => {
-    const exploreData = [
-        { id: '1', type: "image", source: { uri: 'https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500' } },
-        { id: '2', type: "image", source: { uri: 'https://cdn.pixabay.com/photo/2017/08/24/11/04/brain-2676370_640.jpg' } },
-        { id: '3', type: "video", source: { uri: 'https://videocdn.cdnpk.net/excite/content/video/premium/partners0764/large_watermarked/2856991_preview.mp4' } },
-        { id: '4', type: "image", source: { uri: 'https://media.istockphoto.com/id/811745564/photo/night-view-of-hakodateyama-in-hokkaido-japan.jpg?s=1024x1024&w=is&k=20&c=7K8CPG7BGf6NaDcUExLzTFL5YWZLKO7ptMqoPnkXyXo=' } },
-        { id: '5', type: "image", source: { uri: 'https://media.istockphoto.com/id/1398473177/photo/questionnaire-with-checkboxes-filling-survey-form-online-answer-questions.jpg?s=612x612&w=0&k=20&c=sgZY6ojUqB0goVyn_9fKLfeyZ6lyWjSb3-FQjgeUPec=' } },
-        { id: '6', type: "image", source: { uri: 'https://media.istockphoto.com/id/1341866705/vector/web-design-and-layout-wireframe.jpg?s=612x612&w=0&k=20&c=WOmN5J6xQnxnGJ2jaMpCYzMVb-JC67iZfSKk4I54KNc=' } },
-        { id: '7', type: "video", source: { uri: 'https://videocdn.cdnpk.net/excite/content/video/premium/partners0764/large_watermarked/2856991_preview.mp4' } },
-        { id: '8', type: "image", source: { uri: 'https://media.istockphoto.com/id/1265041897/vector/business-team-working-together-on-web-page-design-people-building-website-interface-on.jpg?s=612x612&w=0&k=20&c=0nwzJe_VQNlN94Own93LE5pqnYG5g8E1ez7M4u0NWvk=' } },
-        { id: '10', type: "image", source: { uri: 'https://media.istockphoto.com/id/1341866705/vector/web-design-and-layout-wireframe.jpg?s=612x612&w=0&k=20&c=WOmN5J6xQnxnGJ2jaMpCYzMVb-JC67iZfSKk4I54KNc=' } },
-        { id: '11', type: "image", source: { uri: 'https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500' } },
-        { id: '12', type: "image", source: { uri: 'https://cdn.pixabay.com/photo/2017/08/24/11/04/brain-2676370_640.jpg' } },
-        { id: '13', type: "video", source: { uri: 'https://videocdn.cdnpk.net/excite/content/video/premium/partners0764/large_watermarked/2856991_preview.mp4' } },
-        { id: '14', type: "image", source: { uri: 'https://media.istockphoto.com/id/811745564/photo/night-view-of-hakodateyama-in-hokkaido-japan.jpg?s=1024x1024&w=is&k=20&c=7K8CPG7BGf6NaDcUExLzTFL5YWZLKO7ptMqoPnkXyXo=' } },
-        { id: '15', type: "image", source: { uri: 'https://media.istockphoto.com/id/1398473177/photo/questionnaire-with-checkboxes-filling-survey-form-online-answer-questions.jpg?s=612x612&w=0&k=20&c=sgZY6ojUqB0goVyn_9fKLfeyZ6lyWjSb3-FQjgeUPec=' } },
-        { id: '16', type: "image", source: { uri: 'https://media.istockphoto.com/id/1341866705/vector/web-design-and-layout-wireframe.jpg?s=612x612&w=0&k=20&c=WOmN5J6xQnxnGJ2jaMpCYzMVb-JC67iZfSKk4I54KNc=' } },
-        { id: '17', type: "video", source: { uri: 'https://videocdn.cdnpk.net/excite/content/video/premium/partners0764/large_watermarked/2856991_preview.mp4' } },
-        { id: '18', type: "image", source: { uri: 'https://media.istockphoto.com/id/1265041897/vector/business-team-working-together-on-web-page-design-people-building-website-interface-on.jpg?s=612x612&w=0&k=20&c=0nwzJe_VQNlN94Own93LE5pqnYG5g8E1ez7M4u0NWvk=' } },
-        { id: '19', type: "image", source: { uri: '	https://media.istockphoto.com/id/485866983/vector/…20&c=0dBjVrm88Gj4brbAk3Z-gsbAbPyIdg_ESWACFQBC2Mo=' } },
-    ];
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const loggedInProfileData = useSelector((state: any) => state.auth?.user);
+
+    const [page, setPage] = useState(1);
+    const { data: explorePosts, isLoading: isAllPostLoading, error: postError, refetch } = useGetAllExplorePostsQuery({
+        page,
+        size: 18, // Example limit value, adjust as needed
+    });
+    const [allExplorePosts, setAllExplorePosts] = useState<any[]>([]);
+    const [isFetchingMore, setIsFetchingMore] = useState(false);
+    const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
+    const handlePostClick = (postId) => {
+        (navigation as any).navigate('PostDetailsScreen', { postId });
+    };
+
+    const loadMorePosts = () => {
+        console.log("fetch more 1");
+        if (!isFetchingMore && explorePosts && page < explorePosts.totalPages) {
+            console.log("fetch more 2");
+            console.log(explorePosts.totalPages, "page:", page);
+
+            setIsFetchingMore(true);
+            setPage(prevPage => prevPage + 1); // Increment page using previous state
+        }
+    };
+
+    useEffect(() => {
+        if (explorePosts?.data) {
+            if (page === 1) {
+                setAllExplorePosts(explorePosts.data);
+            } else {
+                setAllExplorePosts(prevPosts => [...prevPosts, ...explorePosts.data]);
+            }
+            setIsFetchingMore(false);
+            setHasFetchedPosts(true);
+        }
+    }, [explorePosts, page]);
+
+    useEffect(() => {
+        if (allExplorePosts.length > 0) {
+            dispatch(setAllExplores(allExplorePosts));
+        }
+    }, [allExplorePosts, dispatch]);
+
+    useEffect(() => {
+        refetch();
+    }, []);
+
+    if (isAllPostLoading && !hasFetchedPosts) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#FF4D67" />
+            </View>
+        );
+    }
+
+    if (postError) {
+        return (
+            <View style={styles.errorContainer}>
+                <CustomText>Error fetching posts. Please try again later.</CustomText>
+            </View>
+        );
+    }
+
+    const shouldShowEmptyMessage = hasFetchedPosts && allExplorePosts.length === 0;
     return (
         <View style={styles.FeedsContainer}>
             <MasonryFlashList
-                data={exploreData}
+                data={allExplorePosts}
                 numColumns={3}
-                renderItem={({ item }) => <Feed item={item} key={item?.id} />}
+                // keyExtractor={(item) => item._id}
+                renderItem={({ item, index }) => <Feed item={item} key={item?._id} index={index} />}
                 estimatedItemSize={200}
+                ListEmptyComponent={
+                    shouldShowEmptyMessage ? (
+                        <View style={styles.emptyListComponent}>
+                            <CustomText style={styles.emptyPostText}>No Posts Yet</CustomText>
+                        </View>
+                    ) : null
+                }
+                onEndReached={loadMorePosts}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={() => (
+                    isFetchingMore ? <ActivityIndicator size="large" color="#FF4D67" /> : null
+                )}
             />
         </View>
     )
@@ -40,6 +106,27 @@ const styles = StyleSheet.create({
         display: "flex",
         flex: 1,
         marginTop: 10,
-    }
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyListComponent: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 30,
+    },
+    emptyPostText: {
+        fontFamily: typography.sfSemiBold,
+        fontSize: 16,
+        color: colors['24Color'],
+    },
 })
 export default ExploreFeeds
