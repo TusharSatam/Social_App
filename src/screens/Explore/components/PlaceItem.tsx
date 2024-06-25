@@ -5,7 +5,9 @@ import { TouchableOpacity } from 'react-native'
 import { StyleSheet, View } from 'react-native'
 import FastImage from 'react-native-fast-image'
 
-const PlaceItem = ({ item }) => {
+const PlaceItem = ({ item, index }) => {
+    console.log(item);
+    
     return (
         <TouchableOpacity style={styles.itemContainer}>
 
@@ -14,10 +16,9 @@ const PlaceItem = ({ item }) => {
             </View>
 
             <View>
-                <CustomText className="truncate" style={styles.primaryText}>{item?.locationName ? item?.locationName : "locationName N/A"}</CustomText>
-                <CustomText className="truncate" style={styles.SecondaryText}>{item?.totalPosts ? item?.totalPosts : "totalPosts N/A"}</CustomText>
+                <CustomText className="truncate" style={styles.primaryText}>{item?.location ? item?.location : "locationName N/A"}</CustomText>
+                <CustomText className="truncate" style={styles.SecondaryText}>{item?.totalCount ? item?.totalCount : "totalCount N/A"}</CustomText>
             </View>
-
         </TouchableOpacity>
     )
 }
