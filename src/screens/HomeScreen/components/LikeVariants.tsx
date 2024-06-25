@@ -4,6 +4,7 @@ import HaloEmojiIcon from "@social/components/SvgIcons/HaloEmojiIcon";
 import HeartIcon from "@social/components/SvgIcons/HeartIcon";
 import LolIcon from "@social/components/SvgIcons/LolIcon";
 import WinkIcon from "@social/components/SvgIcons/WinkIcon";
+import {useLikePostMutation} from "@social/redux/services/auth/authApi";
 import {colors} from "@social/utils/colors";
 import React from "react";
 import {
@@ -20,27 +21,66 @@ import Animated, {
     useDerivedValue,
     withTiming,
 } from "react-native-reanimated";
+import {useSelector} from "react-redux";
 
 const variantData = [
-    HeartIcon,
-    AmazedIcon,
-    HaloEmojiIcon,
-    LolIcon,
-    CryingIcon,
-    WinkIcon,
+    {
+        icon: HeartIcon,
+        type: "heart",
+    },
+    {
+        icon: AmazedIcon,
+        type: "amazed",
+    },
+    {
+        icon: HaloEmojiIcon,
+        type: "halo",
+    },
+    {
+        icon: LolIcon,
+        type: "lol",
+    },
+    {
+        icon: CryingIcon,
+        type: "crying",
+    },
+    {
+        icon: WinkIcon,
+        type: "wink",
+    },
 ];
 
 interface PostFooterProps {
     showLikeVariant: SharedValue<boolean | number>;
     postIndex: number;
     forScroll: SharedValue<boolean | number>;
+    id: string;
+    like: any;
+    setLike: any;
 }
 
 const AnimatedTouchaableOpacity =
     Animated.createAnimatedComponent(TouchableOpacity);
 
 const LikeVariants = (props: PostFooterProps) => {
-    const {showLikeVariant, postIndex, forScroll} = props;
+    const {showLikeVariant, postIndex, forScroll, id, like, setLike} = props;
+    const loggedInProfileData = useSelector((state: any) => state.auth);
+
+    const [likePostFn, {isLoading, isSuccess, isError, status}] =
+        useLikePostMutation();
+
+    const likedAPost = async likeType => {
+        try {
+            setLike(likeType);
+            const resp = await likePostFn({
+                likeType,
+                userId: loggedInProfileData?.user?._id,
+                postId: id,
+            });
+        } catch (error) {
+            setLike(null);
+        }
+    };
 
     const scaleLikes = useDerivedValue(() => {
         return showLikeVariant.value === postIndex
@@ -52,7 +92,7 @@ const LikeVariants = (props: PostFooterProps) => {
                   duration: 300,
                   easing: Easing.out(Easing.circle),
               });
-    }, []);
+    }, [postIndex]);
 
     const scaleLikesList = useAnimatedStyle(() => {
         return {
@@ -70,8 +110,9 @@ const LikeVariants = (props: PostFooterProps) => {
             <AnimatedTouchaableOpacity
                 onPress={() => {
                     forScroll.value = false;
+                    likedAPost(item.type);
                 }}>
-                {React.createElement(item, {width: 36, height: 36})}
+                {React.createElement(item.icon, {width: 36, height: 36})}
             </AnimatedTouchaableOpacity>
         );
     };
@@ -104,11 +145,11 @@ const styles = StyleSheet.create({
     rootView: {
         position: "absolute",
         borderRadius: 6,
-        zIndex: 99,
+        zIndex: 9999,
         backgroundColor: colors.white,
         width: "90%",
         alignSelf: "center",
-        bottom: 150,
+        bottom: 100,
         height: 56,
         shadowColor: "#000",
         shadowOffset: {

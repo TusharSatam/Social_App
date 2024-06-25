@@ -11,8 +11,8 @@ const store = configureStore({
     reducer: {
         auth: AuthSlice,
         post: PostSlice,
-        userProfileActivity:UserProfileActivitySlice,
-        explore:ExploreSlice,
+        userProfileActivity: UserProfileActivitySlice,
+        explore: ExploreSlice,
         [authApi.reducerPath]: authApi.reducer,
     },
     // Adding the api middleware enables caching, invalidation, polling, and other features of RTK Query

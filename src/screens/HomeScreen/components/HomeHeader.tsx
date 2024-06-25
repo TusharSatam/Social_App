@@ -1,21 +1,29 @@
-import {StyleSheet, Text, View} from "react-native";
+import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import React from "react";
 import {typography} from "@social/utils/typography";
 import {colors} from "@social/utils/colors";
 import BellIcon from "@social/components/SvgIcons/BellIcon";
 import ChatIcon from "@social/components/SvgIcons/ChatIcon";
 import {commonStyles} from "@social/utils/common-styles";
+import {useNavigation} from "@react-navigation/native";
+import AppLogoIcon from "@social/components/SvgIcons/AppLogoIcon";
 
 const HomeHeader = () => {
+    const navigation = useNavigation();
+
     return (
         <View style={styles.headerView}>
-            <View>
+            <View style={{flexDirection: "row", alignItems: "center", gap: 6}}>
+                <AppLogoIcon width={30} height={30} />
                 <Text style={styles.headerText}>Voodle</Text>
             </View>
             <View style={styles.iconView}>
-                <View>
+                <TouchableOpacity
+                    onPress={() =>
+                        (navigation as any).navigate("Notification")
+                    }>
                     <BellIcon width={25} height={25} />
-                </View>
+                </TouchableOpacity>
                 <View>
                     <ChatIcon width={25} height={25} />
                 </View>

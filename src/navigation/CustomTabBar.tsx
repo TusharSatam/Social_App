@@ -1,15 +1,15 @@
-import { CommonActions, useNavigation } from "@react-navigation/native";
+import {CommonActions, useNavigation} from "@react-navigation/native";
 import CircularPlusIcon from "@social/components/SvgIcons/CircularPlusIcon";
 import HomeIcon from "@social/components/SvgIcons/HomeIcon";
 import PlayIcon from "@social/components/SvgIcons/PlayIcon";
 import ProfileIcon from "@social/components/SvgIcons/ProfileIcon";
 import SearchIcon from "@social/components/SvgIcons/SearchIcon";
-import { clearMediaPost } from "@social/redux/Slice/PostSlice";
-import { navigationRef } from "@social/refs/refs";
-import { colors } from "@social/utils/colors";
-import { helpers } from "@social/utils/helpers";
-import { typography } from "@social/utils/typography";
-import { useCallback, useEffect, useState } from "react";
+import {clearMediaPost} from "@social/redux/Slice/PostSlice";
+import {navigationRef} from "@social/refs/refs";
+import {colors} from "@social/utils/colors";
+import {helpers} from "@social/utils/helpers";
+import {typography} from "@social/utils/typography";
+import {useCallback, useEffect, useState} from "react";
 import {
     Pressable,
     StyleSheet,
@@ -17,7 +17,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 const HEIGHT = 30;
 const WIDTH = 30;
@@ -26,17 +26,18 @@ const NO_TABBAR = {
     PostCreationStack: true,
     CreatePost: true,
     SharePost: true,
+    Notification: true,
 };
 
 const CustomTabBar = props => {
     const dispatch = useDispatch();
     const [routes, setRoutes] = useState(props.state.routeNames);
     const navigation = useNavigation();
-    const loggedInProfileData = useSelector((state: any) => state.auth)
+    const loggedInProfileData = useSelector((state: any) => state.auth);
     const [activeTab, setActiveTab] = useState(0);
     useEffect(() => {
         console.log("navigationRef", navigationRef.current.getState());
-    }, [])
+    }, []);
 
     const tabs = [
         {
@@ -45,7 +46,7 @@ const CustomTabBar = props => {
             inactiveIcon: (
                 <HomeIcon fill={"white"} width={WIDTH} height={HEIGHT} />
             ),
-            screenName: "HomeScreen",
+            screenName: "HomeStack",
         },
         {
             label: "Explore",
@@ -80,7 +81,10 @@ const CustomTabBar = props => {
                 <ProfileIcon fill={"black"} width={WIDTH} height={HEIGHT} />
             ),
             screenName: "ProfileStack",
-            paramData: { userId: loggedInProfileData?.user?._id, loggedInUserId: loggedInProfileData?.user?._id }
+            paramData: {
+                userId: loggedInProfileData?.user?._id,
+                loggedInUserId: loggedInProfileData?.user?._id,
+            },
         },
     ];
 
@@ -90,8 +94,7 @@ const CustomTabBar = props => {
             (navigation as any).navigate(screenName, {
                 screen: "CreatePost",
             });
-        }
-        else if (screenName === "ProfileStack") {
+        } else if (screenName === "ProfileStack") {
             navigation.dispatch(
                 CommonActions.reset({
                     index: 0,
@@ -100,7 +103,7 @@ const CustomTabBar = props => {
                             name: screenName,
                         },
                     ],
-                })
+                }),
             );
         }
           else if (screenName === "ExploreStack") {
@@ -151,7 +154,7 @@ const CustomTabBar = props => {
                             onPress={() => changeRoute(item.screenName)}
                             style={[
                                 styles.container,
-                                { position: "relative", top: -30 },
+                                {position: "relative", top: -30},
                             ]}
                             key={index}>
                             <View style={styles.iconStyle}>
@@ -163,7 +166,9 @@ const CustomTabBar = props => {
 
                 return (
                     <TouchableOpacity
-                        onPress={() => changeRoute(item.screenName, item?.paramData)}
+                        onPress={() =>
+                            changeRoute(item.screenName, item?.paramData)
+                        }
                         style={styles.container}
                         key={index}>
                         <View style={styles.iconStyle}>
