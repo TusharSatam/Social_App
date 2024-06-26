@@ -1,5 +1,6 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import CompleteProfile from "@social/screens/OnBoardingScreens/CompleteProfile";
+import FollowSomeone from "@social/screens/OnBoardingScreens/FollowSomeone";
 import SelectInterests from "@social/screens/OnBoardingScreens/SelectInterests";
 
 const Stack = createNativeStackNavigator<any>();
@@ -22,6 +23,8 @@ const OnBoardingStack = () => (
             }}
         />
         <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
+        <Stack.Screen name="FollowSomeone" component={FollowSomeone} />
+        
     </Stack.Navigator>
 );
 

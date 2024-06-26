@@ -40,7 +40,9 @@ const PlaceResults = ({ searchQuery }) => {
                     keyExtractor={(item, index) => `item${index}`}
                 />
             ) : (
-                <CustomText>No results found</CustomText>
+                <View style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <CustomText>No results found</CustomText>
+                </View>
             )}
         </View>
     );

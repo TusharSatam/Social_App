@@ -16,7 +16,9 @@ const Explore = ({ route }) => {
     const [searchQuery, setSearchQuery] = useState(''); // Track the search input value
 
     const handleFocus = () => {
+
         if (searchQuery.length === 0) {
+            console.log("in Focus");
             setView('RecentSearch');
         }
     };
@@ -39,7 +41,7 @@ const Explore = ({ route }) => {
             case 'ExploreFeeds':
                 return <ExploreFeeds paramLocation={paramData?.location ? paramData?.location : null} />;
             case 'RecentSearch':
-                return <RecentSearch  />;
+                return <RecentSearch />;
             case 'SearchResults':
                 return <SearchResults searchQuery={searchQuery} />;
             default:

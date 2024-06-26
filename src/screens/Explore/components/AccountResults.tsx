@@ -80,12 +80,18 @@ const AccountResults = ({ searchQuery }) => {
     }
     return (
         <View style={styles.accountResultsContainer}>
-            <FlatList renderItem={({ item }) => (
+{users && users?.length>0  ?           <FlatList renderItem={({ item }) => (
                 <AccountItem
                     item={item}
                     handleProfileNavigation={handleProfileNavigation}
                 />
-            )} data={users} />
+            )} data={users} />:
+            (
+                <View style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+                    <CustomText>No results found</CustomText>
+                </View>
+            )
+            }
         </View>
     )
 }

@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 interface AuthHeaderPropType {
   title: string;
-  description: string;
+  description?: string;
   descriptionClass?: any;
   containerClass?: any;
   displayEmail?: boolean;
@@ -22,7 +22,7 @@ const AuthHeader: React.FC<AuthHeaderPropType> = ({ title, description, descript
     const fetchEmail = async () => {
       let storedEmail = await AsyncStorage.getItem('registerEmail');
       if (!storedEmail) {
-        storedEmail = await AsyncStorage.getItem('forgotEmail');        
+        storedEmail = await AsyncStorage.getItem('forgotEmail');
       }
       setUserEmail(storedEmail);
     };
@@ -37,9 +37,9 @@ const AuthHeader: React.FC<AuthHeaderPropType> = ({ title, description, descript
       </TouchableOpacity>}
       <View style={[styles.container, containerClass && styles[containerClass]]}>
         <CustomText style={styles.title}>{title}</CustomText>
-        <View style={descriptionClass} className='w-full'>
+        {description && <View style={descriptionClass} className='w-full'>
           <CustomText style={[styles.description]}>{description}</CustomText>
-        </View>
+        </View>}
         {displayEmail && <CustomText style={styles.email}>{userEmail ? userEmail : ""}</CustomText>}
       </View>
     </View>
@@ -54,16 +54,18 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 32,
+    marginTop: 39,
     marginBottom: 20,
     width: "100%",
   },
   title: {
-    fontWeight: '500',
-    fontSize: 30,
+    fontWeight: '600',
+    fontSize: 22,
     textAlign: 'center',
-    fontFamily: typography.sfMedium,
-    marginBottom: 12,
+    fontFamily: typography.sfSemiBold,
+    marginBottom: 6,
+    letterSpacing: -0.3,
+    lineHeight: 28,
   },
   description: {
     textAlign: 'center',

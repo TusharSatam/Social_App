@@ -1,11 +1,11 @@
-import CustomText from '@social/components/Text/CustomText'
-import { typography } from '@social/utils/typography'
-import { FlatList, StyleSheet, View } from 'react-native'
-import RecentSearchItem from './RecentSearchItem'
-import { CommonActions, useNavigation } from '@react-navigation/native'
-import { useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import CustomText from '@social/components/Text/CustomText';
+import { typography } from '@social/utils/typography';
+import { FlatList, StyleSheet, View, Text } from 'react-native';
+import RecentSearchItem from './RecentSearchItem';
+import { CommonActions, useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecentSearch = () => {
     const dummyRecentSearchData = [
@@ -13,9 +13,9 @@ const RecentSearch = () => {
             id: "rs1", type: "userAccount",
             source: { uri: "https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500" }, username: "Kelly_Scott", name: "Scott Kelly", description: "Followed by Irjvr and 62M others"
         }, { id: "rs2", type: "location", locationName: "Mumbai", totalPosts: "19.3M" }
-    ]
-    const navigation = useNavigation()
-    const loggedInProfileData = useSelector((state: any) => state.auth)
+    ];
+    const navigation = useNavigation();
+    const loggedInProfileData = useSelector((state: any) => state.auth);
     const [recentSearches, setRecentSearches] = useState([]);
 
     const handleProfileNavigation = (item) => {
@@ -42,9 +42,9 @@ const RecentSearch = () => {
             // (navigation as any).navigate("Profile",isLoggedInUser)
         }
         else {
-            (navigation as any).push("Explore", { location: item?.location })
+            (navigation as any).push("Explore", { location: item?.location });
         }
-    }
+    };
 
     useEffect(() => {
         const fetchRecentSearches = async () => {
@@ -60,22 +60,30 @@ const RecentSearch = () => {
 
         fetchRecentSearches();
     }, []);
+
     return (
         <View style={styles.recentSearchContainer}>
             <CustomText style={styles.recentSearchText}>Recent Searches</CustomText>
             <View style={styles.searchResults}>
-                <FlatList renderItem={({ item }) => (
-                    <RecentSearchItem
-                        item={item}
-                        handleProfileNavigation={handleProfileNavigation}
+                {recentSearches.length === 0 ? (
+                    <Text style={styles.noSearchesText}>No recent searches</Text>
+                ) : (
+                    <FlatList
+                        renderItem={({ item }) => (
+                            <RecentSearchItem
+                                item={item}
+                                handleProfileNavigation={handleProfileNavigation}
+                            />
+                        )}
+                        data={recentSearches}
+                        contentContainerStyle={styles.listContainer}
                     />
-                )} data={recentSearches}
-                    contentContainerStyle={styles.listContainer}
-                />
+                )}
             </View>
         </View>
-    )
-}
+    );
+};
+
 const styles = StyleSheet.create({
     recentSearchContainer: {
         width: "100%",
@@ -95,6 +103,13 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         paddingBottom: 100,
-    }
-})
-export default RecentSearch
+    },
+    noSearchesText: {
+        textAlign: 'center',
+        color: '#797979',
+        fontSize: 14,
+        marginTop: 20,
+    },
+});
+
+export default RecentSearch;

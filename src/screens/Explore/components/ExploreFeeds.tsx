@@ -15,7 +15,7 @@ const ExploreFeeds = ({ paramLocation }) => {
     const loggedInProfileData = useSelector((state: any) => state.auth?.user);
 
     const [page, setPage] = useState(1);
-    const { data: explorePosts, isLoading: isAllPostLoading, error: postError, refetch } = paramLocation
+    const { data: explorePosts, isLoading: isAllPostLoading, error: postError,isFetching:isFetchingExplores, refetch } = paramLocation
         ? useGetLocationBasedExploresQuery({ page, limit: 18, location: paramLocation })
         : useGetAllExplorePostsQuery({ page, size: 18 });
     const [allExplorePosts, setAllExplorePosts] = useState<any[]>([]);
@@ -54,11 +54,11 @@ const ExploreFeeds = ({ paramLocation }) => {
         }
     }, [allExplorePosts, dispatch]);
 
-    useEffect(() => {
-        refetch();
-    }, []);
+    // useEffect(() => {
+    //     refetch();
+    // }, []);
 
-    if (isAllPostLoading && !hasFetchedPosts) {
+    if (isFetchingExplores && !hasFetchedPosts) {
         return (
             <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#FF4D67" />

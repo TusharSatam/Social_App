@@ -6,12 +6,14 @@ import CustomText from '../Text/CustomText';
 import { typography } from '@social/utils/typography';
 import EyeHidden from '../SvgIcons/InputIcons/EyeHidden';
 import EyeVisible from '../SvgIcons/InputIcons/EyeVisible';
+import { Text } from 'react-native';
 interface AuthInputProps extends TextInputProps {
     className?: string;
     label?: string;
+    isRequired?: boolean;
 }
 
-const AuthInput: React.FC<AuthInputProps> = ({ className, label, secureTextEntry, ...props }) => {
+const AuthInput: React.FC<AuthInputProps> = ({ className, label, isRequired, secureTextEntry, ...props }) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const togglePasswordVisibility = () => {
@@ -20,13 +22,13 @@ const AuthInput: React.FC<AuthInputProps> = ({ className, label, secureTextEntry
 
     return (
         <View className='w-full' style={styles.Field}>
-            {label && <CustomText style={styles.label}>{label}</CustomText>}
+            {label && <CustomText style={styles.label}>{label}{isRequired && <Text style={{ color: 'red' }}>*</Text>}</CustomText>}
             <View className='relative'>
                 <TextInput
                     style={styles.input}
                     placeholderTextColor="#797979"
                     secureTextEntry={secureTextEntry && !isPasswordVisible}
-                    className={`!px-4 py-3 text-[16px] mb-0 bg-lightGray shadow-sm w-full rounded-xl ${className} text-[#242424]`}
+                    className={`!px-[12px] py-[10px] h-[40px] text-[16px] mb-0 bg-lightGray shadow-sm w-full rounded-[10px] ${className} text-[#242424]`}
                     {...props}
                 />
                 {secureTextEntry && (
@@ -48,13 +50,16 @@ const AuthInput: React.FC<AuthInputProps> = ({ className, label, secureTextEntry
 
 const styles = StyleSheet.create({
     input: {
-        fontFamily: 'SFProDisplay-Regular',
+        fontFamily: typography.sfRegular,
         fontWeight: "400",
         color: '#242424',
-        fontSize: 16,
+        fontSize: 14,
+        backgroundColor:"black",
+        paddingVertical:10,
+        paddingHorizontal:12,
     },
     Field: {
-        marginVertical: 14,
+        marginBottom: 14,
     },
     icon: {
         position: 'absolute',
@@ -63,9 +68,9 @@ const styles = StyleSheet.create({
     },
     label: {
         marginBottom: 6,
-        fontSize: 16,
+        fontSize: 13,
         fontFamily: typography.sfMedium,
-        // fontWeight:"500",
+        fontWeight: "500",
         color: '#242424',
     },
 });

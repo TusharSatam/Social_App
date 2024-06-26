@@ -6,6 +6,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { typography } from '@social/utils/typography';
 import EyeHidden from '../SvgIcons/InputIcons/EyeHidden';
 import EyeVisible from '../SvgIcons/InputIcons/EyeVisible';
+import DownIcon from "react-native-vector-icons/Entypo"
 interface ManageAccountInputProps {
     placeholderText: string;
     label: string;
@@ -15,7 +16,12 @@ interface ManageAccountInputProps {
     error?: string | null;
     secureTextEntry?: boolean;
 }
-
+export const formatDate = (date: Date) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+};
 const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
     placeholderText,
     label,
@@ -40,12 +46,7 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
     const togglePasswordVisibility = () => {
         setIsPasswordVisible(!isPasswordVisible);
     };
-    const formatDate = (date: Date) => {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-    };
+ 
     return (
         <View style={styles.container}>
             {label && <CustomText style={styles.inputLabel}>{label}</CustomText>}
@@ -102,12 +103,8 @@ const ManageAccountInput: React.FC<ManageAccountInputProps> = ({
                     ]}
                     useNativeAndroidPickerStyle={false} // only for Android
                     Icon={() => {
-                        return Platform.OS === 'ios' ? (
-                            <View style={styles.pickerIcon} />
-                        ) : (
-                            <View style={styles.pickerIconAndroid} />
-                        );
-                    }}
+                        return <DownIcon name='chevron-small-down' size={24} color="black" style={{right:10,top:10}}/>;
+                      }}
                 />
             ) : secureTextEntry ? (
                 <View className='relative'>
