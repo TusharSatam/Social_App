@@ -1,38 +1,50 @@
-import {Platform, SafeAreaView} from "react-native";
-import {GestureHandlerRootView} from "react-native-gesture-handler";
+import { Platform, SafeAreaView } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ProtectedRoute from "./src/components/ProtectedRoute";
-import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
-import {AlertNotificationRoot} from "react-native-alert-notification";
-import {useEffect, useState} from "react";
-import {Notifications} from "react-native-notifications";
-import {useSaveUserFcmTokenMutation} from "@social/redux/services/auth/authApi";
-import {useSelector} from "react-redux";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { AlertNotificationRoot } from "react-native-alert-notification";
+import { useEffect, useState } from "react";
+import { Notifications } from "react-native-notifications";
+import { useSaveUserFcmTokenMutation } from "@social/redux/services/auth/authApi";
+import { useSelector } from "react-redux";
+import messaging from "@react-native-firebase/messaging";
 
 function App() {
-    const [saveUserFcmToken, {isLoading: isSavingFCMToken}] =
+    const [saveUserFcmToken, { isLoading: isSavingFCMToken }] =
         useSaveUserFcmTokenMutation();
     const [fcmToken, setfcmToken] = useState<string | null>(null);
     const loggedInProfileData = useSelector((state: any) => state.auth);
-    const saveFcmToken = async () => {
-        Notifications.registerRemoteNotifications();
 
-        Notifications.events().registerRemoteNotificationsRegistered(event => {
-            const fcmToken = event.deviceToken;
-            console.log(fcmToken);
-            setfcmToken(fcmToken);
-        });
 
-        Notifications.events().registerRemoteNotificationsRegistrationFailed(
-            event => {
-                console.error(event);
-            },
-        );
-        Notifications.registerRemoteNotifications();
-    };
-
+    const getDeviceToken = async () => {
+        let token = await messaging().getToken();
+        console.log("new token",token);
+        setfcmToken(fcmToken);
+    }
     useEffect(() => {
-        saveFcmToken();
-    }, []);
+        getDeviceToken()
+    }, [])
+
+    // const saveFcmToken = async () => {
+    //     Notifications.registerRemoteNotifications();
+
+    //     Notifications.events().registerRemoteNotificationsRegistered(event => {
+    //         const fcmToken = event.deviceToken;
+    //         console.log(fcmToken);
+    //         setfcmToken(fcmToken);
+    //     });
+
+    //     Notifications.events().registerRemoteNotificationsRegistrationFailed(
+    //         event => {
+    //             console.error(event);
+    //         },
+    //     );
+    //     Notifications.registerRemoteNotifications();
+    // };
+
+    // useEffect(() => {
+    //     saveFcmToken();
+    // }, []);
     const SaveDeviceFcmToken = async () => {
         console.log("in SaveDeviceFcmToken");
         let saveFCMTokenResponse = await saveUserFcmToken({
@@ -48,8 +60,8 @@ function App() {
     }, [fcmToken, loggedInProfileData]);
 
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: "white"}}>
-            <GestureHandlerRootView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+            <GestureHandlerRootView style={{ flex: 1 }}>
                 <BottomSheetModalProvider>
                     <AlertNotificationRoot>
                         <ProtectedRoute />
