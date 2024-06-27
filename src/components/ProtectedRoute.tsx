@@ -12,6 +12,7 @@ import MainStack from "@social/navigation/MainStack";
 import { setAuthData } from "@social/redux/Slice/AuthSlice";
 import { navigationRef } from "@social/refs/refs";
 import TermsAndConditions from "@social/screens/SettingsScreens/TermsAndConditions";
+import SplashScreen from "react-native-splash-screen";
 
 type RootStackParamList = {
     AuthStack: undefined;
@@ -74,6 +75,7 @@ const ProtectedRoute: React.FC = () => {
                 );
             } finally {
                 setIsContentLoading(false);
+                SplashScreen.hide();
             }
         };
 
