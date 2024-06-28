@@ -371,7 +371,6 @@ export const authApi = createApi({
                 };
             },
         }),
-
         deletePost: builder.mutation({
             query: postId => {
                 return {
@@ -481,6 +480,15 @@ export const authApi = createApi({
                 params: {location, limit, page},
             }),
         }),
+        uploadShort: builder.mutation({
+            query(request) {
+                return {
+                    url: "/shorts/onboard",
+                    method: "POST",
+                    body: request,
+                };
+            },
+        }),
     }),
 });
 export const {
@@ -526,4 +534,5 @@ export const {
     useSaveUserFcmTokenMutation,
     useGetSearchLocationsQuery,
     useGetLocationBasedExploresQuery,
+    useUploadShortMutation,
 } = authApi;

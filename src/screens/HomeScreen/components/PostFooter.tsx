@@ -66,7 +66,7 @@ const PostFooter = (props: PostFooterProps) => {
     } = props;
 
     const loggedInProfileData = useSelector((state: any) => state.auth);
-    const [isSavePost, setIsSavePost] = useState(isPostSaved);
+    const [isSavePost, setIsSavePost] = useState(false);
 
     const [likePostFn, {isLoading, isSuccess, isError, status}] =
         useLikePostMutation();
@@ -135,6 +135,10 @@ const PostFooter = (props: PostFooterProps) => {
                 return <LikeThumb />;
         }
     };
+
+    useEffect(() => {
+        setIsSavePost(isPostSaved);
+    }, [isPostSaved]);
 
     return (
         <View style={styles.footer}>

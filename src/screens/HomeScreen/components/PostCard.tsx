@@ -159,7 +159,7 @@ const PostCard = (props: PostCardProps) => {
                 profileImg={item?.user?.ProfilePicture}
                 userName={item?.user?.username}
                 location={item?.location}
-                time={item?.user?.updatedAt}
+                time={item?.user?.createdAt}
             />
             <View style={[styles.postMain]}>
                 <Carousel
