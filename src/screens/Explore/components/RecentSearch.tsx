@@ -1,20 +1,26 @@
-import CustomText from '@social/components/Text/CustomText'
-import { typography } from '@social/utils/typography'
-import { FlatList, StyleSheet, View } from 'react-native'
-import RecentSearchItem from './RecentSearchItem'
-import { CommonActions, useNavigation } from '@react-navigation/native'
-import { useSelector } from 'react-redux'
+import CustomText from '@social/components/Text/CustomText';
+import { typography } from '@social/utils/typography';
+import { FlatList, StyleSheet, View, Text } from 'react-native';
+import RecentSearchItem from './RecentSearchItem';
+import { CommonActions, useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecentSearch = () => {
     const dummyRecentSearchData = [
-        { id: "rs1", type: "userAccount", source: { uri: "https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500" }, username: "Kelly_Scott", name: "Scott Kelly", description: "Followed by Irjvr and 62M others" }, { id: "rs2", type: "location", locationName: "Mumbai", totalPosts: "19.3M" }
-    ]
-    const navigation = useNavigation()
-    const loggedInProfileData = useSelector((state: any) => state.auth)
+        {
+            id: "rs1", type: "userAccount",
+            source: { uri: "https://images.freeimages.com/images/large-previews/6b2/paris-1217537.jpg?fmt=webp&w=500" }, username: "Kelly_Scott", name: "Scott Kelly", description: "Followed by Irjvr and 62M others"
+        }, { id: "rs2", type: "location", locationName: "Mumbai", totalPosts: "19.3M" }
+    ];
+    const navigation = useNavigation();
+    const loggedInProfileData = useSelector((state: any) => state.auth);
+    const [recentSearches, setRecentSearches] = useState([]);
 
-    const handleProfileNavigation = (userId, itemType) => {
-        if (itemType === "userAccount") {
-            const isLoggedInUser = userId === loggedInProfileData?.user?._id;
+    const handleProfileNavigation = (item) => {
+        if (item?.itemType === "userAccount") {
+            const isLoggedInUser = item?.userId === loggedInProfileData?.user?._id;
             navigation.dispatch(
                 CommonActions.reset({
                     index: 0,
@@ -25,7 +31,7 @@ const RecentSearch = () => {
                                 routes: [
                                     {
                                         name: 'Profile',
-                                        params: isLoggedInUser 
+                                        params: { isLoggedInUser, userId: item?.userId }
                                     }
                                 ]
                             }
@@ -35,21 +41,49 @@ const RecentSearch = () => {
             );
             // (navigation as any).navigate("Profile",isLoggedInUser)
         }
-    }
+        else {
+            (navigation as any).push("Explore", { location: item?.location });
+        }
+    };
+
+    useEffect(() => {
+        const fetchRecentSearches = async () => {
+            try {
+                const searches = await AsyncStorage.getItem('RecentSearch');
+                const parsedSearches = searches ? JSON.parse(searches) : [];
+
+                setRecentSearches(parsedSearches);
+            } catch (error) {
+                console.error('Error fetching recent searches:', error);
+            }
+        };
+
+        fetchRecentSearches();
+    }, []);
+
     return (
         <View style={styles.recentSearchContainer}>
             <CustomText style={styles.recentSearchText}>Recent Searches</CustomText>
             <View style={styles.searchResults}>
-                <FlatList renderItem={({ item }) => (
-                    <RecentSearchItem
-                        item={item}
-                        handleProfileNavigation={handleProfileNavigation}
+                {recentSearches.length === 0 ? (
+                    <Text style={styles.noSearchesText}>No recent searches</Text>
+                ) : (
+                    <FlatList
+                        renderItem={({ item }) => (
+                            <RecentSearchItem
+                                item={item}
+                                handleProfileNavigation={handleProfileNavigation}
+                            />
+                        )}
+                        data={recentSearches}
+                        contentContainerStyle={styles.listContainer}
                     />
-                )} data={dummyRecentSearchData} />
+                )}
             </View>
         </View>
-    )
-}
+    );
+};
+
 const styles = StyleSheet.create({
     recentSearchContainer: {
         width: "100%",
@@ -65,8 +99,17 @@ const styles = StyleSheet.create({
     },
     searchResults: {
         display: "flex",
-        // gap: 14,
         width: "100%",
-    }
-})
-export default RecentSearch
+    },
+    listContainer: {
+        paddingBottom: 100,
+    },
+    noSearchesText: {
+        textAlign: 'center',
+        color: '#797979',
+        fontSize: 14,
+        marginTop: 20,
+    },
+});
+
+export default RecentSearch;

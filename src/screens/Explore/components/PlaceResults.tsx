@@ -16,11 +16,6 @@ const PlaceResults = ({ searchQuery }) => {
     }, [searchedLocations]);
 
     useEffect(() => {
-        console.log(locations);
-
-    }, [locations])
-
-    useEffect(() => {
         refetch();
     }, [searchQuery]);
 
@@ -33,7 +28,7 @@ const PlaceResults = ({ searchQuery }) => {
     }
 
     if (error) {
-        return <Text>Error loading data</Text>;
+        return <CustomText>Error loading data</CustomText>;
     }
 
     return (
@@ -45,7 +40,9 @@ const PlaceResults = ({ searchQuery }) => {
                     keyExtractor={(item, index) => `item${index}`}
                 />
             ) : (
-                <CustomText>No results found</CustomText>
+                <View style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <CustomText>No results found</CustomText>
+                </View>
             )}
         </View>
     );

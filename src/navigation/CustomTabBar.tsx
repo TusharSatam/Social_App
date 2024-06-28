@@ -105,7 +105,20 @@ const CustomTabBar = props => {
                     ],
                 }),
             );
-        } else {
+        }
+          else if (screenName === "ExploreStack") {
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: screenName,
+                        },
+                    ],
+                })
+            );
+        }
+        else {
             (navigation as any).navigate(screenName);
         }
     };

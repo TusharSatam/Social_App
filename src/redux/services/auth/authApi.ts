@@ -470,6 +470,16 @@ export const authApi = createApi({
                 params: {searchText},
             }),
         }),
+        getSearchUsers: builder.query<
+            any,
+            {loggedInUserId: string; searchText: string}
+        >({
+            query: ({loggedInUserId, searchText}) => ({
+                url: "/auth/search-user",
+                method: "GET",
+                params: {loggedInUserId, searchText},
+            }),
+        }),
         getLocationBasedExplores: builder.query<
             any,
             {location: string; limit: number; page: number}
@@ -488,6 +498,13 @@ export const authApi = createApi({
                     body: request,
                 };
             },
+        }),
+        getTopTenUsers: builder.query<any, {userId: string}>({
+            query: ({userId}) => ({
+                url: "/auth/top-ten",
+                method: "GET",
+                params: {userId},
+            }),
         }),
     }),
 });
@@ -535,4 +552,6 @@ export const {
     useGetSearchLocationsQuery,
     useGetLocationBasedExploresQuery,
     useUploadShortMutation,
+    useGetSearchUsersQuery,
+    useGetTopTenUsersQuery,
 } = authApi;

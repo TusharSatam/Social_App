@@ -6,13 +6,13 @@ import { typography } from '@social/utils/typography';
 import AccountResults from './AccountResults';
 import PlaceResults from './PlaceResults';
 
-const SearchResults = ({searchQuery,setSearchQuery}) => {
+const SearchResults = ({searchQuery}) => {
     const [activeTab, setActiveTab] = useState('Accounts');
 
     const renderContent = () => {
         switch (activeTab) {
             case 'Accounts':
-                return <AccountResults />;
+                return <AccountResults searchQuery={searchQuery}/>;
             case 'Places':
                 return <PlaceResults searchQuery={searchQuery}/>;
             default:

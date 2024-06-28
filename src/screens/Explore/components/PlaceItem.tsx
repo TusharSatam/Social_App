@@ -1,15 +1,37 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useNavigation } from '@react-navigation/native'
 import LocationSearchIcon from '@social/components/SvgIcons/ExploreScreenIcons/LocationSearchIcon'
 import CustomText from '@social/components/Text/CustomText'
 import { typography } from '@social/utils/typography'
 import { TouchableOpacity } from 'react-native'
 import { StyleSheet, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 
 const PlaceItem = ({ item, index }) => {
-    console.log(item);
-    
+    const navigation = useNavigation()
+    const handleExploreFeedNavigation = async () => {
+        await storeRecentSearch({ ...item, itemType: 'location' });
+        (navigation as any).push("Explore", { location: item?.location })
+    }
+    const storeRecentSearch = async (newItem) => {
+        try {
+            const existingSearches = await AsyncStorage.getItem('RecentSearch');
+            const searches = existingSearches ? JSON.parse(existingSearches) : [];
+
+            // Add new item and filter out duplicates
+            const updatedSearches = [newItem, ...searches.filter(search => search.location !== newItem.location)];
+            console.log("updatedSearches", updatedSearches);
+
+            // Ensure only the latest 15 items are stored
+            const limitedSearches = updatedSearches.slice(0, 8);
+            console.log("limitedSearches", limitedSearches);
+
+            await AsyncStorage.setItem('RecentSearch', JSON.stringify(limitedSearches));
+        } catch (error) {
+            console.error('Error storing recent search:', error);
+        }
+    };
     return (
-        <TouchableOpacity style={styles.itemContainer}>
+        <TouchableOpacity style={styles.itemContainer} onPress={handleExploreFeedNavigation}>
 
             <View style={styles.locationIcon}>
                 <LocationSearchIcon />
