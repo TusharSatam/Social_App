@@ -13,6 +13,7 @@ import { setAuthData } from "@social/redux/Slice/AuthSlice";
 import { navigationRef } from "@social/refs/refs";
 import TermsAndConditions from "@social/screens/SettingsScreens/TermsAndConditions";
 import SplashScreen from "react-native-splash-screen";
+import PostDetailsScreen from "@social/screens/Profile/PostDetailsScreen/PostDetailsScreen";
 
 type RootStackParamList = {
     AuthStack: undefined;
@@ -35,6 +36,7 @@ type RootStackParamList = {
     PrivacyPolicy: undefined;
     Logout: undefined;
     TermsConditions: undefined;
+    PostDetails: undefined;
 };
 interface GetUserDataType {
     token: string | null; // Adjust based on your actual response structure
@@ -43,6 +45,7 @@ interface GetUserDataType {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const ProtectedRoute: React.FC = () => {
+    // const navigation = useNavigation()
     const [getLoggedInUserData, { isLoading }] = useGetLoggedInUserDataMutation();
     const dispatch = useDispatch();
     const [isContentLoading, setIsContentLoading] = useState<boolean>(true);
@@ -83,7 +86,7 @@ const ProtectedRoute: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        setHasCompletedOnboarding(userData?.user?.username || userData?.user?.Name ||  userData?.user?.phone);
+        setHasCompletedOnboarding(userData?.user?.username || userData?.user?.Name || userData?.user?.phone);
     }, [userData]);
 
     if (isContentLoading) {
@@ -120,6 +123,10 @@ const ProtectedRoute: React.FC = () => {
                     name="TermsConditions"
                     component={TermsAndConditions}
                 />
+                {/* <Stack.Screen
+                    name="PostDetails"
+                    component={PostDetailsScreen}
+                /> */}
             </Stack.Navigator>
         </NavigationContainer>
     );

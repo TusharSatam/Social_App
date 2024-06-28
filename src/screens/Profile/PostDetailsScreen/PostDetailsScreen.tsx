@@ -19,10 +19,7 @@ interface PostDetailsScreenProps {
 const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({ route }) => {
     const { postId } = route.params;
 
-    useEffect(() => {
-        console.log('Post ID:', postId);
-        // Additional logic related to post details fetching can be added here
-    }, [postId]);
+  
 
     return (
         <View>

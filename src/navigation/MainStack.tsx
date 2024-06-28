@@ -1,6 +1,4 @@
-import {createNativeStackNavigator} from "@react-navigation/native-stack";
-
-import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ExploreStack from "./ExploreStack";
 import PostCreationStack from "./PostCreationStack";
 import ShortStack from "./ShortStack";
@@ -8,9 +6,9 @@ import ProfileStack from "./ProfileStack";
 import CustomTabBar from "./CustomTabBar";
 import HomeScreen from "@social/screens/HomeScreen/home.screen";
 import HomeStack from "./HomeStack";
+import PostDetailsScreen from "@social/screens/Profile/PostDetailsScreen/PostDetailsScreen";
 
 const MainStackBottomTab = createBottomTabNavigator();
-
 const MainStack = () => (
     <MainStackBottomTab.Navigator
         tabBar={props => <CustomTabBar {...props} />}
@@ -18,25 +16,30 @@ const MainStack = () => (
             headerShown: false,
         }}>
         <MainStackBottomTab.Screen
-            options={{unmountOnBlur: true}}
+            options={{ unmountOnBlur: true }}
             name="HomeStack"
             component={HomeStack}
         />
         <MainStackBottomTab.Screen
-            options={{unmountOnBlur: true}}
+            options={{ unmountOnBlur: true }}
             name="ExploreStack"
             component={ExploreStack}
         />
         <MainStackBottomTab.Screen
-            options={{unmountOnBlur: true}}
+            options={{ unmountOnBlur: true }}
             name="PostCreationStack"
             component={PostCreationStack}
         />
         <MainStackBottomTab.Screen name="ShortStack" component={ShortStack} />
         <MainStackBottomTab.Screen
-            options={{unmountOnBlur: true}}
+            options={{ unmountOnBlur: true }}
             name="ProfileStack"
             component={ProfileStack}
+        />
+        <MainStackBottomTab.Screen
+            options={{ unmountOnBlur: true }}
+            name="PostDetails"
+            component={PostDetailsScreen}
         />
     </MainStackBottomTab.Navigator>
 );

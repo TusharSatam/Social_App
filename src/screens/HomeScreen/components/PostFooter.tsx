@@ -1,3 +1,4 @@
+import dynamicLinks from "@react-native-firebase/dynamic-links";
 import AmazedIcon from "@social/components/SvgIcons/AmazedIcon";
 import BookmarkIcon from "@social/components/SvgIcons/BookmarkIcon";
 import CommentIcon from "@social/components/SvgIcons/CommentIcon";
@@ -14,14 +15,15 @@ import {
     useLikePostMutation,
     useSavePostMutation,
 } from "@social/redux/services/auth/authApi";
-import {colors} from "@social/utils/colors";
-import {commonStyles} from "@social/utils/common-styles";
-import {helpers} from "@social/utils/helpers";
-import {typography} from "@social/utils/typography";
-import {useEffect, useState} from "react";
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import Animated, {SharedValue} from "react-native-reanimated";
-import {useSelector} from "react-redux";
+import { colors } from "@social/utils/colors";
+import { commonStyles } from "@social/utils/common-styles";
+import { helpers } from "@social/utils/helpers";
+import { typography } from "@social/utils/typography";
+import { useEffect, useState } from "react";
+import { Share } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Animated, { SharedValue } from "react-native-reanimated";
+import { useSelector } from "react-redux";
 
 interface PostFooterProps {
     showLikeVariant: SharedValue<boolean | number>;
@@ -68,7 +70,7 @@ const PostFooter = (props: PostFooterProps) => {
     const loggedInProfileData = useSelector((state: any) => state.auth);
     const [isSavePost, setIsSavePost] = useState(isPostSaved);
 
-    const [likePostFn, {isLoading, isSuccess, isError, status}] =
+    const [likePostFn, { isLoading, isSuccess, isError, status }] =
         useLikePostMutation();
 
     const [savePostFn] = useSavePostMutation();
@@ -136,6 +138,36 @@ const PostFooter = (props: PostFooterProps) => {
         }
     };
 
+
+    const generateLink = async () => {
+        try {
+            const link = await dynamicLinks().buildShortLink({
+                link: `https://voodledev1.page.link/6SuK/?postId=${id}`,
+                domainUriPrefix: 'https://voodledev1.page.link',
+                android: {
+                    packageName: 'com.voodledev',
+                }
+            }, dynamicLinks.ShortLinkType.DEFAULT)
+            console.log('Link:', link);
+            return link
+        }
+        catch (error) {
+            console.log('Error:', error);
+        }
+    }
+
+    const sharePost = async () => {
+        const getLink = await generateLink()
+        try {
+            Share.share({
+                message: getLink
+            })
+        }
+        catch (error) {
+            console.log('Share Error', error);
+        }
+    }
+
     return (
         <View style={styles.footer}>
             <View style={[commonStyles.rowAlignJustifyBetween, styles.gap]}>
@@ -176,9 +208,9 @@ const PostFooter = (props: PostFooterProps) => {
                 </TouchableOpacity>
             </View>
             <View style={[commonStyles.rowAlignJustifyBetween, styles.gap]}>
-                <View>
+                <TouchableOpacity onPress={sharePost}>
                     <ShareIcon />
-                </View>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={isSavePost ? deletePost : savePost}>
                     {isSavePost ? (
                         <BookmarkIcon fill={"#3467CE"} stroke={"#FFF"} />

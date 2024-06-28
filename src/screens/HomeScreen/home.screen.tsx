@@ -1,7 +1,6 @@
-import {colors} from "@social/utils/colors";
+import { colors } from "@social/utils/colors";
 import {
     ActivityIndicator,
-    ScrollView,
     StyleSheet,
     Text,
     TouchableWithoutFeedback,
@@ -9,16 +8,16 @@ import {
 } from "react-native";
 import HomeHeader from "./components/HomeHeader";
 import FollowerStatus from "./components/FollowerStatus";
-import {FlashList} from "@shopify/flash-list";
+import { FlashList } from "@shopify/flash-list";
 import PostCard from "./components/PostCard";
-import {useCallback, useEffect, useRef, useState} from "react";
-import Animated, {useSharedValue} from "react-native-reanimated";
-import CommentBox from "./components/CommentBox";
-import {useGetFeedQuery} from "@social/redux/services/auth/authApi";
-import {useSelector} from "react-redux";
-import dayjs from "dayjs";
-import {typography} from "@social/utils/typography";
-import {WINDOW_HEIGHT} from "@social/constants/screenSize";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Animated, { useSharedValue } from "react-native-reanimated";
+import { useGetFeedQuery } from "@social/redux/services/auth/authApi";
+import { useSelector } from "react-redux";
+import { typography } from "@social/utils/typography";
+import { WINDOW_HEIGHT } from "@social/constants/screenSize";
+import dynamicLinks from "@react-native-firebase/dynamic-links";
+import { useNavigation } from "@react-navigation/native";
 
 const AnimatedTouchableWithoutFeedback = Animated.createAnimatedComponent(
     TouchableWithoutFeedback,
@@ -27,7 +26,7 @@ const AnimatedTouchableWithoutFeedback = Animated.createAnimatedComponent(
 const Home = () => {
     const postFlashListRef = useRef<FlashList<number> | null>(null);
     const loggedInProfileData = useSelector((state: any) => state.auth);
-
+    const navigation = useNavigation()
     const forScroll = useSharedValue(false);
 
     const [viewIndex, setViewIndex] = useState(0);
@@ -40,9 +39,9 @@ const Home = () => {
         isFetching,
         isLoading,
         data: feedData,
-    } = useGetFeedQuery({id: loggedInProfileData?.user?._id, pageNo: pageNo});
+    } = useGetFeedQuery({ id: loggedInProfileData?.user?._id, pageNo: pageNo });
 
-    const renderPost = ({item, index: postIndex}) => {
+    const renderPost = ({ item, index: postIndex }) => {
         if (feedData?.data.length < 1) {
             return (
                 <View
@@ -115,9 +114,28 @@ const Home = () => {
         }
     }, []);
 
+    //DeepLinking
+    const handleLink = async (link) => {
+        console.log(link);
+        let postId = link.url.split('=').pop()
+        console.log('link:', postId);
+        (navigation as any).navigate('PostDetails', { postId })
+    }
+
+    useEffect(() => {
+        const unsubscribe = dynamicLinks().onLink(handleLink)
+        return () => unsubscribe
+    }, [])
+    useEffect(() => {
+        const unsubscribe = dynamicLinks().getInitialLink().then((link) => {
+            handleLink(link)
+        })
+        return () => unsubscribe
+    }, [])
+
     if (isLoading) {
         return (
-            <View style={{flex: 1, justifyContent: "center"}}>
+            <View style={{ flex: 1, justifyContent: "center" }}>
                 <ActivityIndicator size={"large"} color={colors.primary} />
             </View>
         );
@@ -142,7 +160,7 @@ const Home = () => {
                 ]}
                 contentContainerStyle={styles.containerStyle}
                 ItemSeparatorComponent={() => (
-                    <View style={{marginVertical: 6}} />
+                    <View style={{ marginVertical: 6 }} />
                 )}
                 // ListEmptyComponent={() => {
                 //     return (
@@ -181,10 +199,10 @@ const Home = () => {
                 ListFooterComponent={() => {
                     if (feedData?.data?.length) {
                         return (
-                            <View style={{marginBottom: 40}}>
+                            <View style={{ marginBottom: 40 }}>
                                 {footerLoader && (
                                     <ActivityIndicator
-                                        style={{marginTop: 20}}
+                                        style={{ marginTop: 20 }}
                                         size={"large"}
                                         color={colors.primary}
                                     />
@@ -213,5 +231,5 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         paddingBottom: 20,
     },
-    containerStyle: {backgroundColor: colors.f6Color},
+    containerStyle: { backgroundColor: colors.f6Color },
 });

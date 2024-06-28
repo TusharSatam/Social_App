@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -6,20 +6,20 @@ import {
     View,
     TouchableOpacity,
 } from "react-native";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FastImage from "react-native-fast-image";
 import MultiPostIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import AddContentIcon from "react-native-vector-icons/Ionicons";
 import CustomText from "../Text/CustomText";
-import {typography} from "@social/utils/typography";
-import {colors} from "@social/utils/colors";
-import {useNavigation, useFocusEffect} from "@react-navigation/native";
-import {useGetAllMyPostsQuery} from "@social/redux/services/auth/authApi";
-import {setPosts} from "@social/redux/Slice/UserProfileActivitySlice";
-import {WINDOW_WIDTH} from "@social/constants/screenSize";
+import { typography } from "@social/utils/typography";
+import { colors } from "@social/utils/colors";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useGetAllMyPostsQuery } from "@social/redux/services/auth/authApi";
+import { setPosts } from "@social/redux/Slice/UserProfileActivitySlice";
+import { WINDOW_WIDTH } from "@social/constants/screenSize";
 import Spacing from "../Spacing";
 
-const ProfilePostsTab = ({userId}) => {
+const ProfilePostsTab = ({ userId }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const loggedInProfileData = useSelector((state: any) => state?.auth?.user);
@@ -39,7 +39,7 @@ const ProfilePostsTab = ({userId}) => {
     const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
 
     const handlePostClick = postId => {
-        (navigation as any).navigate("PostDetailsScreen", {postId});
+        (navigation as any).navigate("ProfilePostDetailsScreen", { postId });
     };
 
     // Function to fetch more posts when end of list is reached
@@ -76,18 +76,18 @@ const ProfilePostsTab = ({userId}) => {
         refetch();
     }, []);
 
-    const renderItem = ({item, index}) => (
+    const renderItem = ({ item, index }) => (
         <TouchableOpacity
             onPress={() => handlePostClick(item._id)}
             key={`${item._id} ${index}`}>
-            <View style={[styles.postItem, {width: WINDOW_WIDTH / 3 - 16}]}>
+            <View style={[styles.postItem, { width: WINDOW_WIDTH / 3 - 16 }]}>
                 {item?.Media?.length > 1 && (
                     <View style={styles.multiPostIcon}>
                         <MultiPostIcon name="card-multiple-outline" />
                     </View>
                 )}
                 <FastImage
-                    source={{uri: item?.Media[0]?.url}}
+                    source={{ uri: item?.Media[0]?.url }}
                     style={styles.profileImage}
                     resizeMode={FastImage.resizeMode.cover}
                 />
@@ -164,7 +164,7 @@ const ProfilePostsTab = ({userId}) => {
                         <ActivityIndicator size="large" color="#FF4D67" />
                     </View>
                 ) : (
-                    <View style={{marginBottom: 40}} />
+                    <View style={{ marginBottom: 40 }} />
                 );
             }}
         />

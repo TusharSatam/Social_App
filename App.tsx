@@ -18,33 +18,12 @@ function App() {
 
     const getDeviceToken = async () => {
         let token = await messaging().getToken();
-        console.log("new token",token);
         setfcmToken(fcmToken);
     }
     useEffect(() => {
         getDeviceToken()
     }, [])
 
-    // const saveFcmToken = async () => {
-    //     Notifications.registerRemoteNotifications();
-
-    //     Notifications.events().registerRemoteNotificationsRegistered(event => {
-    //         const fcmToken = event.deviceToken;
-    //         console.log(fcmToken);
-    //         setfcmToken(fcmToken);
-    //     });
-
-    //     Notifications.events().registerRemoteNotificationsRegistrationFailed(
-    //         event => {
-    //             console.error(event);
-    //         },
-    //     );
-    //     Notifications.registerRemoteNotifications();
-    // };
-
-    // useEffect(() => {
-    //     saveFcmToken();
-    // }, []);
     const SaveDeviceFcmToken = async () => {
         console.log("in SaveDeviceFcmToken");
         let saveFCMTokenResponse = await saveUserFcmToken({
@@ -58,6 +37,7 @@ function App() {
             SaveDeviceFcmToken();
         }
     }, [fcmToken, loggedInProfileData]);
+
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
