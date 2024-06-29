@@ -68,7 +68,7 @@ const PostFooter = (props: PostFooterProps) => {
     } = props;
 
     const loggedInProfileData = useSelector((state: any) => state.auth);
-    const [isSavePost, setIsSavePost] = useState(isPostSaved);
+    const [isSavePost, setIsSavePost] = useState(false);
 
     const [likePostFn, { isLoading, isSuccess, isError, status }] =
         useLikePostMutation();
@@ -167,6 +167,9 @@ const PostFooter = (props: PostFooterProps) => {
             console.log('Share Error', error);
         }
     }
+    useEffect(() => {
+        setIsSavePost(isPostSaved);
+    }, [isPostSaved]);
 
     return (
         <View style={styles.footer}>

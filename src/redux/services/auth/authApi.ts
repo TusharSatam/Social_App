@@ -371,7 +371,6 @@ export const authApi = createApi({
                 };
             },
         }),
-
         deletePost: builder.mutation({
             query: postId => {
                 return {
@@ -491,10 +490,16 @@ export const authApi = createApi({
                 params: {location, limit, page},
             }),
         }),
-        getTopTenUsers: builder.query<
-            any,
-            {userId: string}
-        >({
+        uploadShort: builder.mutation({
+            query(request) {
+                return {
+                    url: "/shorts/onboard",
+                    method: "POST",
+                    body: request,
+                };
+            },
+        }),
+        getTopTenUsers: builder.query<any, {userId: string}>({
             query: ({userId}) => ({
                 url: "/auth/top-ten",
                 method: "GET",
@@ -546,6 +551,7 @@ export const {
     useSaveUserFcmTokenMutation,
     useGetSearchLocationsQuery,
     useGetLocationBasedExploresQuery,
+    useUploadShortMutation,
     useGetSearchUsersQuery,
     useGetTopTenUsersQuery,
 } = authApi;

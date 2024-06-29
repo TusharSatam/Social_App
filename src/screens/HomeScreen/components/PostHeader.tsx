@@ -18,7 +18,9 @@ const PostHeader = props => {
 
         const elapsed = current - previous;
 
-        if (elapsed < msPerMinute) {
+        if (elapsed === 0) {
+            return null;
+        } else if (elapsed < msPerMinute) {
             return Math.round(elapsed / msPerSecond) + " seconds ago";
         } else if (elapsed < msPerHour) {
             return Math.round(elapsed / msPerMinute) + " minutes ago";

@@ -5,10 +5,13 @@ import ChevronRightIcon from "@social/components/SvgIcons/ChevronRightIcon";
 import HeaderLeftArrow from "@social/components/SvgIcons/HeaderLeftArrow";
 import LocationIcon from "@social/components/SvgIcons/LocationIcon";
 import PersonIcon from "@social/components/SvgIcons/PersonIcon";
-import {useSharePostMutation} from "@social/redux/services/auth/authApi";
+import {
+    useSharePostMutation,
+    useUploadShortMutation,
+} from "@social/redux/services/auth/authApi";
 import {colors} from "@social/utils/colors";
 import {typography} from "@social/utils/typography";
-import {useRef, useState} from "react";
+import {useMemo, useRef, useState} from "react";
 import {
     ActivityIndicator,
     ScrollView,
@@ -24,18 +27,20 @@ import Toast from "react-native-toast-message";
 import Video from "react-native-video";
 import {useDispatch, useSelector} from "react-redux";
 import TagPeopleList from "./components/TagPeopleList";
+import PlayIcon from "@social/components/SvgIcons/PlayIcon";
+import PlayButtonIcon from "@social/components/SvgIcons/PlayButtonIcon";
 
 const SPACING_HORIZONTAL = 15;
 
 const Header = props => {
-    const {onHeaderLeftAction, onHeaderRightAction} = props;
+    const {onHeaderLeftAction, onHeaderRightAction, title} = props;
     return (
         <View style={styles.root}>
             <TouchableOpacity onPress={onHeaderLeftAction}>
                 <HeaderLeftArrow height={19} />
             </TouchableOpacity>
             <View>
-                <Text style={styles.headerText}>Create Post</Text>
+                <Text style={styles.headerText}>{title}</Text>
             </View>
             <TouchableOpacity style={{opacity: 0}}>
                 <HeaderLeftArrow height={19} />
@@ -48,11 +53,15 @@ const SharePost = () => {
     const mediaPosts = useSelector<any, any[]>(state => state.post.mediaPosts);
     const dispatch = useDispatch();
     const userId = useSelector((state: any) => state.auth.user?._id);
+    const [isPause, setIsPause] = useState(true);
 
     const navigation = useNavigation();
 
     const [sharePostFn, {isLoading, isError, isSuccess}] =
         useSharePostMutation();
+
+    const [uploadShortFn, {isLoading: isUploadShortLoading}] =
+        useUploadShortMutation();
 
     const locationInputRef = useRef<TextInput>();
     const [userPrompt, setUserPrompt] = useState({
@@ -60,6 +69,13 @@ const SharePost = () => {
         location: null,
         tag: [],
     });
+
+    const isForShort = useMemo(() => {
+        return (
+            mediaPosts.length === 1 &&
+            mediaPosts?.[0]?.mime?.split("/")[0] === "video"
+        );
+    }, [mediaPosts?.length]);
 
     const setUserPromptCB = value => {
         if (userPrompt.tag.includes(value)) {
@@ -127,9 +143,48 @@ const SharePost = () => {
         }
     };
 
+    const forShort = async () => {
+        try {
+            const formData: any = new FormData();
+            formData.append("id", userId);
+            for (const media of mediaPosts) {
+                formData.append("mediaFile", {
+                    uri: media.path,
+                    type: media.mime,
+                    name: media.path.split("/").slice(-1)[0],
+                });
+            }
+            userPrompt.caption &&
+                formData.append("caption", userPrompt.caption);
+            userPrompt.location &&
+                formData.append("location", userPrompt.location);
+
+            await uploadShortFn(formData).unwrap();
+            Toast.show({
+                type: "success",
+                text1: "Short Shared!",
+                visibilityTime: 1400,
+                onShow() {
+                    setTimeout(() => {
+                        navigation.reset({
+                            index: 0,
+                            routes: [{name: "HomeStack"}],
+                        });
+                    }, 1400);
+                },
+            });
+        } catch (error) {
+            Toast.show({
+                type: "error",
+                text1: error?.data?.error,
+                visibilityTime: 1400,
+            });
+        }
+    };
+
     return (
         <View style={{flex: 1, backgroundColor: colors.white}}>
-            {isLoading && (
+            {(isLoading || isUploadShortLoading) && (
                 <View
                     style={{
                         flex: 1,
@@ -145,7 +200,10 @@ const SharePost = () => {
             )}
             <View style={styles.container}>
                 <GenericHeader>
-                    <Header onHeaderLeftAction={() => navigation.goBack()} />
+                    <Header
+                        title={"Create Post"}
+                        onHeaderLeftAction={() => navigation.goBack()}
+                    />
                 </GenericHeader>
                 <Spacing size={5} />
                 <ScrollView
@@ -157,13 +215,54 @@ const SharePost = () => {
                     <View
                         style={{
                             aspectRatio: 1,
+                            backgroundColor: colors.black,
                         }}>
                         {mediaPosts?.[0]?.mime?.split("/")?.[0] === "video" ? (
-                            <Video
-                                style={styles.selectedImage}
-                                controls={true}
-                                source={{uri: mediaPosts?.[0]?.path}}
-                            />
+                            <TouchableOpacity
+                                activeOpacity={isPause ? 1 : undefined}
+                                disabled={isPause}
+                                onPress={() => setIsPause(true)}
+                                style={{flex: 1}}>
+                                <Video
+                                    style={[styles.selectedImage]}
+                                    paused={isPause}
+                                    repeat
+                                    controls={false}
+                                    source={{uri: mediaPosts?.[0]?.path}}
+                                />
+                                {isPause && (
+                                    <TouchableOpacity
+                                        onPress={() => setIsPause(false)}
+                                        style={{
+                                            flex: 1,
+                                            position: "absolute",
+                                            ...StyleSheet.absoluteFillObject,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}>
+                                        <View
+                                            style={{
+                                                backgroundColor:
+                                                    colors.lightText,
+                                                height: 45,
+                                                width: 45,
+                                                borderRadius: 45 / 2,
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                            }}>
+                                            <PlayButtonIcon
+                                                style={{
+                                                    position: "relative",
+                                                    left: 2.5,
+                                                }}
+                                                width={27}
+                                                height={27}
+                                            />
+                                        </View>
+                                    </TouchableOpacity>
+                                )}
+                            </TouchableOpacity>
                         ) : (
                             <FastImage
                                 style={styles.selectedImage}
@@ -208,67 +307,75 @@ const SharePost = () => {
                             textAlignVertical="top"
                             style={styles.caption}
                         />
-                        <TouchableWithoutFeedback
-                            style={{flex: 1}}
-                            onPress={() => locationInputRef?.current?.focus()}>
-                            <View style={styles.locationWrapper}>
-                                <View>
-                                    <LocationIcon />
-                                </View>
-                                <TextInput
-                                    ref={locationInputRef}
-                                    value={userPrompt.location}
-                                    onChangeText={e =>
-                                        setUserPrompt(prev => {
-                                            return {
-                                                ...prev,
-                                                ["location"]: e,
-                                            };
-                                        })
-                                    }
-                                    style={{
-                                        fontSize: 16,
-                                        fontFamily: typography.sfRegular,
-                                        color: colors.lightGrey,
-                                        padding: 0,
-                                        paddingRight: 5,
-                                        flex: 1,
-                                    }}
-                                    placeholder="Type your location"
-                                    placeholderTextColor={colors.lightGrey}
-                                />
-                            </View>
-                        </TouchableWithoutFeedback>
-
-                        <TouchableOpacity onPress={() => setTagPeopleIndex(0)}>
-                            <View style={styles.tagView}>
-                                <View
-                                    style={{
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        gap: 10,
-                                    }}>
+                        {
+                            <TouchableWithoutFeedback
+                                style={{flex: 1}}
+                                onPress={() =>
+                                    locationInputRef?.current?.focus()
+                                }>
+                                <View style={styles.locationWrapper}>
                                     <View>
-                                        <PersonIcon />
+                                        <LocationIcon />
                                     </View>
-                                    <Text
+                                    <TextInput
+                                        ref={locationInputRef}
+                                        value={userPrompt.location}
+                                        onChangeText={e =>
+                                            setUserPrompt(prev => {
+                                                return {
+                                                    ...prev,
+                                                    ["location"]: e,
+                                                };
+                                            })
+                                        }
                                         style={{
                                             fontSize: 16,
                                             fontFamily: typography.sfRegular,
                                             color: colors.lightGrey,
-                                        }}>
-                                        {userPrompt.tag.length
-                                            ? `${userPrompt.tag.length} people tagged`
-                                            : "Tag People"}
-                                    </Text>
+                                            padding: 0,
+                                            paddingRight: 5,
+                                            flex: 1,
+                                        }}
+                                        placeholder="Type your location"
+                                        placeholderTextColor={colors.lightGrey}
+                                    />
                                 </View>
-                                <ChevronRightIcon />
-                            </View>
-                        </TouchableOpacity>
+                            </TouchableWithoutFeedback>
+                        }
+
+                        {isForShort || (
+                            <TouchableOpacity
+                                onPress={() => setTagPeopleIndex(0)}>
+                                <View style={styles.tagView}>
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            gap: 10,
+                                        }}>
+                                        <View>
+                                            <PersonIcon />
+                                        </View>
+                                        <Text
+                                            style={{
+                                                fontSize: 16,
+                                                fontFamily:
+                                                    typography.sfRegular,
+                                                color: colors.lightGrey,
+                                            }}>
+                                            {userPrompt.tag.length
+                                                ? `${userPrompt.tag.length} people tagged`
+                                                : "Tag People"}
+                                        </Text>
+                                    </View>
+                                    <ChevronRightIcon />
+                                </View>
+                            </TouchableOpacity>
+                        )}
                     </View>
-                    <Spacing size={15} />
+                    <Spacing size={isForShort ? 10 : 15} />
                     <TouchableOpacity
-                        onPress={onSharePost}
+                        onPress={isForShort ? forShort : onSharePost}
                         style={{
                             backgroundColor: colors.primary,
                             padding: 16,
