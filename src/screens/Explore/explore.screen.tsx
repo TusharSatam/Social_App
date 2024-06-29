@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TextInput } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ExploreFeeds from "./components/ExploreFeeds";
 import SearhExploreIcon from "@social/components/SvgIcons/ExploreScreenIcons/SearchExploreIcon";
 import CloseSearchIcon from "@social/components/SvgIcons/ExploreScreenIcons/CloseSearchIcon";
@@ -11,6 +11,8 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Explore = ({ route }) => {
     const paramData = route.params;
+    console.log("--------Explore Screen-------------");
+
 
     const [view, setView] = useState('ExploreFeeds'); // Track the current view
     const [searchQuery, setSearchQuery] = useState(''); // Track the search input value
@@ -35,7 +37,7 @@ const Explore = ({ route }) => {
         setSearchQuery('');
         setView('ExploreFeeds');
     }
-    const renderContent = () => {
+    const renderContent = useCallback(() => {
         switch (view) {
             case 'ExploreFeeds':
                 return <ExploreFeeds paramLocation={paramData?.location ? paramData?.location : null} />;
@@ -46,7 +48,7 @@ const Explore = ({ route }) => {
             default:
                 return null;
         }
-    };
+    }, [view, paramData, searchQuery]);
 
     return (
         <View style={styles.exploreContainer}>

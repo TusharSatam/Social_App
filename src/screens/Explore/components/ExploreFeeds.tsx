@@ -1,38 +1,35 @@
 import CustomText from '@social/components/Text/CustomText'
 import { ActivityIndicator, StyleSheet, View } from 'react-native'
-import { FlashList, MasonryFlashList } from "@shopify/flash-list";
+import { MasonryFlashList } from "@shopify/flash-list";
 import Feed from './Feed';
 import { useGetAllExplorePostsQuery, useGetLocationBasedExploresQuery } from '@social/redux/services/auth/authApi';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { setAllExplores } from '@social/redux/Slice/ExploreSlice';
 import { typography } from '@social/utils/typography';
 import { colors } from '@social/utils/colors';
 const ExploreFeeds = ({ paramLocation }) => {
-    const navigation = useNavigation();
-    const dispatch = useDispatch();
-    const loggedInProfileData = useSelector((state: any) => state.auth?.user);
+    console.log("--------Explore Feeds-------------");
 
+    const dispatch = useDispatch();
     const [page, setPage] = useState(1);
-    const { data: explorePosts, isLoading: isAllPostLoading, error: postError, isFetching: isFetchingExplores, refetch } = paramLocation
-        ? useGetLocationBasedExploresQuery({ page, limit: 18, location: paramLocation })
-        : useGetAllExplorePostsQuery({ page, size: 18 });
     const [allExplorePosts, setAllExplorePosts] = useState<any[]>([]);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
+    const { data: explorePosts, isLoading: isAllPostLoading, error: postError, isFetching: isFetchingExplores, refetch } = paramLocation
+        ? useGetLocationBasedExploresQuery({ page, limit: 21, location: paramLocation })
+        : useGetAllExplorePostsQuery({ page, size: 21 });
 
+    const renderItem = useCallback(({ item, index }) => {
+        return <Feed item={item} key={item?._id} index={index} />;
+    }, []);
 
-    const loadMorePosts = () => {
-        console.log("fetch more 1");
+    const loadMorePosts = useCallback(() => {
         if (!isFetchingMore && explorePosts && page < explorePosts.totalPages) {
-            console.log("fetch more 2");
-            console.log(explorePosts.totalPages, "page:", page);
-
             setIsFetchingMore(true);
             setPage(prevPage => prevPage + 1); // Increment page using previous state
         }
-    };
+    }, [explorePosts, isFetchingMore, page]);
 
     useEffect(() => {
         if (explorePosts?.data) {
@@ -78,8 +75,7 @@ const ExploreFeeds = ({ paramLocation }) => {
             <MasonryFlashList
                 data={allExplorePosts}
                 numColumns={3}
-                // keyExtractor={(item) => item._id}
-                renderItem={({ item, index }) => <Feed item={item} key={item?._id} index={index} />}
+                renderItem={renderItem}
                 estimatedItemSize={200}
                 ListEmptyComponent={
                     shouldShowEmptyMessage ? (
@@ -89,7 +85,7 @@ const ExploreFeeds = ({ paramLocation }) => {
                     ) : null
                 }
                 onEndReached={loadMorePosts}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={0.1}
                 ListFooterComponent={() => (
                     isFetchingMore ? <ActivityIndicator size="large" color="#FF4D67" /> : null
                 )}
