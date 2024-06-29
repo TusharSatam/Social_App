@@ -15,15 +15,13 @@ const ExploreFeeds = ({ paramLocation }) => {
     const loggedInProfileData = useSelector((state: any) => state.auth?.user);
 
     const [page, setPage] = useState(1);
-    const { data: explorePosts, isLoading: isAllPostLoading, error: postError,isFetching:isFetchingExplores, refetch } = paramLocation
+    const { data: explorePosts, isLoading: isAllPostLoading, error: postError, isFetching: isFetchingExplores, refetch } = paramLocation
         ? useGetLocationBasedExploresQuery({ page, limit: 18, location: paramLocation })
         : useGetAllExplorePostsQuery({ page, size: 18 });
     const [allExplorePosts, setAllExplorePosts] = useState<any[]>([]);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
-    const handlePostClick = (postId) => {
-        (navigation as any).navigate('PostDetailsScreen', { postId });
-    };
+
 
     const loadMorePosts = () => {
         console.log("fetch more 1");

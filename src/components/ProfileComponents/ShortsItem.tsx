@@ -28,7 +28,7 @@ const ShortsItem: React.FC<ShortsItemProps> = ({ item, index }) => {
 
     return (
         <TouchableOpacity style={[styles.reelItem, { width: itemWidth, height: 174 }]}
-            onPress={() => (navigation as any).navigate('PostDetailsScreen', { postId: item?.shortsId ? item.shortsId : item._id })}
+            onPress={() => (navigation as any).navigate('ProfileShortDetails', { shortId: item?.shortsId ? item.shortsId : item._id })}
         >
             {videoUrl && <Video
                 source={{ uri: item?.shorts[0]?.url ? item?.shorts[0]?.url : 'https://v6.cdnpk.net/videvo_files/video/premium/partners0547/large_watermarked/2557898_preview.mp4' }}

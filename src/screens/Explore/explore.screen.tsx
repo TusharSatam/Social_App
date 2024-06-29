@@ -16,7 +16,6 @@ const Explore = ({ route }) => {
     const [searchQuery, setSearchQuery] = useState(''); // Track the search input value
 
     const handleFocus = () => {
-
         if (searchQuery.length === 0) {
             console.log("in Focus");
             setView('RecentSearch');

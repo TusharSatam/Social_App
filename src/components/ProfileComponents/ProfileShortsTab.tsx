@@ -39,8 +39,8 @@ const ProfileShortsTab = ({ userId }) => {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [hasFetchedShorts, setHasFetchedShorts] = useState(false);
 
-  const handleShortClick = (postId) => {
-    (navigation as any).navigate('PostDetailsScreen', { postId });
+  const handleShortClick = (shortId) => {
+    (navigation as any).navigate('ProfileShortDetails', { shortId });
   };
 
   // Function to fetch more posts when end of list is reached

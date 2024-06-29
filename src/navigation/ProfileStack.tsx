@@ -30,11 +30,11 @@ const ProfileStack = () => {
                 component={MySavedPosts}
             />
             <ProfileStackNavigator.Screen
-                name={"ProfilePostDetailsScreen"}
+                name={"ProfilePostDetails"}
                 component={PostDetailsScreen}
             />
             <ProfileStackNavigator.Screen
-                name={"ShortDetailsScreen"}
+                name={"ProfileShortDetails"}
                 component={ShortDetailsScreen}
             />
             <ProfileStackNavigator.Screen

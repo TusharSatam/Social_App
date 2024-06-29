@@ -29,7 +29,7 @@ const MySavedPosts = () => {
 
 
     const handlePostClick = (postId) => {
-        (navigation as any).navigate('PostDetailsScreen', { postId });
+        (navigation as any).navigate('ProfilePostDetails', { postId });
     };
 
     const loadMorePosts = () => {
@@ -87,7 +87,7 @@ const MySavedPosts = () => {
             <FastImage
                 key={item?.postId}
                 source={{ uri: item?.media[0]?.url }}
-                style={{ width: itemWidth, height: itemWidth, margin: 2.5, borderRadius: 8,backgroundColor:"#797979" }}
+                style={{ width: itemWidth, height: itemWidth, margin: 2.5, borderRadius: 8}}
             />
         </TouchableOpacity>
     );

@@ -5,6 +5,7 @@ import {
     StyleSheet,
     View,
     TouchableOpacity,
+    ImageBackground,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import FastImage from "react-native-fast-image";
@@ -39,7 +40,7 @@ const ProfilePostsTab = ({ userId }) => {
     const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
 
     const handlePostClick = postId => {
-        (navigation as any).navigate("ProfilePostDetailsScreen", { postId });
+        (navigation as any).navigate("ProfilePostDetails", { postId });
     };
 
     // Function to fetch more posts when end of list is reached
@@ -86,11 +87,16 @@ const ProfilePostsTab = ({ userId }) => {
                         <MultiPostIcon name="card-multiple-outline" />
                     </View>
                 )}
-                <FastImage
-                    source={{ uri: item?.Media[0]?.url }}
+                <ImageBackground source={require('../../../assets/images/placeholderImage.png')} // Path to your placeholder image
                     style={styles.profileImage}
-                    resizeMode={FastImage.resizeMode.cover}
-                />
+                >
+                    <FastImage
+                        source={{ uri: item?.Media[0]?.url }}
+                        style={styles.profileImage}
+                        resizeMode={FastImage.resizeMode.cover}
+                    />
+
+                </ImageBackground>
             </View>
         </TouchableOpacity>
     );
@@ -183,6 +189,7 @@ const styles = StyleSheet.create({
     profileImage: {
         aspectRatio: 1,
         borderRadius: 5,
+        overflow:"hidden",
     },
     emptyListComponent: {
         flex: 1,

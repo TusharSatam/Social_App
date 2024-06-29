@@ -9,14 +9,14 @@ type RootStackParamList = {
 };
 
 // Define props type using RouteProp
-type PostDetailsScreenRouteProp = RouteProp<RootStackParamList, 'PostDetailsScreen'>;
+// type PostDetailsScreenRouteProp = RouteProp<RootStackParamList, 'PostDetailsScreen'>;
 
 // Props interface with navigation prop
-interface PostDetailsScreenProps {
-    route: PostDetailsScreenRouteProp;
-}
-
-const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({ route }) => {
+// interface PostDetailsScreenProps {
+//     route: PostDetailsScreenRouteProp;
+// }
+// :React.FC<PostDetailsScreenProps>
+const PostDetailsScreen = ({ route }) => {
     const { postId } = route.params;
 
   

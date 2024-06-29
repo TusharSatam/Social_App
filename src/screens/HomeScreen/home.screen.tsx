@@ -16,7 +16,7 @@ import { useGetFeedQuery } from "@social/redux/services/auth/authApi";
 import { useSelector } from "react-redux";
 import { typography } from "@social/utils/typography";
 import { WINDOW_HEIGHT } from "@social/constants/screenSize";
-import dynamicLinks from "@react-native-firebase/dynamic-links";
+import dynamicLinks, { FirebaseDynamicLinksTypes } from "@react-native-firebase/dynamic-links";
 import { useNavigation } from "@react-navigation/native";
 
 const AnimatedTouchableWithoutFeedback = Animated.createAnimatedComponent(
@@ -115,11 +115,12 @@ const Home = () => {
     }, []);
 
     //DeepLinking
-    const handleLink = async (link) => {
-        console.log(link);
-        let postId = link.url.split('=').pop()
-        console.log('link:', postId);
-        (navigation as any).navigate('PostDetails', { postId })
+    const handleLink = async (link: FirebaseDynamicLinksTypes.DynamicLink | null) => {
+        if (link) {
+            let postId = link.url.split('=').pop()
+            console.log('link:', postId);
+            (navigation as any).navigate('PostDetails', { postId })
+        }
     }
 
     useEffect(() => {

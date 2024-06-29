@@ -29,9 +29,7 @@ const MySavedPosts = () => {
   });
   const [paused, setPaused] = useState(Array(shortsResponse?.length).fill(true));
 
-  const handleShortClick = (postId) => {
-    (navigation as any).navigate('PostDetailsScreen', { postId });
-  };
+
   // Function to fetch more posts when end of list is reached
   const loadMorePosts = () => {
     if (!isFetchingMore && shortsResponse && page < shortsResponse.totalPages) {
