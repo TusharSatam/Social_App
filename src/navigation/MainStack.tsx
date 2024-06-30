@@ -7,6 +7,7 @@ import CustomTabBar from "./CustomTabBar";
 import HomeScreen from "@social/screens/HomeScreen/home.screen";
 import HomeStack from "./HomeStack";
 import PostDetailsScreen from "@social/screens/Profile/PostDetailsScreen/PostDetailsScreen";
+import PostDetails from "@social/screens/PostDetails/PostDetails.screen";
 
 const MainStackBottomTab = createBottomTabNavigator();
 const MainStack = () => (
@@ -39,7 +40,7 @@ const MainStack = () => (
         <MainStackBottomTab.Screen
             options={{ unmountOnBlur: true }}
             name="PostDetails"
-            component={PostDetailsScreen}
+            component={PostDetails}
         />
     </MainStackBottomTab.Navigator>
 );

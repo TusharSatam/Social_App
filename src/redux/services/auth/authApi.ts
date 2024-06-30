@@ -219,6 +219,14 @@ export const authApi = createApi({
             }),
             providesTags: ["profileActivity"],
         }),
+        getSinglePost: builder.query<any, {postId:string,user:string}>({
+            query: ({postId,user}) => ({
+                url: `/post/single/${postId}`,
+                method: "GET",
+                params:{user}
+            }),
+            // providesTags: ["profileActivity"],
+        }),
         getAllMyFollowing: builder.mutation<any, GetAllMyFollowing>({
             query: request => ({
                 url: "/auth/getAllMyFollowingList",
@@ -554,4 +562,5 @@ export const {
     useUploadShortMutation,
     useGetSearchUsersQuery,
     useGetTopTenUsersQuery,
+    useGetSinglePostQuery
 } = authApi;

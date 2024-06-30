@@ -1,5 +1,6 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import Explore from "@social/screens/Explore/explore.screen";
+import PostDetails from "@social/screens/PostDetails/PostDetails.screen";
 import PostDetailsScreen from "@social/screens/Profile/PostDetailsScreen/PostDetailsScreen";
 import ShortsDetailsScreen from "@social/screens/Profile/ShortDetailsScreen/ShortDetailsScreen";
 
@@ -14,7 +15,7 @@ const ExploreStack = () => {
             />
                <ExploreStackNavigator.Screen
                 name={"ExplorePostDetailScreen"}
-                component={PostDetailsScreen}
+                component={PostDetails}
             />
              <ExploreStackNavigator.Screen
                 name={"ExploreShortDetailScreen"}

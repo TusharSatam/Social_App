@@ -48,7 +48,7 @@ const Feed = ({ item, index }) => {
 const styles = StyleSheet.create({
     feedContainer: {
         margin: 2.5,
-        borderRadius:10,
+        borderRadius: 10,
     },
     shortWrapper: {
         position: "relative",

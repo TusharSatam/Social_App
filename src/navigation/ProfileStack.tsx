@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import PostDetails from "@social/screens/PostDetails/PostDetails.screen";
 import Followers from "@social/screens/Profile/FollowersScreens/Followers";
 import MyFollowers from "@social/screens/Profile/FollowersScreens/MyFollowers";
 import Following from "@social/screens/Profile/FollowingScreens/Following";
@@ -31,7 +32,7 @@ const ProfileStack = () => {
             />
             <ProfileStackNavigator.Screen
                 name={"ProfilePostDetails"}
-                component={PostDetailsScreen}
+                component={PostDetails}
             />
             <ProfileStackNavigator.Screen
                 name={"ProfileShortDetails"}
