@@ -30,7 +30,7 @@ const ExploreFeeds = ({ paramLocation }) => {
             setPage(prevPage => prevPage + 1); // Increment page using previous state
         }
     }, [explorePosts, isFetchingMore, page]);
-
+    
     useEffect(() => {
         if (explorePosts?.data) {
             if (page === 1) {
@@ -52,6 +52,7 @@ const ExploreFeeds = ({ paramLocation }) => {
     // useEffect(() => {
     //     refetch();
     // }, []);
+    const shouldShowEmptyMessage = hasFetchedPosts && allExplorePosts.length === 0;
 
     if (isFetchingExplores && !hasFetchedPosts) {
         return (
@@ -69,11 +70,12 @@ const ExploreFeeds = ({ paramLocation }) => {
         );
     }
 
-    const shouldShowEmptyMessage = hasFetchedPosts && allExplorePosts.length === 0;
+
     return (
         <View style={styles.FeedsContainer}>
             <MasonryFlashList
                 data={allExplorePosts}
+                // estimatedListSize={{height:290,width:200}}
                 numColumns={3}
                 renderItem={renderItem}
                 estimatedItemSize={200}
